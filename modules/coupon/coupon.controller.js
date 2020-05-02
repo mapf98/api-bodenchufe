@@ -1,5 +1,5 @@
 const createError = require("http-errors");
 const couponModel = require("./coupon.model");
-const logger = require("../../logger");
+const logger = require("../../config/logLevels");
 
 module.exports = {};

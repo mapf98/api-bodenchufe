@@ -1,6 +1,6 @@
 const createError = require("http-errors");
 const userModel = require("./user.model");
-const logger = require("../../logger");
+const logger = require("../../config/logLevels");
 
 module.exports = {
   getAllUsers: async (req, res, next) => {

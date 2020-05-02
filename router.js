@@ -11,6 +11,7 @@ const providerRouter = require("./modules/provider/provider.router");
 const qualificationRouter = require("./modules/qualification/qualification.router");
 const settingRouter = require("./modules/setting/setting.router");
 const userRouter = require("./modules/user/user.router");
+const authenticationRouter = require("./modules/authentication/authentication.router");
 
 router.use("/category", categoryRouter);
 router.use("/coupon", couponRouter);
@@ -23,5 +24,6 @@ router.use("/provider", providerRouter);
 router.use("/qualification", qualificationRouter);
 router.use("/setting", settingRouter);
 router.use("/user", userRouter);
+router.use("/authentication", authenticationRouter);
 
 module.exports = router;
