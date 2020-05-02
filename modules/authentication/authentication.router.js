@@ -8,5 +8,4 @@ router.get("/token", authenticationController.getToken);
 router.post("/token/validate", auth.validateToken, (req, res, next) => {
   res.send("Se ha validado el Token proporcionado");
 });
-
 module.exports = router;
