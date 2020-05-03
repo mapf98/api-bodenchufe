@@ -2,34 +2,35 @@ CREATE TABLE EC_SETTING
 (
     setting_id SERIAL,
     setting_payment_processor VARCHAR(100),
-    setting_service_commission VARCHAR(50)
+    setting_service_commission VARCHAR(50),
+	PRIMARY KEY (setting_id)
 );
 
 CREATE TABLE EC_STATUS
 (
     status_id SERIAL,
-    status_name VARCHAR(50) NOT NULL,
+    status_name VARCHAR(50) NOT NULL UNIQUE,
     PRIMARY KEY (status_id)
 );
 
 CREATE TABLE EC_ROL
 (
     rol_id SERIAL,
-    rol_name VARCHAR(50) NOT NULL,
+    rol_name VARCHAR(50) NOT NULL UNIQUE,
     PRIMARY KEY (rol_id)
 );
 
 CREATE TABLE EC_LANGUAGE
 (
     language_id SERIAL,
-    language_name VARCHAR(50) NOT NULL,
+    language_name VARCHAR(50) NOT NULL UNIQUE,
     PRIMARY KEY (language_id)
 );
 
 CREATE TABLE EC_OFFER
 (
     offer_id SERIAL,
-    offer_rate VARCHAR(10) NOT NULL,
+    offer_rate VARCHAR(10) NOT NULL UNIQUE,
     PRIMARY KEY (offer_id)
 );
 
@@ -38,13 +39,15 @@ CREATE TABLE EC_PROVIDER
     provider_id SERIAL,
     provider_name VARCHAR(50) NOT NULL,
     provider_description VARCHAR(100) NOT NULL,
-    PRIMARY KEY (provider_id)
+	fk_status_id INTEGER NOT NULL,
+    PRIMARY KEY (provider_id),
+	CONSTRAINT fk_provider_status_id FOREIGN KEY (fk_status_id) REFERENCES EC_STATUS (status_id)
 );
 
 CREATE TABLE EC_CATEGORY
 (
     category_id SERIAL,
-    category_name VARCHAR(30) NOT NULL,
+    category_name VARCHAR(30) NOT NULL UNIQUE,
     fk_category_id INTEGER,
     PRIMARY KEY (category_id),
     CONSTRAINT fk_category_category_id FOREIGN KEY (fk_category_id) REFERENCES EC_CATEGORY (category_id)
@@ -72,11 +75,13 @@ CREATE TABLE EC_PRODUCT_PROVIDER
     product_provider_available_quantity INTEGER NOT NULL,
     fk_provider_id INTEGER NOT NULL,
     fk_product_id INTEGER NOT NULL,
+	fk_status_id INTEGER NOT NULL,
     fk_offer_id INTEGER,
     PRIMARY KEY (product_provider_id),
     CONSTRAINT fk_product_provider_offer_id FOREIGN KEY (fk_offer_id) REFERENCES EC_OFFER (offer_id),
     CONSTRAINT fk_product_provider_provider_id FOREIGN KEY (fk_provider_id) REFERENCES EC_PROVIDER (provider_id),
-    CONSTRAINT fk_product_provider_product_id FOREIGN KEY (fk_product_id) REFERENCES EC_PRODUCT (product_id)
+    CONSTRAINT fk_product_provider_product_id FOREIGN KEY (fk_product_id) REFERENCES EC_PRODUCT (product_id),
+	CONSTRAINT fk_product_provider_status_id FOREIGN KEY (fk_status_id) REFERENCES EC_STATUS (status_id)
 );
 
 CREATE TABLE EC_USER
@@ -87,7 +92,7 @@ CREATE TABLE EC_USER
     user_second_name VARCHAR(40),
     user_second_lastname VARCHAR(40),
     user_birthdate DATE NOT NULL,
-    user_email VARCHAR(50) NOT NULL,
+    user_email VARCHAR(50) NOT NULL UNIQUE,
     user_password VARCHAR(50),
     user_photo VARCHAR(200),
     fk_language_id INTEGER NOT NULL,
@@ -115,6 +120,18 @@ CREATE TABLE EC_DELIVERY_ADDRESS
     CONSTRAINT fk_delivery_address_user_id FOREIGN KEY (fk_user_id) REFERENCES EC_USER (user_id)
 );
 
+CREATE TABLE EC_COUPON
+(
+    coupon_id SERIAL,
+    coupon_name VARCHAR(50) NOT NULL UNIQUE,
+    coupon_discount_rate VARCHAR(10) NOT NULL,
+    fk_status_id INTEGER NOT NULL,
+    fk_user_id INTEGER,
+    PRIMARY KEY (coupon_id),
+    CONSTRAINT fk_coupon_status_id FOREIGN KEY (fk_status_id) REFERENCES EC_STATUS (status_id),
+    CONSTRAINT fk_coupon_user_id FOREIGN KEY (fk_user_id) REFERENCES EC_USER (user_id)
+);
+
 CREATE TABLE EC_ORDER
 (
     order_id SERIAL,
@@ -125,23 +142,11 @@ CREATE TABLE EC_ORDER
     order_amount_cryptocurrency FLOAT NOT NULL,
     fk_delivery_address_id INTEGER NOT NULL,
     fk_status_id INTEGER NOT NULL,
+	fk_coupon_id INTEGER,
     PRIMARY KEY (order_id),
     CONSTRAINT fk_order_delivery_address_id FOREIGN KEY (fk_delivery_address_id) REFERENCES EC_DELIVERY_ADDRESS (delivery_address_id),
-    CONSTRAINT fk_order_status_id FOREIGN KEY (fk_status_id) REFERENCES EC_STATUS (status_id)
-);
-
-CREATE TABLE EC_COUPON
-(
-    coupon_id SERIAL,
-    coupon_name VARCHAR(50) NOT NULL,
-    coupon_discount_rate VARCHAR(10) NOT NULL,
-    fk_order_id INTEGER,
-    fk_user_id INTEGER,
-    fk_status_id INTEGER NOT NULL,
-    PRIMARY KEY (coupon_id),
-    CONSTRAINT fk_coupon_order_id FOREIGN KEY (fk_order_id) REFERENCES EC_ORDER (order_id),
-    CONSTRAINT fk_coupon_user_id FOREIGN KEY (fk_user_id) REFERENCES EC_USER (user_id),
-    CONSTRAINT fk_coupon_status_id FOREIGN KEY (fk_status_id) REFERENCES EC_STATUS (status_id)
+    CONSTRAINT fk_order_status_id FOREIGN KEY (fk_status_id) REFERENCES EC_STATUS (status_id),
+	CONSTRAINT fk_order_coupon_id FOREIGN KEY (fk_coupon_id) REFERENCES EC_COUPON (coupon_id)
 );
 
 CREATE TABLE EC_PRODUCT_PROVIDER_ORDER

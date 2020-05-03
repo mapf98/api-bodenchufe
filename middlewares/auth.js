@@ -1,5 +1,7 @@
 const jwt = require("jwt-simple");
 const moment = require("moment");
+const createError = require("http-errors");
+const logger = require("../config/logLevels");
 
 function createToken(user) {
   const payload = {
@@ -17,15 +19,25 @@ function validateToken(req, res, next) {
   }
 
   const token = req.headers.authorization.split(" ")[1];
-  const payload = jwt.decode(token, process.env.SECRET_TOKEN);
+  let payload = "";
+
+  try {
+    payload = jwt.decode(token, process.env.SECRET_TOKEN);
+  } catch (error) {
+    logger.error("Se proporcionó un token no válido como mecanismo de acceso");
+    next(createError(500, "El token proporcionado no es válido"));
+  }
+
   const tokenExp = new Date(payload.exp);
   const actualDate = new Date(moment());
 
   if (tokenExp <= actualDate) {
     return res.status(401).send({ message: "Token expirado" });
+  } else {
+    logger.info("Se validó el token de acceso");
+    req.user_id = payload.user_id;
   }
 
-  req.user_id = payload.user_id;
   next();
 }
 

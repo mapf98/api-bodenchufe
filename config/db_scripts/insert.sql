@@ -29,9 +29,9 @@ INSERT INTO EC_OFFER (offer_rate) VALUES ('90%');
 INSERT INTO EC_OFFER (offer_rate) VALUES ('100%');
 
 /* PROVIDER */
-INSERT INTO EC_PROVIDER (provider_name, provider_description) VALUES ('Techno Fan','We are a technology provider');
-INSERT INTO EC_PROVIDER (provider_name, provider_description) VALUES ('All You Want','We are a provider');
-INSERT INTO EC_PROVIDER (provider_name, provider_description) VALUES ('Mix Pro','We are a provider');
+INSERT INTO EC_PROVIDER (provider_name, provider_description, fk_status_id) VALUES ('Techno Fan','We are a technology provider', 1);
+INSERT INTO EC_PROVIDER (provider_name, provider_description, fk_status_id) VALUES ('All You Want','We are a provider', 1);
+INSERT INTO EC_PROVIDER (provider_name, provider_description, fk_status_id) VALUES ('Mix Pro','We are a provider', 1);
 
 /* CATEGORY */
 INSERT INTO EC_CATEGORY (category_name) VALUES ('Technology');
@@ -49,11 +49,11 @@ product_height, product_width, fk_category_id) VALUES ('Samsung Smart TV', 'foto
 
 /* PRODUCT_PROVIDER */
 INSERT INTO EC_PRODUCT_PROVIDER (product_provider_description, product_provider_price, product_provider_available_quantity, fk_provider_id,
-fk_product_id, fk_offer_id) VALUES (null,990.99 , 10 , 1, 1, 1);
+fk_product_id, fk_offer_id, fk_status_id) VALUES (null,990.99 , 10 , 1, 1, (SELECT offer_id FROM EC_OFFER WHERE offer_rate='0%'), 1);
 INSERT INTO EC_PRODUCT_PROVIDER (product_provider_description, product_provider_price, product_provider_available_quantity, fk_provider_id,
-fk_product_id, fk_offer_id) VALUES (null,699.99 , 7 , 3, 3, 2);
+fk_product_id, fk_offer_id, fk_status_id) VALUES (null,699.99 , 7 , 3, 3, (SELECT offer_id FROM EC_OFFER WHERE offer_rate='10%'), 1);
 INSERT INTO EC_PRODUCT_PROVIDER (product_provider_description, product_provider_price, product_provider_available_quantity, fk_provider_id,
-fk_product_id, fk_offer_id) VALUES (null,2000 , 5 , 2, 2, 4);
+fk_product_id, fk_offer_id, fk_status_id) VALUES (null,2000 , 5 , 2, 2, (SELECT offer_id FROM EC_OFFER WHERE offer_rate='20%'), 1);
 
 /* USER */
 INSERT INTO EC_USER (user_first_name, user_first_lastname, user_second_name, user_second_lastname, user_birthdate, user_email, user_password, user_photo, fk_language_id, fk_rol_id, fk_status_id) 
@@ -71,17 +71,17 @@ VALUES ('Po Box 1256', null ,'Medical Lake', 'WA', 99022, null, null, null, 2);
 INSERT INTO EC_DELIVERY_ADDRESS (delivery_address_primary_line, delivery_address_secondary_line, delivery_address_city, delivery_address_state, delivery_address_zip_code, delivery_address_aditional_info, delivery_address_security_code, delivery_address_locker_code, fk_user_id) 
 VALUES ('246 E Miller St', null ,'Newark', 'NY', 14513, null, null, null, 3);
 
-/* ORDER */
-INSERT INTO EC_ORDER (order_date, order_amount_dollars, order_weight, order_cryptocurrency_type, order_amount_cryptocurrency, fk_delivery_address_id, fk_status_id) 
-VALUES ('2020-01-31', 2972.97, 40, 'BTC', 0.08, 1, 6);
- 
 /* COUPON */
-INSERT INTO EC_COUPON (coupon_name, coupon_discount_rate, fk_order_id, fk_user_id, fk_status_id) 
-VALUES ('Super discount to you', '50%', null, 1, 3);
-INSERT INTO EC_COUPON (coupon_name, coupon_discount_rate, fk_order_id, fk_user_id, fk_status_id) 
-VALUES ('Super discount to you', '30%', null, 2, 3);
-INSERT INTO EC_COUPON (coupon_name, coupon_discount_rate, fk_order_id, fk_user_id, fk_status_id) 
-VALUES ('Super discount to you', '40%', null, 3, 3);
+INSERT INTO EC_COUPON (coupon_name, coupon_discount_rate, fk_user_id, fk_status_id) 
+VALUES ('Summer discount', '50%', 1, 3);
+INSERT INTO EC_COUPON (coupon_name, coupon_discount_rate, fk_user_id, fk_status_id) 
+VALUES ('BODEnchufe leal', '30%', 2, 3);
+INSERT INTO EC_COUPON (coupon_name, coupon_discount_rate, fk_user_id, fk_status_id) 
+VALUES ('Una escopeta para matar una mosca', '40%', 3, 3);
+
+/* ORDER */
+INSERT INTO EC_ORDER (order_date, order_amount_dollars, order_weight, order_cryptocurrency_type, order_amount_cryptocurrency, fk_delivery_address_id, fk_status_id, fk_coupon_id) 
+VALUES ('2020-01-31', 2972.97, 40, 'BTC', 0.08, 1, 6, (SELECT coupon_id FROM EC_COUPON WHERE coupon_name LIKE 'Summer discount'));
 
 /* PRODUCT_PROVIDER_ORDER */
 
