@@ -3,6 +3,6 @@ const router = express.Router();
 const couponController = require("./coupon.controller");
 const auth = require("../../middlewares/auth");
 
-router.get("/", couponController.getCoupons);
+router.get("/", auth.validateToken, couponController.getCoupons);
 
 module.exports = router;
