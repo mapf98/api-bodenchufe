@@ -33,7 +33,10 @@ module.exports = {
       logger.info(
         "los parametros globales han sido actualizados correctamente"
       );
-      res.json("La peticion se ha ejecutado: Status 200");
+      res.json({
+        status: 200,
+        message: "los parametros globales fueron actualizados",
+      });
     }
   },
 };

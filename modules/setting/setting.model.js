@@ -7,7 +7,7 @@ module.exports = {
 
   updateSettings: (con, body) => {
     return con.query(
-      "UPDATE EC_SETTING SET SETTING_PAYMENT_PROCESSOR = $2, SETTING_SERVICE_COMMISSION = $3 WHERE SETTING_ID = $1",
+      "UPDATE EC_SETTING SET setting_payment_processor = $2, setting_service_commission = $3 WHERE setting_id = $1",
       [
         body.setting_id,
         body.setting_payment_processor,
