@@ -18,4 +18,22 @@ module.exports = {
       res.json(result);
     }
   },
+
+  updateSettings: async (req, res, next) => {
+    let result = await settingModel.updateSettings(req.con, req.body);
+    if (result instanceof Error) {
+      logger.error("Error en el modulo Setting (updateSettings)");
+      next(
+        createError(
+          500,
+          "Error al actualizar los parametros globales (" + result.message + ")"
+        )
+      );
+    } else {
+      logger.info(
+        "los parametros globales han sido actualizados correctamente"
+      );
+      res.json("La peticion se ha ejecutado: Status 200");
+    }
+  },
 };
