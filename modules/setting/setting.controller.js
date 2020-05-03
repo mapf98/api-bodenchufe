@@ -35,7 +35,6 @@ module.exports = {
       );
       res.json({
         status: 200,
-        message: "los parametros globales fueron actualizados",
       });
     }
   },
