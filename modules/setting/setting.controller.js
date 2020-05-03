@@ -10,7 +10,7 @@ module.exports = {
       next(
         createError(
           500,
-          "Error al obtener los parametros globales (" + result.message + ")"
+          `Error al obtener los parametros globales (${result.message})`
         )
       );
     } else {
@@ -26,7 +26,7 @@ module.exports = {
       next(
         createError(
           500,
-          "Error al actualizar los parametros globales (" + result.message + ")"
+          `Error al actualizar los parametros globales (${result.message})`
         )
       );
     } else {

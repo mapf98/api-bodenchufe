@@ -10,7 +10,7 @@ module.exports = {
       next(
         createError(
           500,
-          "Error al obtener los cupones disponibles (" + result.message + ")"
+          `Error al obtener los cupones disponibles (${result.message})`
         )
       );
     } else {
