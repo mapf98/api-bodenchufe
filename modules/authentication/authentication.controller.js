@@ -7,6 +7,9 @@ module.exports = {
   getToken: (req, res, next) => {
     const user_id_test = 1;
     const token = auth.createToken(user_id_test, process.env.SECRET_TOKEN);
-    res.json(token);
+    res.json({
+      token: token,
+      user_id: user_id_test,
+    });
   },
 };
