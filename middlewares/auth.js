@@ -33,9 +33,11 @@ function validateToken(req, res, next) {
 
   if (tokenExp <= actualDate) {
     return res.status(401).send({ message: "Token expirado" });
+  } else {
+    logger.info("Se validó el token de acceso");
+    req.user_id = payload.user_id;
   }
 
-  req.user_id = payload.user_id;
   next();
 }
 
