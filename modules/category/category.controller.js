@@ -17,6 +17,22 @@ function getCategories(category_id, results) {
 }
 
 module.exports = {
+   getMainCategories: async (req, res, next) => {
+    let results = await categoryModel.getMainCategories(req.con);
+
+    if (results instanceof Error) {
+      logger.error("Error en el modulo category (getMainCategories)");
+      next(
+        createError(
+          500,
+          `Error al obtener las categorias padres (${results.message})`
+        )
+      );
+    } else {
+      logger.info("Lista de categorias padre obtenida satisfactoriamente");
+      res.json(results);
+    }
+  },
   getAllCategories: async (req, res, next) => {
     let categories = await categoryModel.getAllCategories(req.con);
     let allCategories = [];
