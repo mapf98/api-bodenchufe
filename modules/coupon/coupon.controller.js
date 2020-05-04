@@ -15,7 +15,10 @@ module.exports = {
       );
     } else {
       logger.info("Lista de cupones obtenida satisfactoriamente");
-      res.json(result);
+      res.json({
+        data: result,
+        results: result.length,
+      });
     }
   },
 
