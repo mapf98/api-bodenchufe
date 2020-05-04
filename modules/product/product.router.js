@@ -4,5 +4,6 @@ const productController = require("./product.controller");
 const auth = require("../../middlewares/auth");
 
 router.use("/provider/:providerId", productController.getProductsByProvider);
+router.use("/offer/:offerId", productController.getProductsByOffer);
 
 module.exports = router;

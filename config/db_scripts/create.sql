@@ -63,8 +63,10 @@ CREATE TABLE EC_PRODUCT
     product_height INTEGER NOT NULL,
     product_width INTEGER NOT NULL,
     fk_category_id INTEGER NOT NULL,
+    fk_offer_id INTEGER NOT NULL,
     PRIMARY KEY (product_id),
-    CONSTRAINT fk_product_category_id FOREIGN KEY (fk_category_id) REFERENCES EC_CATEGORY (category_id)
+    CONSTRAINT fk_product_category_id FOREIGN KEY (fk_category_id) REFERENCES EC_CATEGORY (category_id),
+    CONSTRAINT fk_product_offer_id FOREIGN KEY (fk_offer_id) REFERENCES EC_OFFER (offer_id)
 );
 
 CREATE TABLE EC_PRODUCT_PROVIDER

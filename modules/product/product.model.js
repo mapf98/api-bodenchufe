@@ -11,4 +11,15 @@ module.exports = {
         return new Error(error);
       });
   },
+  getProductsByOffer: (con, offer_id) => {
+    return con
+      .query(
+        `SELECT * FROM EC_PRODUCT AS PRO, EC_OFFER AS OFR 
+          WHERE PRO.fk_offer_id = OFR.offer_id
+            AND OFR.offer_id = ${offer_id}`
+      )
+      .catch((error) => {
+        return new Error(error);
+      });
+  },
 };

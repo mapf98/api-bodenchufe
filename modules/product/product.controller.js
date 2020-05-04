@@ -13,11 +13,32 @@ module.exports = {
       next(
         createError(
           500,
-          `Error al obtener productos por asociados a un proveedor (${products.message})`
+          `Error al obtener productos asociados a un proveedor (${products.message})`
         )
       );
     } else {
       logger.info("Listado de productos por proveedor");
+      res.json({
+        data: { products },
+        results: products.length,
+      });
+    }
+  },
+  getProductsByOffer: async (req, res, next) => {
+    let products = await productModel.getProductsByOffer(
+      req.con,
+      req.params.offerId
+    );
+    if (products instanceof Error) {
+      logger.error("Error en modulo product (GET /offer/:offerId)");
+      next(
+        createError(
+          500,
+          `Error al obtener productos dada una oferta (${products.message})`
+        )
+      );
+    } else {
+      logger.info("Listado de productos por oferta");
       res.json({
         data: { products },
         results: products.length,
