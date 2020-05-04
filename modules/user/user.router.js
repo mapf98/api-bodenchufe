@@ -12,4 +12,10 @@ router
   .get(userController.getShoppingCart)
   .post(userController.checkProductAvailability, userController.addNewProduct);
 
+router.patch(
+  "/shoppingCart/:shoppingCartId/quantity",
+  userController.checkProductAvailability,
+  userController.updateProductQuantity
+);
+
 module.exports = router;
