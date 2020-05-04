@@ -22,4 +22,5 @@ router.patch(
   userController.checkProductAvailability,
   userController.updateProductQuantity
 );
+
 module.exports = router;
