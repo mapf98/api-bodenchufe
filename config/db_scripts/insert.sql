@@ -35,9 +35,17 @@ INSERT INTO EC_PROVIDER (provider_name, provider_description, fk_status_id) VALU
 
 /* CATEGORY */
 INSERT INTO EC_CATEGORY (category_name) VALUES ('Technology');
-INSERT INTO EC_CATEGORY (category_name, fk_category_id) VALUES ('Cellphone',1);
-INSERT INTO EC_CATEGORY (category_name, fk_category_id) VALUES ('TV',1);
-INSERT INTO EC_CATEGORY (category_name, fk_category_id) VALUES ('Computer',1);
+INSERT INTO EC_CATEGORY (category_name, fk_category_id) VALUES ('Cellphone', 1);
+INSERT INTO EC_CATEGORY (category_name, fk_category_id) VALUES ('TV', 1);
+INSERT INTO EC_CATEGORY (category_name, fk_category_id) VALUES ('Computer', 1);
+INSERT INTO EC_CATEGORY (category_name, fk_category_id) VALUES ('Android', 2);
+INSERT INTO EC_CATEGORY (category_name, fk_category_id) VALUES ('Samsung', 3);
+INSERT INTO EC_CATEGORY (category_name, fk_category_id) VALUES ('Asus', 4);
+INSERT INTO EC_CATEGORY (category_name, fk_category_id) VALUES ('Xiomi', 5);
+INSERT INTO EC_CATEGORY (category_name, fk_category_id) VALUES ('ZTE', 5);
+INSERT INTO EC_CATEGORY (category_name, fk_category_id) VALUES ('Huawei', 5);;
+INSERT INTO EC_CATEGORY (category_name) VALUES ('Clothes');
+INSERT INTO EC_CATEGORY (category_name) VALUES ('Home');
 
 /* PRODUCT */
 INSERT INTO EC_PRODUCT (product_name, product_photo,product_description, product_long,

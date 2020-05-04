@@ -16,7 +16,17 @@ module.exports = {
       .query(
         `SELECT * FROM EC_PRODUCT AS PRO, EC_OFFER AS OFR 
           WHERE PRO.fk_offer_id = OFR.offer_id
-            AND OFR.offer_id = ${offer_id}`
+            AND OFR.offer_id = ${offer_id}`)
+      .catch((error) => {
+        return new Error(error);
+      });
+  },
+  getProductsByCategory: (con, category_id) => {
+    return con
+      .query(
+        `SELECT * FROM EC_CATEGORY AS CAT, EC_PRODUCT AS PRO 
+          WHERE CAT.category_id = PRO.fk_category_id 
+            AND PRO.fk_category_id = ${category_id}`
       )
       .catch((error) => {
         return new Error(error);

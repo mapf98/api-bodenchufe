@@ -41,17 +41,27 @@ module.exports = {
     }
   },
   checkProductAvailability: async (req, res, next) => {
-    const product_id = req.body.fk_product_provider_id;
+    let product_id;
+    let type;
+    if (req.params.shoppingCartId) {
+      product_id = req.params.shoppingCartId;
+      type = "update";
+    } else if (req.body.fk_product_provider_id) {
+      product_id = req.body.fk_product_provider_id;
+      type = "insert";
+    }
+    console.log(product_id, type);
     let quantity = await userModel.checkProductAvailability(
       req.con,
-      product_id
+      product_id,
+      type
     );
     quantity = quantity[0].product_provider_available_quantity;
     if (quantity < req.body.product_provider_order_quantity)
       return next(
         createError(
           400,
-          "La cantidad de productos a agregar excede a la cantidad de productos disponibles"
+          `La cantidad de productos a agregar(${req.body.product_provider_order_quantity}) excede a la cantidad de productos disponibles(${quantity})`
         )
       );
     next();
@@ -70,6 +80,31 @@ module.exports = {
       logger.info("Producto agregado al carrito del usuario");
       res.json({
         data: { product },
+      });
+    }
+  },
+  updateProductQuantity: async (req, res, next) => {
+    const idCart = req.params.shoppingCartId;
+    const quantity = req.body.product_provider_order_quantity;
+    let product = await userModel.updateShoppingCartProductQuantity(
+      req.con,
+      quantity,
+      idCart
+    );
+    if (product instanceof Error) {
+      logger.error(
+        "Error en modulo user (PATCH /shoppingCart/:shoppingCartId/quantity)"
+      );
+      next(
+        createError(
+          500,
+          `Error al modificar la cantidad del producto del carrito (${product.message})`
+        )
+      );
+    } else {
+      logger.info("Cantidad del producto modificada en el carrito del usuario");
+      res.json({
+        status: "success",
       });
     }
   },
