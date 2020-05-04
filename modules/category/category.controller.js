@@ -41,6 +41,7 @@ module.exports = {
       logger.info("Listado de categorias entregado");
       res.json({
         data: { allCategories },
+        results: categories.length,
       });
     }
   },
