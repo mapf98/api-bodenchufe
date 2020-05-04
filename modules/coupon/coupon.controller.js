@@ -15,7 +15,27 @@ module.exports = {
       );
     } else {
       logger.info("Lista de cupones obtenida satisfactoriamente");
-      res.json(result);
+      res.json({
+        data: result,
+        results: result.length,
+      });
+    }
+  },
+
+  updateCoupon: async (req, res, next) => {
+    let result = await couponModel.updateCoupon(req.con, req.body);
+
+    if (result instanceof Error) {
+      logger.error("error en el modulo coupon (updateCoupon)");
+      next(
+        createError(
+          500,
+          `Error al actualizar el cupon escogido (${result.message})`
+        )
+      );
+    } else {
+      logger.info("Cupon actualizado de forma satisfactoria");
+      res.json({ status: 200 });
     }
   },
 
