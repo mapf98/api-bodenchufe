@@ -18,4 +18,21 @@ module.exports = {
       res.json(result);
     }
   },
+
+  updateCoupon: async (req, res, next) => {
+    let result = await couponModel.updateCoupon(req.con, req.body);
+
+    if (result instanceof Error) {
+      logger.error("error en el modulo coupon (updateCoupon)");
+      next(
+        createError(
+          500,
+          `Error al actualizar el cupon escogido (${result.message})`
+        )
+      );
+    } else {
+      logger.info("Cupon actualizado de forma satisfactoria");
+      res.json({ status: 200 });
+    }
+  },
 };
