@@ -21,7 +21,6 @@ module.exports = {
       });
     }
   },
-
   updateCoupon: async (req, res, next) => {
     let result = await couponModel.updateCoupon(req.con, req.body);
 
@@ -38,7 +37,6 @@ module.exports = {
       res.json({ status: 200 });
     }
   },
-
   disableCoupon: async (req, res, next) => {
     let result = await couponModel.disableCoupon(req.con, req.body);
     if (result instanceof Error) {
