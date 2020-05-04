@@ -19,15 +19,27 @@ module.exports = {
         return new Error(error);
       });
   },
-  checkProductAvailability: (con, product) => {
-    return con
-      .query(
-        `SELECT PRODUCT_PROVIDER_AVAILABLE_QUANTITY FROM EC_PRODUCT_PROVIDER 
-        WHERE PRODUCT_PROVIDER_ID = ${product}`
-      )
-      .catch((error) => {
-        return new Error(error);
-      });
+  checkProductAvailability: (con, product, type) => {
+    if (type === "insert") {
+      return con
+        .query(
+          `SELECT PRODUCT_PROVIDER_AVAILABLE_QUANTITY FROM EC_PRODUCT_PROVIDER 
+          WHERE PRODUCT_PROVIDER_ID = ${product}`
+        )
+        .catch((error) => {
+          return new Error(error);
+        });
+    } else {
+      return con
+        .query(
+          `SELECT PRODUCT_PROVIDER_AVAILABLE_QUANTITY FROM EC_PRODUCT_PROVIDER, EC_PRODUCT_PROVIDER_ORDER
+        WHERE PRODUCT_PROVIDER_ORDER_ID = ${product} 
+        AND fk_product_provider_id = product_provider_id`
+        )
+        .catch((error) => {
+          return new Error(error);
+        });
+    }
   },
   insertProductShoppingCart: (req) => {
     return req.con
@@ -36,6 +48,16 @@ module.exports = {
         fk_user_id, fk_order_id, fk_status_id) VALUES (${req.body.product_provider_order_quantity}, 
         ${req.body.fk_product_provider_id}, ${req.user_id}, null, 1) RETURNING
         product_provider_order_id`
+      )
+      .catch((error) => {
+        return new Error(error);
+      });
+  },
+  updateShoppingCartProductQuantity: (con, cantidad, cartId) => {
+    return con
+      .query(
+        `UPDATE EC_PRODUCT_PROVIDER_ORDER SET product_provider_order_quantity = ${cantidad}
+         WHERE PRODUCT_PROVIDER_ORDER_ID = ${cartId}`
       )
       .catch((error) => {
         return new Error(error);
