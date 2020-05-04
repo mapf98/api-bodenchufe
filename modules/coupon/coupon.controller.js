@@ -15,7 +15,38 @@ module.exports = {
       );
     } else {
       logger.info("Lista de cupones obtenida satisfactoriamente");
-      res.json(result);
+      res.json({
+        data: result,
+        results: result.length,
+      });
+    }
+  },
+  updateCoupon: async (req, res, next) => {
+    let result = await couponModel.updateCoupon(req.con, req.body);
+
+    if (result instanceof Error) {
+      logger.error("error en el modulo coupon (updateCoupon)");
+      next(
+        createError(
+          500,
+          `Error al actualizar el cupon escogido (${result.message})`
+        )
+      );
+    } else {
+      logger.info("Cupon actualizado de forma satisfactoria");
+      res.json({ status: 200 });
+    }
+  },
+  disableCoupon: async (req, res, next) => {
+    let result = await couponModel.disableCoupon(req.con, req.body);
+    if (result instanceof Error) {
+      logger.error("Error en el modulo coupon (disableCoupons)");
+      next(
+        createError(500, `Error al deshabilitar el cupon (${result.message})`)
+      );
+    } else {
+      logger.info("cupon deshabilitado satisfactoriamente");
+      res.json({ status: 200 });
     }
   },
 };

@@ -35,17 +35,25 @@ INSERT INTO EC_PROVIDER (provider_name, provider_description, fk_status_id) VALU
 
 /* CATEGORY */
 INSERT INTO EC_CATEGORY (category_name) VALUES ('Technology');
-INSERT INTO EC_CATEGORY (category_name, fk_category_id) VALUES ('Cellphone',1);
-INSERT INTO EC_CATEGORY (category_name, fk_category_id) VALUES ('TV',1);
-INSERT INTO EC_CATEGORY (category_name, fk_category_id) VALUES ('Computer',1);
+INSERT INTO EC_CATEGORY (category_name, fk_category_id) VALUES ('Cellphone', 1);
+INSERT INTO EC_CATEGORY (category_name, fk_category_id) VALUES ('TV', 1);
+INSERT INTO EC_CATEGORY (category_name, fk_category_id) VALUES ('Computer', 1);
+INSERT INTO EC_CATEGORY (category_name, fk_category_id) VALUES ('Android', 2);
+INSERT INTO EC_CATEGORY (category_name, fk_category_id) VALUES ('Samsung', 3);
+INSERT INTO EC_CATEGORY (category_name, fk_category_id) VALUES ('Asus', 4);
+INSERT INTO EC_CATEGORY (category_name, fk_category_id) VALUES ('Xiomi', 5);
+INSERT INTO EC_CATEGORY (category_name, fk_category_id) VALUES ('ZTE', 5);
+INSERT INTO EC_CATEGORY (category_name, fk_category_id) VALUES ('Huawei', 5);;
+INSERT INTO EC_CATEGORY (category_name) VALUES ('Clothes');
+INSERT INTO EC_CATEGORY (category_name) VALUES ('Home');
 
 /* PRODUCT */
 INSERT INTO EC_PRODUCT (product_name, product_photo,product_description, product_long,
-product_height, product_width, fk_category_id) VALUES ('iPhone 11', 'foto', 'This is a cellphone', '10', '20', '10', 2);
+product_height, product_width, fk_category_id, fk_offer_id) VALUES ('iPhone 11', 'foto', 'This is a cellphone', '10', '20', '10', 2, 4);
 INSERT INTO EC_PRODUCT (product_name, product_photo,product_description, product_long,
-product_height, product_width, fk_category_id) VALUES ('Mac', 'foto', 'This is a computer by Apple', '10', '20', '10', 4);
+product_height, product_width, fk_category_id, fk_offer_id) VALUES ('Mac', 'foto', 'This is a computer by Apple', '10', '20', '10', 4, 3);
 INSERT INTO EC_PRODUCT (product_name, product_photo,product_description, product_long,
-product_height, product_width, fk_category_id) VALUES ('Samsung Smart TV', 'foto', 'This is a 60" TV', '70', '100', '220', 3);
+product_height, product_width, fk_category_id, fk_offer_id) VALUES ('Samsung Smart TV', 'foto', 'This is a 60" TV', '70', '100', '220', 3, 6);
 
 /* PRODUCT_PROVIDER */
 INSERT INTO EC_PRODUCT_PROVIDER (product_provider_description, product_provider_price, product_provider_available_quantity, fk_provider_id,
