@@ -12,4 +12,9 @@ router
   .get(userController.getShoppingCart)
   .post(userController.checkProductAvailability, userController.addNewProduct);
 
+router.delete(
+  "/shoppingCart/:shoppingCartId",
+  userController.deleteShoppingCartProduct
+);
+
 module.exports = router;

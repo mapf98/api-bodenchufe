@@ -8,37 +8,35 @@ module.exports = {
     let users = await userModel.getAllUsers(req.con);
     if (users instanceof Error) {
       logger.error("Error en modulo user (GET /all)");
-      next(
+      return next(
         createError(
           500,
           `Error al obtener todos los usuarios (${users.message})`
         )
       );
-    } else {
-      logger.info("Lista general de usuarios entregada");
-      res.json({
-        results: users.length,
-        data: { users },
-      });
     }
+    logger.info("Lista general de usuarios entregada");
+    res.json({
+      results: users.length,
+      data: { users },
+    });
   },
   getShoppingCart: async (req, res, next) => {
     let shoppingCart = await userModel.getShoppingCart(req.con);
     if (shoppingCart instanceof Error) {
       logger.error("Error en modulo user (GET /shoppingCart)");
-      next(
+      return next(
         createError(
           500,
           `Error al obtener el carrito (${shoppingCart.message})`
         )
       );
-    } else {
-      logger.info("Lista de los productos del carrito de compras entregada");
-      res.json({
-        results: shoppingCart.length,
-        data: { shoppingCart },
-      });
     }
+    logger.info("Lista de los productos del carrito de compras entregada");
+    res.json({
+      results: shoppingCart.length,
+      data: { shoppingCart },
+    });
   },
   checkProductAvailability: async (req, res, next) => {
     const product_id = req.body.fk_product_provider_id;
@@ -60,17 +58,37 @@ module.exports = {
     let product = await userModel.insertProductShoppingCart(req);
     if (product instanceof Error) {
       logger.error("Error en modulo user (POST /shoppingCart)");
-      next(
+      return next(
         createError(
           500,
           `Error al insertar producto al carrito (${product.message})`
         )
       );
-    } else {
-      logger.info("Producto agregado al carrito del usuario");
-      res.json({
-        data: { product },
-      });
     }
+    logger.info("Producto agregado al carrito del usuario");
+    res.json({
+      data: { product },
+    });
+  },
+  deleteShoppingCartProduct: async (req, res, next) => {
+    let result = await userModel.deleteShoppingCartProduct(
+      req.con,
+      req.params.shoppingCartId
+    );
+    if (result instanceof Error) {
+      logger.error(
+        "Error en modulo user (DELETE /shoppingCart/:shoppingCartId)"
+      );
+      return next(
+        createError(
+          500,
+          `Error al eliminar producto del carrito (${product.message})`
+        )
+      );
+    }
+    logger.info("Producto eliminado del carrito del usuario");
+    res.status(204).json({
+      data: null,
+    });
   },
 };

@@ -41,4 +41,14 @@ module.exports = {
         return new Error(error);
       });
   },
+  deleteShoppingCartProduct: (con, idCart) => {
+    return con
+      .query(
+        `DELETE FROM EC_PRODUCT_PROVIDER_ORDER WHERE PRODUCT_PROVIDER_ORDER_ID = ${idCart} 
+      AND FK_STATUS_ID IN (1,2) `
+      )
+      .catch((error) => {
+        return new Error(error);
+      });
+  },
 };
