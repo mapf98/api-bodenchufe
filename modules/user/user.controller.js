@@ -74,6 +74,11 @@ module.exports = {
           `Error al insertar producto al carrito (${product.message})`
         )
       );
+    } else {
+      logger.info("Producto agregado al carrito del usuario");
+      res.json({
+        data: { product },
+      });
     }
     logger.info("Producto agregado al carrito del usuario");
     res.json({
