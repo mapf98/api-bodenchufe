@@ -17,4 +17,9 @@ router.delete(
   userController.deleteShoppingCartProduct
 );
 
+router.patch(
+  "/shoppingCart/:shoppingCartId/quantity",
+  userController.checkProductAvailability,
+  userController.updateProductQuantity
+);
 module.exports = router;
