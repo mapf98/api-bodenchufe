@@ -38,4 +38,17 @@ module.exports = {
       res.json({ status: 200 });
     }
   },
+
+  disableCoupon: async (req, res, next) => {
+    let result = await couponModel.disableCoupon(req.con, req.body);
+    if (result instanceof Error) {
+      logger.error("Error en el modulo coupon (disableCoupons)");
+      next(
+        createError(500, `Error al deshabilitar el cupon (${result.message})`)
+      );
+    } else {
+      logger.info("cupon deshabilitado satisfactoriamente");
+      res.json({ status: 200 });
+    }
+  },
 };
