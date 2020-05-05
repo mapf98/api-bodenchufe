@@ -9,7 +9,8 @@ module.exports = {
     } else if (req.originalUrl === "/bodenchufe/api/user/deliveryAddress") {
       return req.con
         .query(
-          `SELECT * FROM EC_DELIVERY_ADDRESS WHERE FK_USER_ID = ${req.user_id}`
+          `SELECT * FROM EC_DELIVERY_ADDRESS WHERE FK_USER_ID = ${req.user_id}
+           AND FK_STATUS_ID = (SELECT STATUS_ID FROM EC_STATUS WHERE STATUS_NAME = 'active')`
         )
         .catch((error) => {
           return new Error(error);

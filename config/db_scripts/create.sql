@@ -116,8 +116,11 @@ CREATE TABLE EC_DELIVERY_ADDRESS
     delivery_address_security_code VARCHAR(30),
     delivery_address_locker_code VARCHAR(30),
     fk_user_id INTEGER NOT NULL,
+    fk_status_id INTEGER NOT NULL,
     PRIMARY KEY (delivery_address_id),
-    CONSTRAINT fk_delivery_address_user_id FOREIGN KEY (fk_user_id) REFERENCES EC_USER (user_id)
+    CONSTRAINT fk_delivery_address_user_id FOREIGN KEY (fk_user_id) REFERENCES EC_USER (user_id),
+    CONSTRAINT fk_delivery_address_status_id FOREIGN KEY (fk_status_id) REFERENCES EC_STATUS (status_id)
+
 );
 
 CREATE TABLE EC_COUPON
