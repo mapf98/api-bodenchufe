@@ -25,17 +25,23 @@ module.exports = {
         )
       );
     } else {
-      if (result[0].status_name == "active") {
+      if (result[0] && result[0].status_name == "active") {
         let token = auth.createToken(req.body.user_id);
         logger.info("Inicio de sesion satisfactorio");
         res.json({
           status: "200",
+          validation: "true",
           token: token,
           response: result,
         });
       } else {
-        logger.info("Usuario bloqueado");
-        res.json({ error: "Usuario bloqueado", response: result });
+        if (result.length == 0) {
+          logger.info("correo o contraseña invalidos");
+          res.json({ validation: "false" });
+        } else {
+          logger.info("Usuario bloqueado");
+          res.json({ error: "Usuario bloqueado", response: result });
+        }
       }
     }
   },
