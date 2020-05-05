@@ -9,4 +9,13 @@ module.exports = {
         return new Error(error);
       });
   },
+  verifyEmail: (con, params) => {
+    return con
+      .query(
+        `SELECT user_email FROM EC_USER WHERE user_email = '${params.emailUser}'`
+      )
+      .catch((error) => {
+        return new Error(error);
+      });
+  },
 };

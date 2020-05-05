@@ -7,4 +7,6 @@ const auth = require("../../middlewares/auth");
 router.get("/token", authenticationController.getToken);
 router.post("/token/validate", auth.validateToken);
 router.post("/signUp", authenticationController.signUp);
+router.get("/verifyEmail/:emailUser", authenticationController.verifyEmail);
+
 module.exports = router;
