@@ -85,12 +85,12 @@ INSERT INTO EC_USER (user_first_name, user_first_lastname, user_second_name, use
 VALUES ('Miguel', 'Peña',null ,null , '1998-04-03', 'miguel@ucab.com', 'test1234', 'foto', 3, 1, 3);
 
 /* DELIVERY ADDRESS */
-INSERT INTO EC_DELIVERY_ADDRESS (delivery_address_primary_line, delivery_address_secondary_line, delivery_address_city, delivery_address_state, delivery_address_zip_code, delivery_address_aditional_info, delivery_address_security_code, delivery_address_locker_code, fk_user_id) 
-VALUES ('5724 176th Dr SE', null, 'Snohomish', 'WA', 98290, null, null, null, 1);
-INSERT INTO EC_DELIVERY_ADDRESS (delivery_address_primary_line, delivery_address_secondary_line, delivery_address_city, delivery_address_state, delivery_address_zip_code, delivery_address_aditional_info, delivery_address_security_code, delivery_address_locker_code, fk_user_id) 
-VALUES ('Po Box 1256', null ,'Medical Lake', 'WA', 99022, null, null, null, 2);
-INSERT INTO EC_DELIVERY_ADDRESS (delivery_address_primary_line, delivery_address_secondary_line, delivery_address_city, delivery_address_state, delivery_address_zip_code, delivery_address_aditional_info, delivery_address_security_code, delivery_address_locker_code, fk_user_id) 
-VALUES ('246 E Miller St', null ,'Newark', 'NY', 14513, null, null, null, 3);
+INSERT INTO EC_DELIVERY_ADDRESS (delivery_address_primary_line, delivery_address_secondary_line, delivery_address_city, delivery_address_state, delivery_address_zip_code, delivery_address_aditional_info, delivery_address_security_code, delivery_address_locker_code, fk_user_id, fk_status_id) 
+VALUES ('5724 176th Dr SE', null, 'Snohomish', 'WA', 98290, null, null, null, 1, 3);
+INSERT INTO EC_DELIVERY_ADDRESS (delivery_address_primary_line, delivery_address_secondary_line, delivery_address_city, delivery_address_state, delivery_address_zip_code, delivery_address_aditional_info, delivery_address_security_code, delivery_address_locker_code, fk_user_id, fk_status_id) 
+VALUES ('Po Box 1256', null ,'Medical Lake', 'WA', 99022, null, null, null, 2, 3);
+INSERT INTO EC_DELIVERY_ADDRESS (delivery_address_primary_line, delivery_address_secondary_line, delivery_address_city, delivery_address_state, delivery_address_zip_code, delivery_address_aditional_info, delivery_address_security_code, delivery_address_locker_code, fk_user_id, fk_status_id) 
+VALUES ('246 E Miller St', null ,'Newark', 'NY', 14513, null, null, null, 3, 3);
 
 /* COUPON */
 INSERT INTO EC_COUPON (coupon_name, coupon_discount_rate, fk_user_id, fk_status_id) 

@@ -4,8 +4,8 @@ module.exports = {
       return new Error(error);
     });
   },
-  getShoppingCart: (con) => {
-    return con
+  getShoppingCart: (req) => {
+    return req.con
       .query(
         `SELECT PPO.*, P.product_name ,  PR.provider_name, PP.PRODUCT_PROVIDER_PRICE, 
         (SELECT OFFER_RATE FROM EC_OFFER WHERE OFFER_ID = PP.FK_OFFER_ID ) AS DISCOUNT,
@@ -14,7 +14,9 @@ module.exports = {
         WHERE PPO.fk_product_provider_id = PP.product_provider_id
         AND PP.fk_product_id = P.product_id
         AND PP.fk_provider_id = PR.provider_id
-        AND PPO.fk_status_id in (SELECT status_id FROM EC_STATUS WHERE status_name in ('selected','unselected'))`
+        AND PPO.fk_status_id in (SELECT status_id FROM EC_STATUS WHERE status_name in ('selected','unselected'))
+        AND PPO.fk_status_id = S.STATUS_ID
+        AND PPO.fk_user_id = ${req.user_id}`
       )
       .catch((error) => {
         return new Error(error);
