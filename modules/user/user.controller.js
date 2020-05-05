@@ -22,7 +22,7 @@ module.exports = {
     });
   },
   getShoppingCart: async (req, res, next) => {
-    let shoppingCart = await userModel.getShoppingCart(req.con);
+    let shoppingCart = await userModel.getShoppingCart(req);
     if (shoppingCart instanceof Error) {
       logger.error("Error en modulo user (GET /shoppingCart)");
       return next(
