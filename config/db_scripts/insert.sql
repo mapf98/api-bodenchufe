@@ -5,6 +5,7 @@ INSERT INTO EC_STATUS (status_id, status_name) VALUES (3, 'active');
 INSERT INTO EC_STATUS (status_id, status_name) VALUES (4, 'inactive');
 INSERT INTO EC_STATUS (status_id, status_name) VALUES (5, 'in progress');
 INSERT INTO EC_STATUS (status_id, status_name) VALUES (6, 'paid');
+INSERT INTO EC_STATUS (status_id, status_name) VALUES (7, 'available');
 
 /* ROL */
 INSERT INTO EC_ROL (rol_name) VALUES ('administrator');
