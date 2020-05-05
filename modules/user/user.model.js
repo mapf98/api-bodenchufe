@@ -8,6 +8,7 @@ module.exports = {
     return con
       .query(
         `SELECT PPO.*, P.product_name ,  PR.provider_name, PP.PRODUCT_PROVIDER_PRICE, 
+        (SELECT OFFER_RATE FROM EC_OFFER WHERE OFFER_ID = PP.FK_OFFER_ID ) AS DISCOUNT,
         (PP.PRODUCT_PROVIDER_PRICE * PPO.PRODUCT_PROVIDER_ORDER_QUANTITY) AS TOTAL 
         FROM EC_PRODUCT_PROVIDER_ORDER PPO, EC_PRODUCT P, EC_PROVIDER PR, EC_PRODUCT_PROVIDER PP
         WHERE PPO.fk_product_provider_id = PP.product_provider_id
