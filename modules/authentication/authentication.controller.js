@@ -12,4 +12,16 @@ module.exports = {
       user_id: user_id_test,
     });
   },
+
+  signUp: async (req, res, next) => {
+    let result = await authenticationModel.signUp(req.con, req.body);
+    if (result instanceof Error) {
+      logger.error("Error en el modulo authentication (signUp)");
+      next(createError(500, `Error al registrarse (${result.message})`));
+      res.json({ error: "23505" });
+    } else {
+      logger.info("Usuario agregado correctamente");
+      res.json({ status: 200 });
+    }
+  },
 };
