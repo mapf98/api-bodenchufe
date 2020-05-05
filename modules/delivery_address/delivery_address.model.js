@@ -17,4 +17,16 @@ module.exports = {
         });
     }
   },
+  updateAddressStatus: (req) => {
+    return req.con
+      .query(
+        `UPDATE EC_DELIVERY_ADDRESS SET FK_STATUS_ID = 
+        (SELECT STATUS_ID FROM EC_STATUS WHERE STATUS_NAME = '${req.body.status_name}')
+        WHERE FK_USER_ID = ${req.user_id}
+        AND DELIVERY_ADDRESS_ID = ${req.params.deliveryAddressId}`
+      )
+      .catch((error) => {
+        return new Error(error);
+      });
+  },
 };
