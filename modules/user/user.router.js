@@ -12,11 +12,6 @@ router
   .get(userController.getShoppingCart)
   .post(userController.checkProductAvailability, userController.addNewProduct);
 
-router.delete(
-  "/shoppingCart/:shoppingCartId",
-  userController.deleteShoppingCartProduct
-);
-
 router.patch(
   "/shoppingCart/:shoppingCartId/quantity",
   userController.checkProductAvailability,

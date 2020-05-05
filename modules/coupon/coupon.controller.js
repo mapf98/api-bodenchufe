@@ -49,4 +49,19 @@ module.exports = {
       res.json({ status: 200 });
     }
   },
+  addCoupon: async (req, res, next) => {
+    let result = await couponModel.addCoupon(req.con, req.body);
+    if (result instanceof Error) {
+      logger.error("Error en el modulo coupon (addCoupon)");
+      next(
+        createError(
+          500,
+          `Error al obtener los cupones disponibles (${result.message})`
+        )
+      );
+    } else {
+      logger.info("Cupon agregado correctamente");
+      res.json({ status: 200 });
+    }
+  },
 };
