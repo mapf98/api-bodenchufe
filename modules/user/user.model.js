@@ -4,17 +4,19 @@ module.exports = {
       return new Error(error);
     });
   },
-  getShoppingCart: (con) => {
-    return con
+  getShoppingCart: (req) => {
+    return req.con
       .query(
         `SELECT PPO.*, P.product_name ,  PR.provider_name, PP.PRODUCT_PROVIDER_PRICE, 
         (SELECT OFFER_RATE FROM EC_OFFER WHERE OFFER_ID = PP.FK_OFFER_ID ) AS DISCOUNT,
-        (PP.PRODUCT_PROVIDER_PRICE * PPO.PRODUCT_PROVIDER_ORDER_QUANTITY) AS TOTAL 
-        FROM EC_PRODUCT_PROVIDER_ORDER PPO, EC_PRODUCT P, EC_PROVIDER PR, EC_PRODUCT_PROVIDER PP
+        (PP.PRODUCT_PROVIDER_PRICE * PPO.PRODUCT_PROVIDER_ORDER_QUANTITY) AS TOTAL, S.STATUS_NAME 
+        FROM EC_PRODUCT_PROVIDER_ORDER PPO, EC_PRODUCT P, EC_PROVIDER PR, EC_PRODUCT_PROVIDER PP, EC_STATUS S
         WHERE PPO.fk_product_provider_id = PP.product_provider_id
         AND PP.fk_product_id = P.product_id
         AND PP.fk_provider_id = PR.provider_id
-        AND PPO.fk_status_id in (SELECT status_id FROM EC_STATUS WHERE status_name in ('selected','unselected'))`
+        AND PPO.fk_status_id in (SELECT status_id FROM EC_STATUS WHERE status_name in ('selected','unselected'))
+        AND PPO.fk_status_id = S.STATUS_ID
+        AND PPO.fk_user_id = ${req.user_id}`
       )
       .catch((error) => {
         return new Error(error);
@@ -64,12 +66,23 @@ module.exports = {
         return new Error(error);
       });
   },
-  updateShoppingCartProductQuantity: (con, cantidad, cartId) => {
+  updateShoppingCartProductQuantity: (con, quantity, cartId) => {
     return con
       .query(
-        `UPDATE EC_PRODUCT_PROVIDER_ORDER SET product_provider_order_quantity = ${cantidad}
+        `UPDATE EC_PRODUCT_PROVIDER_ORDER SET product_provider_order_quantity = ${quantity}
          WHERE PRODUCT_PROVIDER_ORDER_ID = ${cartId} AND FK_STATUS_ID IN 
          (SELECT status_id FROM EC_STATUS WHERE status_name in ('selected','unselected'))`
+      )
+      .catch((error) => {
+        return new Error(error);
+      });
+  },
+  updateProviderStock: (con, productId, quantity) => {
+    return con
+      .query(
+        `UPDATE EC_PRODUCT_PROVIDER SET product_provider_available_quantity = 
+        ((SELECT P.product_provider_available_quantity FROM EC_PRODUCT_PROVIDER P 
+        WHERE P.product_provider_id = ${productId} )-${quantity}) WHERE product_provider_id = ${productId} `
       )
       .catch((error) => {
         return new Error(error);

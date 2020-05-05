@@ -18,4 +18,6 @@ router.patch(
   userController.updateProductQuantity
 );
 
+router.patch("/shoppingCart/checkout", userController.orderCheckout);
+
 module.exports = router;
