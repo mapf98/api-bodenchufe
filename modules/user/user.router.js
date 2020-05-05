@@ -24,4 +24,9 @@ router.get(
   deliveryAddressController.getAllDeliveryAddresses
 );
 
+router.patch(
+  "/deliveryAddress/:deliveryAddressId",
+  deliveryAddressController.changeAddressStatus
+);
+
 module.exports = router;

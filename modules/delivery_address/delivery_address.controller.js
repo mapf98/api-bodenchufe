@@ -20,4 +20,22 @@ module.exports = {
       data: { adresses },
     });
   },
+  changeAddressStatus: async (req, res, next) => {
+    let adresses = await deliveryAddressModel.updateAddressStatus(req);
+    if (adresses instanceof Error) {
+      logger.error(
+        "Error en modulo user (PATCH /deliveryAddress/:deliveryAddressId)"
+      );
+      return next(
+        createError(
+          500,
+          `Error al cambiar el status de la direccion (${adresses.message})`
+        )
+      );
+    }
+    logger.info("Status de la direccion cambiado");
+    res.json({
+      status: "success",
+    });
+  },
 };
