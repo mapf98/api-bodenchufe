@@ -6,5 +6,7 @@ const auth = require("../../middlewares/auth");
 //Rutas para prueba de autenticación
 router.get("/token", authenticationController.getToken);
 router.post("/token/validate", auth.validateToken);
+router.post("/signUp", authenticationController.signUp);
+router.get("/verifyEmail/:emailUser", authenticationController.verifyEmail);
 
 module.exports = router;
