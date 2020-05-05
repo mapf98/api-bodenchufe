@@ -63,10 +63,8 @@ CREATE TABLE EC_PRODUCT
     product_height INTEGER NOT NULL,
     product_width INTEGER NOT NULL,
     fk_category_id INTEGER NOT NULL,
-    fk_offer_id INTEGER NOT NULL,
     PRIMARY KEY (product_id),
-    CONSTRAINT fk_product_category_id FOREIGN KEY (fk_category_id) REFERENCES EC_CATEGORY (category_id),
-    CONSTRAINT fk_product_offer_id FOREIGN KEY (fk_offer_id) REFERENCES EC_OFFER (offer_id)
+    CONSTRAINT fk_product_category_id FOREIGN KEY (fk_category_id) REFERENCES EC_CATEGORY (category_id)
 );
 
 CREATE TABLE EC_PRODUCT_PROVIDER
@@ -118,8 +116,11 @@ CREATE TABLE EC_DELIVERY_ADDRESS
     delivery_address_security_code VARCHAR(30),
     delivery_address_locker_code VARCHAR(30),
     fk_user_id INTEGER NOT NULL,
+    fk_status_id INTEGER NOT NULL,
     PRIMARY KEY (delivery_address_id),
-    CONSTRAINT fk_delivery_address_user_id FOREIGN KEY (fk_user_id) REFERENCES EC_USER (user_id)
+    CONSTRAINT fk_delivery_address_user_id FOREIGN KEY (fk_user_id) REFERENCES EC_USER (user_id),
+    CONSTRAINT fk_delivery_address_status_id FOREIGN KEY (fk_status_id) REFERENCES EC_STATUS (status_id)
+
 );
 
 CREATE TABLE EC_COUPON
