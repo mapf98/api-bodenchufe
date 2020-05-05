@@ -66,4 +66,30 @@ module.exports = {
       });
     }
   },
+  getProductDetail: async (req, res, next) => {
+    let product = await productModel.getProductDetail(
+      req.con,
+      req.params.postId
+    );
+    let qualifications = await productModel.getProductQualification(
+      req.con,
+      req.params.postId
+    );
+    if (product instanceof Error || qualifications instanceof Error) {
+      logger.error("Error en modulo product (GET /:postId)");
+      next(
+        createError(
+          500,
+          `Error al obtener el detalle de una publicación (${product.message})`
+        )
+      );
+    } else {
+      logger.info(
+        `Se entregó el detalle de la publicación ${req.params.postId}`
+      );
+      res.json({
+        data: { product, qualifications },
+      });
+    }
+  },
 };

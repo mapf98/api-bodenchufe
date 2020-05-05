@@ -5,6 +5,7 @@ INSERT INTO EC_STATUS (status_id, status_name) VALUES (3, 'active');
 INSERT INTO EC_STATUS (status_id, status_name) VALUES (4, 'inactive');
 INSERT INTO EC_STATUS (status_id, status_name) VALUES (5, 'in progress');
 INSERT INTO EC_STATUS (status_id, status_name) VALUES (6, 'paid');
+INSERT INTO EC_STATUS (status_id, status_name) VALUES (7, 'available');
 
 /* ROL */
 INSERT INTO EC_ROL (rol_name) VALUES ('administrator');
@@ -49,11 +50,16 @@ INSERT INTO EC_CATEGORY (category_name) VALUES ('Home');
 
 /* PRODUCT */
 INSERT INTO EC_PRODUCT (product_name, product_photo,product_description, product_long,
-product_height, product_width, fk_category_id, fk_offer_id) VALUES ('iPhone 11', 'foto', 'This is a cellphone', '10', '20', '10', 2, 4);
+product_height, product_width, fk_category_id) VALUES ('iPhone 11', 'foto', 'This is a cellphone', '10', '20', '10', 2);
 INSERT INTO EC_PRODUCT (product_name, product_photo,product_description, product_long,
-product_height, product_width, fk_category_id, fk_offer_id) VALUES ('Mac', 'foto', 'This is a computer by Apple', '10', '20', '10', 4, 3);
+product_height, product_width, fk_category_id) VALUES ('Xiomi Readme Note 8', 'foto', 'This is a cellphone', '10', '20', '10', 2);
 INSERT INTO EC_PRODUCT (product_name, product_photo,product_description, product_long,
-product_height, product_width, fk_category_id, fk_offer_id) VALUES ('Samsung Smart TV', 'foto', 'This is a 60" TV', '70', '100', '220', 3, 6);
+product_height, product_width, fk_category_id) VALUES ('Mac', 'foto', 'This is a computer by Apple', '10', '20', '10', 4);
+INSERT INTO EC_PRODUCT (product_name, product_photo,product_description, product_long,
+product_height, product_width, fk_category_id) VALUES ('Samsung Smart TV', 'foto', 'This is a 60" TV', '70', '100', '220', 3);
+INSERT INTO EC_PRODUCT (product_name, product_photo,product_description, product_long,
+product_height, product_width, fk_category_id) VALUES ('Asus Mass', 'foto', 'This is a 60" TV', '70', '100', '220', 3);
+
 
 /* PRODUCT_PROVIDER */
 INSERT INTO EC_PRODUCT_PROVIDER (product_provider_description, product_provider_price, product_provider_available_quantity, fk_provider_id,
@@ -62,6 +68,13 @@ INSERT INTO EC_PRODUCT_PROVIDER (product_provider_description, product_provider_
 fk_product_id, fk_offer_id, fk_status_id) VALUES (null,699.99 , 7 , 3, 3, (SELECT offer_id FROM EC_OFFER WHERE offer_rate='10%'), 1);
 INSERT INTO EC_PRODUCT_PROVIDER (product_provider_description, product_provider_price, product_provider_available_quantity, fk_provider_id,
 fk_product_id, fk_offer_id, fk_status_id) VALUES (null,2000 , 5 , 2, 2, (SELECT offer_id FROM EC_OFFER WHERE offer_rate='20%'), 1);
+INSERT INTO EC_PRODUCT_PROVIDER (product_provider_description, product_provider_price, product_provider_available_quantity, fk_provider_id,
+fk_product_id, fk_offer_id, fk_status_id) VALUES (null, 200, 50, 1, 4, (SELECT offer_id FROM EC_OFFER WHERE offer_rate='20%'), 1);
+INSERT INTO EC_PRODUCT_PROVIDER (product_provider_description, product_provider_price, product_provider_available_quantity, fk_provider_id,
+fk_product_id, fk_offer_id, fk_status_id) VALUES (null, 200, 50, 1, 2, null, 1);
+INSERT INTO EC_PRODUCT_PROVIDER (product_provider_description, product_provider_price, product_provider_available_quantity, fk_provider_id,
+fk_product_id, fk_offer_id, fk_status_id) VALUES (null, 200, 50, 1, 4, null, 1);
+
 
 /* USER */
 INSERT INTO EC_USER (user_first_name, user_first_lastname, user_second_name, user_second_lastname, user_birthdate, user_email, user_password, user_photo, fk_language_id, fk_rol_id, fk_status_id) 
@@ -103,3 +116,7 @@ VALUES (1, 3, 1, null, 1);
 /* QUALIFICATION */
 INSERT INTO EC_QUALIFICATION (qualification_commentary, qualification_stars, fk_product_provider_id, fk_user_id)
 VALUES ('Great product', 5, 1, 1);
+INSERT INTO EC_QUALIFICATION (qualification_commentary, qualification_stars, fk_product_provider_id, fk_user_id)
+VALUES ('Nice', 4, 1, 1);
+INSERT INTO EC_QUALIFICATION (qualification_commentary, qualification_stars, fk_product_provider_id, fk_user_id)
+VALUES ('Fine, ok', 2, 1, 1);
