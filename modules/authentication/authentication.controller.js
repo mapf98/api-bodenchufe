@@ -12,6 +12,7 @@ module.exports = {
       user_id: user_id_test,
     });
   },
+
   logIn: async (req, res, next) => {
     result = await authenticationModel.logIn(req.con, req.body);
 
@@ -24,13 +25,18 @@ module.exports = {
         )
       );
     } else {
-      console.log(req.body.user_id);
-      let token = auth.createToken(req.body.user_id);
-      logger.info("Inicio de sesion satisfactorio");
-      res.json({
-        status: "200",
-        token: token,
-      });
+      if (result[0].status_name == "active") {
+        let token = auth.createToken(req.body.user_id);
+        logger.info("Inicio de sesion satisfactorio");
+        res.json({
+          status: "200",
+          token: token,
+          response: result,
+        });
+      } else {
+        logger.info("Usuario bloqueado");
+        res.json({ error: "Usuario bloqueado", response: result });
+      }
     }
   },
 };
