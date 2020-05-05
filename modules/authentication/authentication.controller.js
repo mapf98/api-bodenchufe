@@ -13,6 +13,38 @@ module.exports = {
     });
   },
 
+  logIn: async (req, res, next) => {
+    result = await authenticationModel.logIn(req.con, req.body);
+
+    if (result instanceof Error) {
+      logger.error("Error en el modulo authentication (logIn)");
+      next(
+        createError(
+          500,
+          `Error al iniciar sesion en la aplicacion (${result.message})`
+        )
+      );
+    } else {
+      if (result[0] && result[0].status_name == "active") {
+        let token = auth.createToken(req.body.user_id);
+        logger.info("Inicio de sesion satisfactorio");
+        res.json({
+          status: "200",
+          validation: "true",
+          token: token,
+          response: result,
+        });
+      } else {
+        if (result.length == 0) {
+          logger.info("correo o contraseña invalidos");
+          res.json({ validation: "false" });
+        } else {
+          logger.info("Usuario bloqueado");
+          res.json({ error: "Usuario bloqueado", response: result });
+        }
+      }
+    }
+  },
   verifyEmail: async (req, res, next) => {
     let result = await authenticationModel.verifyEmail(req.con, req.params);
     if (result instanceof Error) {
