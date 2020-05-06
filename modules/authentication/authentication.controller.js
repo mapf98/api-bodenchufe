@@ -12,22 +12,21 @@ module.exports = {
       user_id: user_id_test,
     });
   },
-
   logIn: async (req, res, next) => {
-    result = await authenticationModel.logIn(req.con, req.body);
+    let result = await authenticationModel.logIn(req.con, req.body);
 
     if (result instanceof Error) {
-      logger.error("Error en el modulo authentication (logIn)");
+      logger.error("Error en el módulo authentication (logIn)");
       next(
         createError(
           500,
-          `Error al iniciar sesion en la aplicacion (${result.message})`
+          `Error al iniciar sesión en la aplicación (${result.message})`
         )
       );
     } else {
       if (result[0] && result[0].status_name == "active") {
         let token = auth.createToken(req.body.user_id);
-        logger.info("Inicio de sesion satisfactorio");
+        logger.info("Inicio de sesión satisfactorio");
         res.json({
           status: "200",
           validation: true,
@@ -36,7 +35,7 @@ module.exports = {
         });
       } else {
         if (result.length == 0) {
-          logger.info("correo o contraseña invalidos");
+          logger.info("Correo electrónico o contraseña invalidos");
           res.json({ validation: false });
         } else {
           logger.info("Usuario bloqueado");
@@ -48,7 +47,7 @@ module.exports = {
   verifyEmail: async (req, res, next) => {
     let result = await authenticationModel.verifyEmail(req.con, req.params);
     if (result instanceof Error) {
-      logger.error("Error en el modulo authentication (verifyEmail)");
+      logger.error("Error en el módulo authentication (verifyEmail)");
       next(
         createError(500, `Error al verificar el correo (${result.message})`)
       );
@@ -62,14 +61,13 @@ module.exports = {
       }
     }
   },
-
   signUp: async (req, res, next) => {
     let result = await authenticationModel.signUp(req.con, req.body);
     if (result instanceof Error) {
-      logger.error("Error en el modulo authentication (signUp)");
+      logger.error("Error en el módulo authentication (signUp)");
       next(createError(500, `Error al registrarse (${result.message})`));
     } else {
-      logger.info("Usuario agregado correctamente");
+      logger.info("Usuario agregado satisfactoriamente");
       res.json({ status: 200 });
     }
   },
