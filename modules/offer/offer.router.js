@@ -3,6 +3,6 @@ const router = express.Router();
 const offerController = require("./offer.controller");
 const auth = require("../../middlewares/auth");
 
-router.use("/", offerController.getAllOffers);
+router.get("/", offerController.getAllOffers);
 
 module.exports = router;
