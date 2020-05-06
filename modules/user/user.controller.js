@@ -132,7 +132,7 @@ module.exports = {
     }
   },
   addDeliveryAddress: async (req, res, next) => {
-    const Lob = require("lob")("live_5eaaa5c77f45c6ed0e81970c3ae0fbb3c42");
+    const Lob = require("lob")(process.env.LOB_KEY);
     let respuesta;
     await Lob.usVerifications.verify(
       {
@@ -161,7 +161,7 @@ module.exports = {
       } else {
         logger.info("Direccion agregada correctamente");
         res.json({
-          status: "success",
+          status: "verified",
         });
       }
     } else {
