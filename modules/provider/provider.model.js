@@ -5,7 +5,6 @@ module.exports = {
     });
   },
   createProvider: (con, provider) => {
-    console.log(provider);
     return con
       .query(
         `INSERT INTO EC_PROVIDER (provider_name, provider_description, fk_status_id) 
