@@ -81,4 +81,15 @@ module.exports = {
         return new Error(error);
       });
   },
+  updateStatusProductProvider: (con, provider) => {
+    return con
+      .result(
+        `UPDATE EC_PRODUCT_PROVIDER
+          SET fk_status_id = (SELECT status_id FROM EC_STATUS AS STA WHERE STA.status_name = '${provider.status_name}') 
+          WHERE product_provider_id = ${provider.post_id}`
+      )
+      .catch((error) => {
+        return new Error(error);
+      });
+  },
 };
