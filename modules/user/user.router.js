@@ -3,6 +3,7 @@ const router = express.Router();
 const userController = require("./user.controller");
 const auth = require("../../middlewares/auth");
 const deliveryAddressController = require("../delivery_address/delivery_address.controller");
+const orderController = require("../order/order.controller");
 
 router.get("/all", userController.getAllUsers);
 
@@ -35,9 +36,12 @@ router.patch(
   deliveryAddressController.changeAddressStatus
 );
 
+router.get("/orders", orderController.getUserOrders);
+
 router.put(
   "/deliveryAddress/:deliveryAddressId",
   auth.validateToken,
   userController.updateDeliveryAddress
 );
+
 module.exports = router;
