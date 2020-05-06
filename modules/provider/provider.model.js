@@ -58,4 +58,52 @@ module.exports = {
         return new Error(error);
       });
   },
+  updateStatusProvider: (con, provider) => {
+    return con
+      .result(
+        `UPDATE EC_PROVIDER
+          SET fk_status_id = (SELECT status_id FROM EC_STATUS AS STA WHERE STA.status_name = '${provider.status_name}') 
+          WHERE provider_id = ${provider.provider_id}`
+      )
+      .catch((error) => {
+        return new Error(error);
+      });
+  },
+  updateProvider: (con, provider) => {
+    return con
+      .result(
+        `UPDATE EC_PROVIDER
+          SET provider_name = '${provider.provider_name}',
+              provider_description = '${provider.provider_description}'
+          WHERE provider_id = ${provider.provider_id}`
+      )
+      .catch((error) => {
+        return new Error(error);
+      });
+  },
+  updateStatusProductProvider: (con, provider) => {
+    return con
+      .result(
+        `UPDATE EC_PRODUCT_PROVIDER
+          SET fk_status_id = (SELECT status_id FROM EC_STATUS AS STA WHERE STA.status_name = '${provider.status_name}') 
+          WHERE product_provider_id = ${provider.post_id}`
+      )
+      .catch((error) => {
+        return new Error(error);
+      });
+  },
+  updateProductProvider: (con, post) => {
+    return con
+      .result(
+        `UPDATE EC_PRODUCT_PROVIDER
+          SET product_provider_description = '${post.description}',
+            product_provider_price = ${post.price},
+            product_provider_available_quantity = ${post.available_quantity},	
+            fk_offer_id = (SELECT offer_id FROM EC_OFFER AS OFR WHERE OFR.offer_rate = '${post.offer_rate}') 
+          WHERE product_provider_id = ${post.post_id}`
+      )
+      .catch((error) => {
+        return new Error(error);
+      });
+  },
 };
