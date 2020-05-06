@@ -25,7 +25,7 @@ router.get(
 );
 
 router.post(
-  "/deliveryAddress/:userId",
+  "/deliveryAddress",
   auth.validateToken,
   userController.addDeliveryAddress
 );
