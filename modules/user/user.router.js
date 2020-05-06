@@ -35,4 +35,9 @@ router.patch(
   deliveryAddressController.changeAddressStatus
 );
 
+router.put(
+  "/deliveryAddress/:deliveryAddressId",
+  auth.validateToken,
+  userController.updateDeliveryAddress
+);
 module.exports = router;

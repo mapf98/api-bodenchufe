@@ -168,4 +168,44 @@ module.exports = {
       res.json({ verified: false });
     }
   },
+  updateDeliveryAddress: async (req, res, next) => {
+    const Lob = require("lob")(process.env.LOB_KEY);
+    let respuesta;
+    await Lob.usVerifications.verify(
+      {
+        primary_line: req.body.delivery_address_primary_line,
+        city: req.body.delivery_address_city,
+        state: req.body.delivery_address_state,
+        zip_code: req.body.delivery_address_zip_code,
+      },
+      (err, response) => {
+        respuesta = response;
+        console.log(respuesta);
+        console.log(err);
+      }
+    );
+    if (respuesta.deliverability == "deliverable") {
+      let result = await userModel.updateDeliveryAddress(
+        req.con,
+        req.body,
+        req.params
+      );
+      if (result instanceof Error) {
+        logger.error("Error en modulo user (updateDeliveryAddress)");
+        next(
+          createError(
+            500,
+            `Error al actualizar direccion de entrega al usuario (${result.message})`
+          )
+        );
+      } else {
+        logger.info("Direccion actualizada correctamente");
+        res.json({
+          status: "verified",
+        });
+      }
+    } else {
+      res.json({ status: "failed" });
+    }
+  },
 };
