@@ -30,14 +30,14 @@ module.exports = {
         logger.info("Inicio de sesion satisfactorio");
         res.json({
           status: "200",
-          validation: "true",
+          validation: true,
           token: token,
           response: result,
         });
       } else {
         if (result.length == 0) {
           logger.info("correo o contraseña invalidos");
-          res.json({ validation: "false" });
+          res.json({ validation: false });
         } else {
           logger.info("Usuario bloqueado");
           res.json({ error: "Usuario bloqueado", response: result });
@@ -55,10 +55,10 @@ module.exports = {
     } else {
       if (result.length >= 1) {
         logger.info("Correo ya registrado");
-        res.json({ registered: "true" });
+        res.json({ registered: true });
       } else {
         logger.info("Correo disponible");
-        res.json({ registered: "false" });
+        res.json({ registered: false });
       }
     }
   },
