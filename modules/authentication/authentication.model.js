@@ -22,7 +22,7 @@ module.exports = {
         '${body.user_email}', ${body.user_password}, '${body.user_photo}', 
         (SELECT language_id FROM EC_LANGUAGE WHERE language_name = '${body.language_name}'), 
         (SELECT rol_id FROM EC_ROL WHERE rol_name = '${body.rol_name}'), 
-        (SELECT status_id FROM EC_STATUS WHERE status_name = 'active')) RETURNING user_first_name,user_first_lastname,user_email`
+        (SELECT status_id FROM EC_STATUS WHERE status_name = 'ACTIVE')) RETURNING user_first_name,user_first_lastname,user_email`
       )
       .catch((error) => {
         return new Error(error);
