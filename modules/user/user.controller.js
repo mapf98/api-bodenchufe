@@ -201,11 +201,11 @@ module.exports = {
       } else {
         logger.info("Direccion actualizada correctamente");
         res.json({
-          status: "verified",
+          verified: true,
         });
       }
     } else {
-      res.json({ status: "failed" });
+      res.json({ verified: false });
     }
   },
 };
