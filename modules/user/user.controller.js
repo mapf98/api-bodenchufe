@@ -161,11 +161,11 @@ module.exports = {
       } else {
         logger.info("Direccion agregada correctamente");
         res.json({
-          status: "verified",
+          verified: true,
         });
       }
     } else {
-      res.json({ status: "failed" });
+      res.json({ verified: false });
     }
   },
 };
