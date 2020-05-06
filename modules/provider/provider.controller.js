@@ -19,4 +19,17 @@ module.exports = {
       res.json(providers);
     }
   },
+  createProvider: async (req, res, next) => {
+    let provider = await providerModel.createProvider(req.con, req.body);
+
+    if (provider instanceof Error) {
+      logger.error("Error en el modulo provider (POST /provider)");
+      next(
+        createError(500, `Error al crear un proveedor (${provider.message})`)
+      );
+    } else {
+      logger.info("Proveedor creado satisfactoriamente");
+      res.json({ status: 200, created: true });
+    }
+  },
 };
