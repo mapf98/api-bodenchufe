@@ -82,4 +82,24 @@ module.exports = {
       res.json({ status: 200, updated: true });
     }
   },
+  updateProvider: async (req, res, next) => {
+    let provider = await providerModel.updateProvider(req.con, req.body);
+
+    if (provider instanceof Error || provider.rowCount == 0) {
+      logger.error("Error en el modulo provider (PUT /provider)");
+      next(
+        createError(
+          500,
+          `Error al modificar informacion de un proveedor (${
+            provider.message !== undefined
+              ? provider.message
+              : "No se efectuaron cambios"
+          })`
+        )
+      );
+    } else {
+      logger.info("Informacion de un proveedor cambiada satisfactoriamente");
+      res.json({ status: 200, updated: true });
+    }
+  },
 };

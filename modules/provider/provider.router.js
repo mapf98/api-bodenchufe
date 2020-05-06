@@ -11,5 +11,6 @@ router.patch(
   auth.validateToken,
   providerController.updateStatusProvider
 );
+router.put("/", auth.validateToken, providerController.updateProvider);
 
 module.exports = router;

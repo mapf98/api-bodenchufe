@@ -69,4 +69,16 @@ module.exports = {
         return new Error(error);
       });
   },
+  updateProvider: (con, provider) => {
+    return con
+      .result(
+        `UPDATE EC_PROVIDER
+          SET provider_name = '${provider.provider_name}',
+              provider_description = '${provider.provider_description}'
+          WHERE provider_id = ${provider.provider_id}`
+      )
+      .catch((error) => {
+        return new Error(error);
+      });
+  },
 };
