@@ -6,7 +6,7 @@ const auth = require("../../middlewares/auth");
 router.get("/main", providerController.getMainProviders);
 router.get("/", auth.validateToken, providerController.getAllProviders);
 router.post("/", auth.validateToken, providerController.createProvider);
-router.put(
+router.patch(
   "/status",
   auth.validateToken,
   providerController.updateStatusProvider
