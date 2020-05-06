@@ -47,7 +47,7 @@ module.exports = {
         "Lista de proveedores para admin obtenida satisfactoriamente"
       );
       res.json(providersResume);
-      }
+    }
   },
   createProvider: async (req, res, next) => {
     let provider = await providerModel.createProvider(req.con, req.body);
@@ -60,6 +60,26 @@ module.exports = {
     } else {
       logger.info("Proveedor creado satisfactoriamente");
       res.json({ status: 200, created: true });
+    }
+  },
+  updateStatusProvider: async (req, res, next) => {
+    let provider = await providerModel.updateStatusProvider(req.con, req.body);
+
+    if (provider instanceof Error || provider.rowCount == 0) {
+      logger.error("Error en el modulo provider (PATCH /provider/status)");
+      next(
+        createError(
+          500,
+          `Error al modificar el estatus de un proveedor (${
+            provider.message !== undefined
+              ? provider.message
+              : "No se efectuaron cambios"
+          })`
+        )
+      );
+    } else {
+      logger.info("Estatus de proveedor cambiado satisfactoriamente");
+      res.json({ status: 200, updated: true });
     }
   },
 };
