@@ -149,11 +149,7 @@ module.exports = {
     );
 
     if (respuesta.deliverability == "deliverable") {
-      let result = await userModel.addDeliveryAddress(
-        req.con,
-        req.body,
-        req.params.userId
-      );
+      let result = await userModel.addDeliveryAddress(req);
       if (result instanceof Error) {
         logger.error("Error en modulo user (addDeliveryAddress)");
         next(

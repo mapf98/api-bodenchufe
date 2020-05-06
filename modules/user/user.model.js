@@ -77,11 +77,11 @@ module.exports = {
         return new Error(error);
       });
   },
-  addDeliveryAddress: (con, body, userId) => {
-    return con
+  addDeliveryAddress: (req) => {
+    return req.con
       .query(
         `INSERT INTO EC_DELIVERY_ADDRESS (delivery_address_primary_line, delivery_address_secondary_line, delivery_address_city, delivery_address_state, delivery_address_zip_code, delivery_address_aditional_info, delivery_address_security_code, delivery_address_locker_code, fk_user_id, fk_status_id)
-         VALUES ('${body.delivery_address_primary_line}', '${body.delivery_address_secondary_line}', '${body.delivery_address_city}', '${body.delivery_address_state}', ${body.delivery_address_zip_code}, '${body.delivery_address_aditional_info}', '${body.delivery_address_security_code}', '${body.delivery_address_locker_code}', ${userId}, (SELECT status_id FROM EC_STATUS WHERE status_name = 'active'))`
+         VALUES ('${req.body.delivery_address_primary_line}', '${req.body.delivery_address_secondary_line}', '${req.body.delivery_address_city}', '${req.body.delivery_address_state}', ${req.body.delivery_address_zip_code}, '${req.body.delivery_address_aditional_info}', '${req.body.delivery_address_security_code}', '${req.body.delivery_address_locker_code}', ${req.user_id}, (SELECT status_id FROM EC_STATUS WHERE status_name = 'active'))`
       )
       .catch((error) => {
         return new Error(error);
