@@ -102,6 +102,31 @@ module.exports = {
       res.json({ status: 200, updated: true });
     }
   },
+  updateStatusProductProvider: async (req, res, next) => {
+    let provider = await providerModel.updateStatusProductProvider(
+      req.con,
+      req.body
+    );
+
+    if (provider instanceof Error || provider.rowCount == 0) {
+      logger.error(
+        "Error en el modulo provider (PATCH /provider/product/status)"
+      );
+      next(
+        createError(
+          500,
+          `Error al modificar el estatus de un producto de un proveedor (${
+            provider.message !== undefined
+              ? provider.message
+              : "No se efectuaron cambios"
+          })`
+        )
+      );
+    } else {
+      logger.info("Estatus de un producto asociado a un proveedor actualizado");
+      res.json({ status: 200, updated: true });
+    }
+  },
   updateProductProvider: async (req, res, next) => {
     let provider = await providerModel.updateProductProvider(req.con, req.body);
 

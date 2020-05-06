@@ -13,6 +13,11 @@ router.patch(
 );
 router.put("/", auth.validateToken, providerController.updateProvider);
 router.patch(
+  "/product/status",
+  auth.validateToken,
+  providerController.updateStatusProductProvider
+);
+router.patch(
   "/product",
   auth.validateToken,
   providerController.updateProductProvider
