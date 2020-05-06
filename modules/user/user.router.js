@@ -25,6 +25,12 @@ router.get(
   deliveryAddressController.getAllDeliveryAddresses
 );
 
+router.post(
+  "/deliveryAddress/:userId",
+  auth.validateToken,
+  userController.addDeliveryAddress
+);
+
 router.patch(
   "/deliveryAddress/:deliveryAddressId",
   deliveryAddressController.changeAddressStatus

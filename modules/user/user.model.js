@@ -77,4 +77,14 @@ module.exports = {
         return new Error(error);
       });
   },
+  addDeliveryAddress: (req) => {
+    return req.con
+      .query(
+        `INSERT INTO EC_DELIVERY_ADDRESS (delivery_address_primary_line, delivery_address_secondary_line, delivery_address_city, delivery_address_state, delivery_address_zip_code, delivery_address_aditional_info, delivery_address_security_code, delivery_address_locker_code, fk_user_id, fk_status_id)
+         VALUES ('${req.body.delivery_address_primary_line}', '${req.body.delivery_address_secondary_line}', '${req.body.delivery_address_city}', '${req.body.delivery_address_state}', ${req.body.delivery_address_zip_code}, '${req.body.delivery_address_aditional_info}', '${req.body.delivery_address_security_code}', '${req.body.delivery_address_locker_code}', ${req.user_id}, (SELECT status_id FROM EC_STATUS WHERE status_name = 'active'))`
+      )
+      .catch((error) => {
+        return new Error(error);
+      });
+  },
 };
