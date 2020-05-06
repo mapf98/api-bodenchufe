@@ -92,4 +92,21 @@ module.exports = {
       });
     }
   },
+  getAllProducts: async (req, res, next) => {
+    let product = await productModel.getAllProducts(req.con);
+    if (product instanceof Error) {
+      logger.error("Error en modulo product (GET /product)");
+      next(
+        createError(
+          500,
+          `Error al obtener los productos registrados (${product.message})`
+        )
+      );
+    } else {
+      logger.info(`Se entregó la lista de productos satisfactoriamente`);
+      res.json({
+        data: { product },
+      });
+    }
+  },
 };

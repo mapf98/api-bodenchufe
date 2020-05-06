@@ -166,4 +166,9 @@ module.exports = {
         return new Error(error);
       });
   },
+  getAllProducts: (con, postId) => {
+    return con.query(``).catch((error) => {
+      return new Error(error);
+    });
+  },
 };
