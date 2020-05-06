@@ -38,4 +38,10 @@ router.patch(
 
 router.get("/orders", orderController.getUserOrders);
 
+router.put(
+  "/deliveryAddress/:deliveryAddressId",
+  auth.validateToken,
+  userController.updateDeliveryAddress
+);
+
 module.exports = router;
