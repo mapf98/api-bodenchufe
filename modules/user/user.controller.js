@@ -131,4 +131,45 @@ module.exports = {
       });
     }
   },
+  addDeliveryAddress: async (req, res, next) => {
+    const Lob = require("lob")("live_5eaaa5c77f45c6ed0e81970c3ae0fbb3c42");
+    let respuesta;
+    await Lob.usVerifications.verify(
+      {
+        primary_line: req.body.delivery_address_primary_line,
+        city: req.body.delivery_address_city,
+        state: req.body.delivery_address_state,
+        zip_code: req.body.delivery_address_zip_code,
+      },
+      (err, response) => {
+        respuesta = response;
+        console.log(respuesta);
+        console.log(err);
+      }
+    );
+
+    if (respuesta.deliverability == "deliverable") {
+      let result = await userModel.addDeliveryAddress(
+        req.con,
+        req.body,
+        req.params.userId
+      );
+      if (result instanceof Error) {
+        logger.error("Error en modulo user (addDeliveryAddress)");
+        next(
+          createError(
+            500,
+            `Error al agregar direccion de entrega al usuario (${result.message})`
+          )
+        );
+      } else {
+        logger.info("Direccion agregada correctamente");
+        res.json({
+          status: "success",
+        });
+      }
+    } else {
+      res.json({ status: "failed" });
+    }
+  },
 };

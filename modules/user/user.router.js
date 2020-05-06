@@ -24,6 +24,8 @@ router.get(
   deliveryAddressController.getAllDeliveryAddresses
 );
 
+router.post("/deliveryAddress/:userId", userController.addDeliveryAddress);
+
 router.patch(
   "/deliveryAddress/:deliveryAddressId",
   deliveryAddressController.changeAddressStatus
