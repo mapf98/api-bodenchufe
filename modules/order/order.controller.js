@@ -8,6 +8,7 @@ const orderDetail = async (con, orderId) => {
 
 const nestOrderProducts = async (con, orders) => {
   let results = [];
+
   await Promise.all(
     orders.map(async (order, i) => {
       const orderDet = await orderDetail(con, order.order_id);
@@ -51,5 +52,31 @@ module.exports = {
       results: orders.length,
       orders,
     });
+  },
+  getAllOrders: async (req, res, next) => {
+    var ordersResume = [];
+    let products = [];
+    let orders = await orderModel.getAllOrders(req.con);
+
+    for (let index = 0; index < orders.length; index++) {
+      products = await orderModel.getAllProductsOrder(
+        req.con,
+        orders[index].order_id
+      );
+      ordersResume.push({
+        order: orders[index],
+        products: products,
+      });
+    }
+
+    if (orders instanceof Error) {
+      logger.error("Error en modulo order (GET /order )");
+      next(
+        createError(500, `Error al obtener las ordenes  (${orders.message})`)
+      );
+    } else {
+      logger.info(`Se entregó el detalle de las ordenes`);
+      res.json({ data: ordersResume });
+    }
   },
 };
