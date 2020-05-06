@@ -2,6 +2,7 @@ const createError = require("http-errors");
 const userModel = require("./user.model");
 const logger = require("../../config/logLevels");
 const auth = require("../../middlewares/auth");
+const Email = require("../../utils/Email");
 
 module.exports = {
   getAllUsers: async (req, res, next) => {
@@ -15,6 +16,7 @@ module.exports = {
         )
       );
     }
+
     logger.info("Lista general de usuarios entregada");
     res.json({
       results: users.length,
