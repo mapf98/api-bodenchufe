@@ -102,16 +102,25 @@ VALUES ('Una escopeta para matar una mosca', '40%', 3, 3);
 
 /* ORDER */
 INSERT INTO EC_ORDER (order_date, order_amount_dollars, order_weight, order_cryptocurrency_type, order_amount_cryptocurrency, fk_delivery_address_id, fk_status_id, fk_coupon_id) 
-VALUES ('2020-01-31', 2972.97, 40, 'BTC', 0.08, 1, 6, (SELECT coupon_id FROM EC_COUPON WHERE coupon_name LIKE 'Summer discount'));
+VALUES ('2020-01-31', 3772.97, 40, 'BTC', 0.4, 1, 6, (SELECT coupon_id FROM EC_COUPON WHERE coupon_name LIKE 'Summer discount'));
+INSERT INTO EC_ORDER (order_date, order_amount_dollars, order_weight, order_cryptocurrency_type, order_amount_cryptocurrency, fk_delivery_address_id, fk_status_id, fk_coupon_id) 
+VALUES ('2020-03-31', 3399.98, 40, 'ETH', 15 , 1, 6, null);
 
 /* PRODUCT_PROVIDER_ORDER */
 
 INSERT INTO EC_PRODUCT_PROVIDER_ORDER (product_provider_order_quantity, fk_product_provider_id, fk_user_id, fk_order_id, fk_status_id) 
 VALUES (3, 1, 1, 1, 6);
 INSERT INTO EC_PRODUCT_PROVIDER_ORDER (product_provider_order_quantity, fk_product_provider_id, fk_user_id, fk_order_id, fk_status_id) 
+VALUES (4, 5, 1, 1, 6);
+INSERT INTO EC_PRODUCT_PROVIDER_ORDER (product_provider_order_quantity, fk_product_provider_id, fk_user_id, fk_order_id, fk_status_id) 
+VALUES (2, 2, 1, 2, 6);
+INSERT INTO EC_PRODUCT_PROVIDER_ORDER (product_provider_order_quantity, fk_product_provider_id, fk_user_id, fk_order_id, fk_status_id) 
+VALUES (1, 3, 1, 2, 6);
+INSERT INTO EC_PRODUCT_PROVIDER_ORDER (product_provider_order_quantity, fk_product_provider_id, fk_user_id, fk_order_id, fk_status_id) 
 VALUES (2, 2, 1, null, 1);
 INSERT INTO EC_PRODUCT_PROVIDER_ORDER (product_provider_order_quantity, fk_product_provider_id, fk_user_id, fk_order_id, fk_status_id) 
 VALUES (1, 3, 1, null, 1);
+
 
 /* QUALIFICATION */
 INSERT INTO EC_QUALIFICATION (qualification_commentary, qualification_stars, fk_product_provider_id, fk_user_id)
