@@ -9,6 +9,8 @@ router.get("/all", userController.getAllUsers);
 
 router.use(auth.validateToken);
 
+router.patch("/disableMe", userController.disableAccount);
+
 router
   .route("/shoppingCart")
   .get(userController.getShoppingCart)
