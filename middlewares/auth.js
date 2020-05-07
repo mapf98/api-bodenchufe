@@ -16,6 +16,7 @@ function createToken(user) {
 
 function validateToken(req, res, next) {
   if (!req.headers.authorization) {
+    logger.error(`La petición actual no maneja ningún tipo de autorización`);
     return res
       .status(403)
       .json({ message: "Acceso denegado", validated: false });
@@ -27,18 +28,21 @@ function validateToken(req, res, next) {
   try {
     payload = jwt.decode(token, process.env.SECRET_TOKEN);
   } catch (error) {
-    logger.error("Se proporcionó un token no válido como mecanismo de acceso");
+    logger.error(
+      `Se proporcionó un token no válido como mecanismo de acceso (${error.message})`
+    );
     res.json({
       message: "Acceso denegado por token inválido",
       validated: false,
     });
-    next(createError(500, "El token proporcionado no es válido"));
+    return next(createError(500, "El token proporcionado no es válido"));
   }
 
   const tokenExp = new Date(payload.exp);
   const actualDate = new Date(moment());
 
   if (tokenExp <= actualDate) {
+    logger.error(`El token proporcionado ha expirado`);
     return res
       .status(401)
       .json({ message: "Token expirado", validated: false });
@@ -46,7 +50,6 @@ function validateToken(req, res, next) {
     logger.info("Se validó el token de acceso satisfactoriamente");
     req.user_id = payload.user_id;
     req.user_role = payload.user_role;
-    res.json({ message: "Token válido", validated: true });
   }
   next();
 }
@@ -54,11 +57,12 @@ function validateToken(req, res, next) {
 function restrictTo(...roles) {
   return (req, res, next) => {
     if (!roles.includes(req.user_role)) {
-      logger.info(
+      logger.error(
         `Ruta no autorizada para el rol actual [ROL_NAME: ${req.user_role}]`
       );
       res.status(403).json({
         message: `Ruta no autorizada para el rol actual [ROL_NAME: ${req.user_role}]`,
+        validated: true,
         authorized: false,
       });
       return next(
@@ -67,6 +71,11 @@ function restrictTo(...roles) {
           `El rol actual no posee los permisos necesarios para realizar la acción [ROL_NAME: ${req.user_role}]`
         )
       );
+    } else {
+      logger.info(
+        `Ruta autorizada para el rol actual [ROL_NAME: ${req.user_role}] y token válido de acceso`
+      );
+      res.json({ message: "Token válido", validated: true, authorized: false });
     }
     next();
   };
