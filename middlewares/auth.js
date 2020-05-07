@@ -16,7 +16,9 @@ function createToken(user) {
 
 function validateToken(req, res, next) {
   if (!req.headers.authorization) {
-    return res.status(403).send({ message: "Acceso denegado" });
+    return res
+      .status(403)
+      .json({ message: "Acceso denegado", validated: false });
   }
 
   const token = req.headers.authorization.split(" ")[1];
@@ -26,6 +28,10 @@ function validateToken(req, res, next) {
     payload = jwt.decode(token, process.env.SECRET_TOKEN);
   } catch (error) {
     logger.error("Se proporcionó un token no válido como mecanismo de acceso");
+    res.json({
+      message: "Acceso denegado por token inválido",
+      validated: false,
+    });
     next(createError(500, "El token proporcionado no es válido"));
   }
 
@@ -33,11 +39,14 @@ function validateToken(req, res, next) {
   const actualDate = new Date(moment());
 
   if (tokenExp <= actualDate) {
-    return res.status(401).send({ message: "Token expirado" });
+    return res
+      .status(401)
+      .json({ message: "Token expirado", validated: false });
   } else {
-    logger.info("Se validó el token de acceso");
+    logger.info("Se validó el token de acceso satisfactoriamente");
     req.user_id = payload.user_id;
     req.user_role = payload.user_role;
+    res.json({ message: "Token válido", validated: true });
   }
   next();
 }
@@ -45,9 +54,18 @@ function validateToken(req, res, next) {
 function restrictTo(...roles) {
   return (req, res, next) => {
     if (!roles.includes(req.user_role)) {
-      res.status(403).json({ message: "No authorized" });
+      logger.info(
+        `Ruta no autorizada para el rol actual [ROL_NAME: ${req.user_role}]`
+      );
+      res.status(403).json({
+        message: `Ruta no autorizada para el rol actual [ROL_NAME: ${req.user_role}]`,
+        authorized: false,
+      });
       return next(
-        createError(403, "No posees permisos para realizar esta accion")
+        createError(
+          403,
+          `El rol actual no posee los permisos necesarios para realizar la acción [ROL_NAME: ${req.user_role}]`
+        )
       );
     }
     next();
