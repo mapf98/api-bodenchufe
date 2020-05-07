@@ -9,18 +9,24 @@ module.exports = {
       req.params.providerId
     );
     if (products instanceof Error) {
-      logger.error("Error en modulo product (GET /provider/:providerId)");
+      logger.error(
+        "Error en modulo product (GET /provider/:providerId - getProductsByProvider())"
+      );
+      res.json({ obtained: false });
       next(
         createError(
           500,
-          `Error al obtener productos asociados a un proveedor (${products.message})`
+          `Error al obtener productos asociados a un proveedor [PROVIDER_ID: ${req.params.providerId}] (${products.message})`
         )
       );
     } else {
-      logger.info("Listado de productos por proveedor");
+      logger.info(
+        `Listado de productos asociados a un proveedor entregados satifactoriamente [PROVIDER_ID: ${req.params.providerId}]`
+      );
       res.json({
-        data: { products },
+        products: products,
         results: products.length,
+        obtained: true,
       });
     }
   },
@@ -30,18 +36,24 @@ module.exports = {
       req.params.offerId
     );
     if (products instanceof Error) {
-      logger.error("Error en modulo product (GET /offer/:offerId)");
+      logger.error(
+        "Error en modulo product (GET /offer/:offerId - getProductsByOffer())"
+      );
+      res.json({ obtained: false });
       next(
         createError(
           500,
-          `Error al obtener productos dada una oferta (${products.message})`
+          `Error al obtener productos dada una oferta [OFFER_ID: ${req.params.offerId}] (${products.message})`
         )
       );
     } else {
-      logger.info("Listado de productos por oferta");
+      logger.info(
+        `Listado de productos por oferta entregado satisfactoriamente [OFFER_ID: ${req.params.offerId}]`
+      );
       res.json({
-        data: { products },
+        products: products,
         results: products.length,
+        obtained: true,
       });
     }
   },
@@ -51,18 +63,24 @@ module.exports = {
       req.params.categoryId
     );
     if (products instanceof Error) {
-      logger.error("Error en modulo product (GET /category/:categoryId)");
+      logger.error(
+        "Error en modulo product (GET /category/:categoryId - getProductsByCategory())"
+      );
+      res.json({ obtained: false });
       next(
         createError(
           500,
-          `Error al obtener productos por una categoría (${products.message})`
+          `Error al obtener productos por una categoría [CATEGORY_ID: ${req.params.categoryId}] (${products.message})`
         )
       );
     } else {
-      logger.info("Listado de productos por categoría");
+      logger.info(
+        `Listado de productos por categoría entregado satisfactoriamente [CATEGORY_ID: ${req.params.categoryId}]`
+      );
       res.json({
-        data: { products },
+        products: products,
         results: products.length,
+        obtained: true,
       });
     }
   },
@@ -76,26 +94,32 @@ module.exports = {
       req.params.postId
     );
     if (product instanceof Error || qualifications instanceof Error) {
-      logger.error("Error en modulo product (GET /:postId)");
+      logger.error(
+        "Error en modulo product (GET /product/:postId - getProductDetail())"
+      );
+      res.json({ obtained: false });
       next(
         createError(
           500,
-          `Error al obtener el detalle de una publicación (${product.message})`
+          `Error al obtener el detalle de una publicación [PRODUCT_PROVIDER_ID: ${req.params.postId}] (${product.message})`
         )
       );
     } else {
       logger.info(
-        `Se entregó el detalle de la publicación ${req.params.postId}`
+        `Se entregó el detalle de la publicación satisfactoriamente [PRODUCT_PROVIDER_ID: ${req.params.postId}] ${req.params.postId}`
       );
       res.json({
-        data: { product, qualifications },
+        product: product,
+        qualifications: qualifications,
+        obtained: true,
       });
     }
   },
   getAllProducts: async (req, res, next) => {
     let product = await productModel.getAllProducts(req.con);
     if (product instanceof Error) {
-      logger.error("Error en modulo product (GET /product)");
+      logger.error("Error en módulo product (GET /product - getAllProducts())");
+      res.json({ obtained: false });
       next(
         createError(
           500,
@@ -105,7 +129,8 @@ module.exports = {
     } else {
       logger.info(`Se entregó la lista de productos satisfactoriamente`);
       res.json({
-        data: { product },
+        product: product,
+        obtained: true,
       });
     }
   },
@@ -127,25 +152,27 @@ module.exports = {
     }
 
     if (product instanceof Error || post instanceof Error) {
-      logger.error("Error en modulo product (POST /product)");
+      logger.error("Error en módulo product (POST /product - createPost())");
       res.json({ created: false });
       next(
         createError(
           500,
-          `Error al crear una nueva publicacion ${
+          `Error al crear una nueva publicación ${
             product instanceof Error
               ? product.message
-              : "(No hay problemas en el producto)"
+              : `[PRODUCT_NAME: ${req.body.product.product_name}] (No hay problemas en el producto)`
           } | ${
             post instanceof Error
               ? post.message
-              : "(No hay problemas en la publicacion)"
+              : `[PROVIDER_ID: ${req.body.provider_id}] (No hay problemas en la publicación)`
           }`
         )
       );
     } else {
-      logger.info(`Se creo una publicacion satisfactoriamente`);
-      res.json({ status: 200, created: true });
+      logger.info(
+        `Se creo una publicación satisfactoriamente [PRODUCT_PROVIDER_ID: ${post}]`
+      );
+      res.json({ created: true });
     }
   },
 };
