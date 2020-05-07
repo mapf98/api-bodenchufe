@@ -24,6 +24,55 @@ module.exports = {
       obtained: true,
     });
   },
+  disableMyAccount: async (req, res, next) => {
+    let user = await userModel.updateStatusAccount(req);
+    if (user instanceof Error) {
+      logger.error("Error en modulo user (PATCH /disableMe)");
+      return next(
+        createError(
+          500,
+          `Error al desactivar la cuenta del usuario (${user.message})`
+        )
+      );
+    }
+
+    logger.info("Cuenta del usuario desactivada");
+    res.json({
+      status: "success",
+    });
+  },
+  activateAccount: async (req, res, next) => {
+    let user = await userModel.activateAccount(req);
+    if (user instanceof Error) {
+      logger.error("Error en modulo user (PATCH /activateAccount/:userId)");
+      return next(
+        createError(
+          500,
+          `Error al activar la cuenta del usuario (${user.message})`
+        )
+      );
+    }
+    logger.info("Cuenta del usuario activada");
+    res.json({
+      status: "success",
+    });
+  },
+  blockAccount: async (req, res, next) => {
+    let user = await userModel.blockAccount(req);
+    if (user instanceof Error) {
+      logger.error("Error en modulo user (PATCH /blockAccount/:userId)");
+      return next(
+        createError(
+          500,
+          `Error al bloquear la cuenta del usuario (${user.message})`
+        )
+      );
+    }
+    logger.info("Cuenta del usuario bloqueada");
+    res.json({
+      status: "success",
+    });
+  },
   getShoppingCart: async (req, res, next) => {
     let shoppingCart = await userModel.getShoppingCart(req);
     if (shoppingCart instanceof Error) {
