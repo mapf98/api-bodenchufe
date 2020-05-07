@@ -36,21 +36,27 @@ module.exports = {
     let orders = await orderModel.getOrdersOfUser(req);
 
     if (orders instanceof Error) {
-      logger.error("Error en modulo order (GET /)");
+      logger.error(
+        "Error en módulo order (GET /user/orders - getUserOrders())"
+      );
+      res.json({ obtained: false });
       return next(
         createError(
           500,
-          `Error al obtener las ordenes del usuario (${orders.message})`
+          `Error al obtener las ordenes de un usuario [USER_ID: ${req.user_id}] (${orders.message})`
         )
       );
     }
 
     orders = await nestOrderProducts(req.con, orders);
 
-    logger.info("Lista de ordenes entregada al usuario");
+    logger.info(
+      `Lista de ordenes entregada al usuario satisfactoriamente [USER_ID: ${req.user_id}]`
+    );
     res.json({
       results: orders.length,
-      orders,
+      orders: orders,
+      obtained: true,
     });
   },
   getAllOrders: async (req, res, next) => {
@@ -70,13 +76,15 @@ module.exports = {
     }
 
     if (orders instanceof Error) {
-      logger.error("Error en modulo order (GET /order )");
+      logger.error("Error en módulo order (GET /order - getAllOrders())");
       next(
-        createError(500, `Error al obtener las ordenes  (${orders.message})`)
+        createError(500, `Error al obtener las órdenes (${orders.message})`)
       );
     } else {
-      logger.info(`Se entregó el detalle de las ordenes`);
-      res.json({ data: ordersResume });
+      logger.info(
+        `Se entregó el listado de órdenes (con su detalle correspondiente) satisfactoriamente`
+      );
+      res.json({ orders: ordersResume });
     }
   },
 };

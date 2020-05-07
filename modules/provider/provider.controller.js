@@ -7,7 +7,10 @@ module.exports = {
     let providers = await providerModel.getMainProviders(req.con);
 
     if (providers instanceof Error) {
-      logger.error("Error en el modulo provider (getMainProviders)");
+      logger.error(
+        "Error en el módulo provider (GET /provider/main - getMainProviders())"
+      );
+      res.json({ obtained: false });
       next(
         createError(
           500,
@@ -15,8 +18,8 @@ module.exports = {
         )
       );
     } else {
-      logger.info("Lista de proveedores obtenida satisfactoriamente");
-      res.json(providers);
+      logger.info("Listado de proveedores obtenido satisfactoriamente");
+      res.json({ providers: providers, obtained: true });
     }
   },
   getAllProviders: async (req, res, next) => {
@@ -35,71 +38,96 @@ module.exports = {
     }
 
     if (providers instanceof Error) {
-      logger.error("Error en el modulo provider (getAllProviders)");
+      logger.error(
+        "Error en el módulo provider (GET /provider - getAllProviders)"
+      );
+      res.json({ obtained: false });
       next(
         createError(
           500,
-          `Error al obtener los proveedores para el admin (${providers.message})`
+          `Error al obtener los proveedores para el back-office (${providers.message})`
         )
       );
     } else {
       logger.info(
-        "Lista de proveedores para admin obtenida satisfactoriamente"
+        "Listado de proveedores para el back-office obtenida satisfactoriamente"
       );
-      res.json(providersResume);
+      res.json({ providers: providersResume, obtained: true });
     }
   },
   createProvider: async (req, res, next) => {
     let provider = await providerModel.createProvider(req.con, req.body);
 
     if (provider instanceof Error) {
-      logger.error("Error en el modulo provider (POST /provider)");
+      logger.error(
+        "Error en el módulo provider (POST /provider - createProvider())"
+      );
+      res.json({ created: false });
       next(
-        createError(500, `Error al crear un proveedor (${provider.message})`)
+        createError(
+          500,
+          `Error al crear un proveedor [PROVIDER_NAME: ${req.body.provider_name}] (${provider.message})`
+        )
       );
     } else {
-      logger.info("Proveedor creado satisfactoriamente");
-      res.json({ status: 200, created: true });
+      logger.info(
+        `Proveedor creado satisfactoriamente [PROVIDER_NAME: ${req.body.provider_name} | PROVIDER_ID: ${provider[0].provider_id}]`
+      );
+      res.json({ created: true });
     }
   },
   updateStatusProvider: async (req, res, next) => {
     let provider = await providerModel.updateStatusProvider(req.con, req.body);
 
     if (provider instanceof Error || provider.rowCount == 0) {
-      logger.error("Error en el modulo provider (PATCH /provider/status)");
+      logger.error(
+        "Error en el modulo provider (PATCH /provider/status - updateStatusProvider())"
+      );
+      res.json({ updated: false });
       next(
         createError(
           500,
-          `Error al modificar el estatus de un proveedor (${
+          `Error al modificar el estatus de un proveedor [PROVIDER_ID: ${
+            req.body.provider_id
+          }] (${
             provider.message !== undefined
               ? provider.message
-              : "No se efectuaron cambios"
+              : `No se efectuaron cambios sobre el estatus de un proveedor [PROVIDER_ID: ${req.body.provider_id}]`
           })`
         )
       );
     } else {
-      logger.info("Estatus de proveedor cambiado satisfactoriamente");
-      res.json({ status: 200, updated: true });
+      logger.info(
+        `Estatus de proveedor cambiado satisfactoriamente [PROVIDER_ID: ${req.body.provider_id}]`
+      );
+      res.json({ updated: true });
     }
   },
   updateProvider: async (req, res, next) => {
     let provider = await providerModel.updateProvider(req.con, req.body);
 
     if (provider instanceof Error || provider.rowCount == 0) {
-      logger.error("Error en el modulo provider (PUT /provider)");
+      logger.error(
+        "Error en el módulo provider (PUT /provider - updateProvider())"
+      );
+      res.json({ updated: false });
       next(
         createError(
           500,
-          `Error al modificar informacion de un proveedor (${
+          `Error al modificar información de un proveedor [PROVIDER_ID: ${
+            req.body.provider_id
+          }] (${
             provider.message !== undefined
               ? provider.message
-              : "No se efectuaron cambios"
+              : `No se efectuaron cambios en el proveedor [PROVIDER_ID: ${req.body.provider_id}]`
           })`
         )
       );
     } else {
-      logger.info("Informacion de un proveedor cambiada satisfactoriamente");
-      res.json({ status: 200, updated: true });
+      logger.info(
+        `Información de un proveedor cambiada satisfactoriamente [PROVIDER_ID: ${req.body.provider_id}]`
+      );
+      res.json({ updated: true });
     }
   },
   updateStatusProductProvider: async (req, res, next) => {
@@ -110,43 +138,53 @@ module.exports = {
 
     if (provider instanceof Error || provider.rowCount == 0) {
       logger.error(
-        "Error en el modulo provider (PATCH /provider/product/status)"
+        "Error en el módulo provider (PATCH /provider/product/status - updateStatusProductProvider())"
       );
+      res.json({ updated: false });
       next(
         createError(
           500,
-          `Error al modificar el estatus de un producto de un proveedor (${
+          `Error al modificar el estatus de un producto de un proveedor [PRODUCT_PROVIDER_ID: ${
+            req.body.post_id
+          }] (${
             provider.message !== undefined
               ? provider.message
-              : "No se efectuaron cambios"
+              : `No se efectuaron cambios en el estatus de un producto asociado a un proveedor [PRODUCT_PROVIDER_ID: ${req.body.post_id}]`
           })`
         )
       );
     } else {
-      logger.info("Estatus de un producto asociado a un proveedor actualizado");
-      res.json({ status: 200, updated: true });
+      logger.info(
+        `Estatus de un producto asociado a un proveedor actualizado satisfactoriamente [PRODUCT_PROVIDER_ID: ${req.body.post_id} | PRODUCT_PROVIDER_STATUS_NAME: ${req.body.status_name}]`
+      );
+      res.json({ updated: true });
     }
   },
   updateProductProvider: async (req, res, next) => {
     let provider = await providerModel.updateProductProvider(req.con, req.body);
 
     if (provider instanceof Error || provider.rowCount == 0) {
-      logger.error("Error en el modulo provider (PATCH /provider/product)");
+      logger.error(
+        "Error en el módulo provider (PATCH /provider/product - updateProductProvider())"
+      );
+      res.json({ updated: false });
       next(
         createError(
           500,
-          `Error al modificar la informacion de un producto asociado a un proveedor (${
+          `Error al modificar la información de un producto asociado a un proveedor [PRODUCT_PROVIDER_ID: ${
+            req.body.post_id
+          }] (${
             provider.message !== undefined
               ? provider.message
-              : "No se efectuaron cambios"
+              : `No se efectuaron cambios en un producto asociado a un proveedor [PRODUCT_PROVIDER_ID: ${req.body.post_id}]`
           })`
         )
       );
     } else {
       logger.info(
-        "Se modifico satisfactoriamente la informacion de un producto asociado a un proveedor"
+        `Se modificó satisfactoriamente la informacion de un producto asociado a un proveedor [PRODUCT_PROVIDER_ID: ${req.body.post_id}]`
       );
-      res.json({ status: 200, updated: true });
+      res.json({ updated: true });
     }
   },
 };

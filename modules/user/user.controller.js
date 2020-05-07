@@ -1,14 +1,14 @@
 const createError = require("http-errors");
 const userModel = require("./user.model");
 const logger = require("../../config/logLevels");
-const auth = require("../../middlewares/auth");
-const Email = require("../../utils/Email");
+const Lob = require("lob")(process.env.LOB_KEY);
 
 module.exports = {
   getAllUsers: async (req, res, next) => {
     let users = await userModel.getAllUsers(req.con);
     if (users instanceof Error) {
-      logger.error("Error en modulo user (GET /all)");
+      logger.error("Error en módulo user (GET /user/all - getAllUsers())");
+      res.json({ obtained: false });
       return next(
         createError(
           500,
@@ -17,76 +17,90 @@ module.exports = {
       );
     }
 
-    logger.info("Lista general de usuarios entregada");
+    logger.info("Listado de usuarios entregado satisfactoriamente");
     res.json({
       results: users.length,
-      data: { users },
+      users: users,
+      obtained: true,
     });
   },
   disableMyAccount: async (req, res, next) => {
     let user = await userModel.updateStatusAccount(req);
-    if (user instanceof Error) {
-      logger.error("Error en modulo user (PATCH /disableMe)");
+    if (user instanceof Error || user.rowCount == 0) {
+      logger.error(
+        "Error en módulo user (PATCH /user/disableMe - disableMyAccount())"
+      );
+      res.json({ disabled: false });
       return next(
         createError(
           500,
-          `Error al desactivar la cuenta del usuario (${user.message})`
+          `Error al desactivar la cuenta de un usuario [USER_ID: ${req.user_id}] (${user.message})`
         )
       );
     }
 
-    logger.info("Cuenta del usuario desactivada");
-    res.json({
-      status: "success",
-    });
+    logger.info(
+      `Cuenta del usuario desactivada satisfactoriamente [USER_ID: ${req.user_id}]`
+    );
+    res.json({ disabled: true });
   },
   activateAccount: async (req, res, next) => {
     let user = await userModel.activateAccount(req);
-    if (user instanceof Error) {
-      logger.error("Error en modulo user (PATCH /activateAccount/:userId)");
+    if (user instanceof Error || user.rowCount == 0) {
+      logger.error(
+        "Error en módulo user (PATCH /user/activateAccount/:userId - activateAccount())"
+      );
+      res.json({ activated: false });
       return next(
         createError(
           500,
-          `Error al activar la cuenta del usuario (${user.message})`
+          `Error al activar la cuenta del usuario [USER_ID: ${req.user_id}] (${user.message})`
         )
       );
     }
-    logger.info("Cuenta del usuario activada");
-    res.json({
-      status: "success",
-    });
+    logger.info(
+      `Cuenta del usuario activada satisfactoriamente [USER_ID: ${req.user_id}]`
+    );
+    res.json({ activated: true });
   },
   blockAccount: async (req, res, next) => {
     let user = await userModel.blockAccount(req);
-    if (user instanceof Error) {
-      logger.error("Error en modulo user (PATCH /blockAccount/:userId)");
+    if (user instanceof Error || user.rowCount == 0) {
+      logger.error(
+        "Error en módulo user (PATCH /user/blockAccount/:userId - blockAccount())"
+      );
+      res.json({ blocked: false });
       return next(
         createError(
           500,
-          `Error al bloquear la cuenta del usuario (${user.message})`
+          `Error al bloquear la cuenta del usuario [USER_ID: ${req.user_id}] (${user.message})`
         )
       );
     }
-    logger.info("Cuenta del usuario bloqueada");
-    res.json({
-      status: "success",
-    });
+    logger.info(
+      `Cuenta del usuario bloqueada satisfactoriamente [USER_ID: ${req.user_id}]`
+    );
+    res.json({ blocked: true });
   },
   getShoppingCart: async (req, res, next) => {
     let shoppingCart = await userModel.getShoppingCart(req);
     if (shoppingCart instanceof Error) {
-      logger.error("Error en modulo user (GET /shoppingCart)");
+      logger.error(
+        "Error en módulo user (GET /user/shoppingCart - getShoppingCart())"
+      );
+      res.json({ obtained: false });
       return next(
         createError(
           500,
-          `Error al obtener el carrito (${shoppingCart.message})`
+          `Error al obtener el carrito de un usuario [USER_ID: ${req.user_id}] (${shoppingCart.message})`
         )
       );
     }
     logger.info("Lista de los productos del carrito de compras entregada");
     res.json({
       results: shoppingCart.length,
-      data: { shoppingCart },
+      shoppingCart: shoppingCart,
+      obtained: true,
     });
   },
   checkProductAvailability: async (req, res, next) => {
@@ -106,56 +120,61 @@ module.exports = {
       type
     );
     quantity = quantity[0].product_provider_available_quantity;
-    if (quantity < req.body.product_provider_order_quantity)
+    if (quantity < req.body.product_provider_order_quantity) {
+      res.json({ checked: false });
       return next(
         createError(
-          400,
-          `La cantidad de productos a agregar(${req.body.product_provider_order_quantity}) excede a la cantidad de productos disponibles(${quantity})`
+          500,
+          `La cantidad de productos a agregar [${req.body.product_provider_order_quantity}] excede a la cantidad de productos disponibles [${quantity}]`
         )
       );
+    }
     next();
   },
   addNewProduct: async (req, res, next) => {
     let product = await userModel.insertProductShoppingCart(req);
     if (product instanceof Error) {
-      logger.error("Error en modulo user (POST /shoppingCart)");
+      logger.error(
+        "Error en módulo user (POST /user/shoppingCart - addNewProduct())"
+      );
+      res.json({ added: false });
       return next(
         createError(
           500,
-          `Error al insertar producto al carrito (${product.message})`
+          `Error al insertar un producto al carrito [SHOPPING_CART_USER_ID: ${req.user_id}] (${product.message})`
         )
       );
     } else {
-      logger.info("Producto agregado al carrito del usuario");
+      logger.info(
+        `Producto agregado al carrito del usuario satisfactoriamente [SHOPPING_CART_USER_ID: ${req.user_id}]`
+      );
       res.json({
-        data: { product },
+        product: product,
+        added: true,
       });
     }
-    logger.info("Producto agregado al carrito del usuario");
-    res.json({
-      data: { product },
-    });
   },
   deleteShoppingCartProduct: async (req, res, next) => {
     let result = await userModel.deleteShoppingCartProduct(
       req.con,
       req.params.shoppingCartId
     );
-    if (result instanceof Error) {
+    if (result instanceof Error || result.rowCount == 0) {
       logger.error(
-        "Error en modulo user (DELETE /shoppingCart/:shoppingCartId)"
+        "Error en módulo user (DELETE /user/shoppingCart/:shoppingCartId - deleteShoppingCartProduct())"
       );
+      res.json({ deleted: false });
       return next(
         createError(
           500,
-          `Error al eliminar producto del carrito (${product.message})`
+          `Error al eliminar un producto del carrito de un usuario [USER_ID: ${req.product_id} | SHOPPING_CART_ID: ${req.params.shoppingCartId}] (${product.message})`
         )
       );
     }
-    logger.info("Producto eliminado del carrito del usuario");
-    res.status(204).json({
-      data: null,
-    });
+    logger.info(
+      `Producto eliminado satisfactoriamente del carrito del usuario [USER_ID: ${req.product_id} | SHOPPING_CART_ID: ${req.params.shoppingCartId}]`
+    );
+    res.json({ deleted: true });
   },
   updateProductQuantity: async (req, res, next) => {
     const idCart = req.params.shoppingCartId;
@@ -165,25 +184,25 @@ module.exports = {
       quantity,
       idCart
     );
-    if (product instanceof Error) {
+    if (product instanceof Error || product.rowCount == 0) {
       logger.error(
-        "Error en modulo user (PATCH /shoppingCart/:shoppingCartId/quantity)"
+        "Error en módulo user (PATCH /user/shoppingCart/:shoppingCartId/quantity - updateProductQuantity())"
       );
+      res.json({ updated: false });
       next(
         createError(
           500,
-          `Error al modificar la cantidad del producto del carrito (${product.message})`
+          `Error al modificar la cantidad del producto del carrito [USER_ID: ${req.product_id} | SHOPPING_CART_ID: ${idCart} | QUANTITY: ${quantity}] (${product.message})`
         )
       );
     } else {
-      logger.info("Cantidad del producto modificada en el carrito del usuario");
-      res.json({
-        status: "success",
-      });
+      logger.info(
+        `Cantidad del producto modificada en el carrito del usuario satisfactoriamente [USER_ID: ${req.product_id} | SHOPPING_CART_ID: ${idCart} | QUANTITY: ${quantity}]`
+      );
+      res.json({ updated: true });
     }
   },
   addDeliveryAddress: async (req, res, next) => {
-    const Lob = require("lob")(process.env.LOB_KEY);
     let respuesta;
     await Lob.usVerifications.verify(
       {
@@ -202,25 +221,27 @@ module.exports = {
     if (respuesta.deliverability == "deliverable") {
       let result = await userModel.addDeliveryAddress(req);
       if (result instanceof Error) {
-        logger.error("Error en modulo user (addDeliveryAddress)");
+        logger.error(
+          "Error en módulo user (POST /user/deliveryAddress/:userId - addDeliveryAddress())"
+        );
+        res.json({ verified: false });
         next(
           createError(
             500,
-            `Error al agregar direccion de entrega al usuario (${result.message})`
+            `Error al agregar una dirección de entrega asociada a un usuario [USER_ID: ${req.user_id}] (${result.message})`
           )
         );
       } else {
-        logger.info("Direccion agregada correctamente");
-        res.json({
-          verified: true,
-        });
+        logger.info(
+          `Dirección agregada satisfactoriamente [USER_ID: ${req.user_id} | DELIVERY_ADDRESS_ID: ${result[0].delivery_address_id}]`
+        );
+        res.json({ verified: true });
       }
     } else {
       res.json({ verified: false });
     }
   },
   updateDeliveryAddress: async (req, res, next) => {
-    const Lob = require("lob")(process.env.LOB_KEY);
     let respuesta;
     await Lob.usVerifications.verify(
       {
@@ -241,19 +262,22 @@ module.exports = {
         req.body,
         req.params
       );
-      if (result instanceof Error) {
-        logger.error("Error en modulo user (updateDeliveryAddress)");
+      if (result instanceof Error || result.rowCount == 0) {
+        logger.error(
+          "Error en módulo user (PUT /user/deliveryAddress/:deliveryAddressId - updateDeliveryAddress())"
+        );
+        res.json({ verified: false });
         next(
           createError(
             500,
-            `Error al actualizar direccion de entrega al usuario (${result.message})`
+            `Error al actualizar dirección de entrega asociada a un usuario [USER_ID: ${req.user_id} | DELIVERY_ADDRESS_ID: ${req.params.deliveryAddressId}] (${result.message})`
           )
         );
       } else {
-        logger.info("Direccion actualizada correctamente");
-        res.json({
-          verified: true,
-        });
+        logger.info(
+          `Dirección de entrega actualizada satisfactoriamente [USER_ID: ${req.user_id} | DELIVERY_ADDRESS_ID: ${req.params.deliveryAddressId}]`
+        );
+        res.json({ verified: true });
       }
     } else {
       res.json({ verified: false });
