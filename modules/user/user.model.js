@@ -2,18 +2,38 @@ module.exports = {
   getAllUsers: (con) => {
     return con
       .query(
-        "SELECT U.*, S.STATUS_NAME FROM EC_USER U, EC_STATUS S WHERE U.FK_STATUS_ID = S.STATUS_ID"
+        `SELECT U.*, R.ROL_NAME,S.STATUS_NAME FROM EC_USER U, EC_STATUS S, EC_ROL R 
+        WHERE U.FK_STATUS_ID = S.STATUS_ID AND U.FK_ROL_ID = R.ROL_ID `
       )
       .catch((error) => {
         return new Error(error);
       });
   },
   updateStatusAccount: (req) => {
-    console.log(req.user_id);
     return req.con
       .query(
         `UPDATE EC_USER SET FK_STATUS_ID = (SELECT S.STATUS_ID FROM EC_STATUS S
       WHERE S.STATUS_NAME = 'INACTIVE') WHERE USER_ID = ${req.user_id}`
+      )
+      .catch((error) => {
+        return new Error(error);
+      });
+  },
+  activateAccount: (req) => {
+    return req.con
+      .query(
+        `UPDATE EC_USER SET FK_STATUS_ID = (SELECT S.STATUS_ID FROM EC_STATUS S
+    WHERE S.STATUS_NAME = 'ACTIVE') WHERE USER_ID = ${req.params.userId}`
+      )
+      .catch((error) => {
+        return new Error(error);
+      });
+  },
+  blockAccount: (req) => {
+    return req.con
+      .query(
+        `UPDATE EC_USER SET FK_STATUS_ID = (SELECT S.STATUS_ID FROM EC_STATUS S
+    WHERE S.STATUS_NAME = 'INACTIVE') WHERE USER_ID = ${req.params.userId}`
       )
       .catch((error) => {
         return new Error(error);

@@ -33,7 +33,7 @@ const nestOrderProducts = async (con, orders) => {
 
 module.exports = {
   getUserOrders: async (req, res, next) => {
-    let orders = await orderModel.getAllUserOrders(req);
+    let orders = await orderModel.getOrdersOfUser(req);
 
     if (orders instanceof Error) {
       logger.error("Error en modulo order (GET /)");
