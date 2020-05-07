@@ -9,7 +9,10 @@ router.get("/all", userController.getAllUsers);
 
 router.use(auth.validateToken);
 
-router.patch("/disableMe", userController.disableAccount);
+router.patch("/disableMe", userController.disableMyAccount);
+
+router.patch("/activateAccount/:userId", userController.activateAccount);
+router.patch("/blockAccount/:userId", userController.blockAccount);
 
 router
   .route("/shoppingCart")
