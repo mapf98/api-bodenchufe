@@ -52,7 +52,7 @@ module.exports = {
     return con
       .query(
         `INSERT INTO EC_PROVIDER (provider_name, provider_description, fk_status_id) 
-          VALUES ('${provider.provider_name}', '${provider.provider_description}', (SELECT status_id FROM EC_STATUS WHERE status_name = 'active'))`
+          VALUES ('${provider.provider_name}', '${provider.provider_description}', (SELECT status_id FROM EC_STATUS WHERE status_name = 'ACTIVE')) RETURNING provider_id`
       )
       .catch((error) => {
         return new Error(error);
