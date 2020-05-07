@@ -40,7 +40,7 @@ module.exports = {
         });
       } else {
         if (result.length == 0) {
-          logger.info(
+          logger.error(
             `Combinación de correo electrónico y password incorrecta [USER EMAIL: ${req.body.user_email} | PASSWORD: ${req.body.user_password}]`
           );
           res.json({ validated: false });
