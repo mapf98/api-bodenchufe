@@ -24,6 +24,59 @@ module.exports = {
       obtained: true,
     });
   },
+  updateUserPersonalInfo: async (req, res, next) => {
+    let user = await userModel.updateUserPersonalInfo(req);
+    if (user instanceof Error || user.rowCount == 0) {
+      logger.error(
+        "Error en módulo user (PATCH /user - updateUserPersonalInfo()"
+      );
+      res.json({ updated: false });
+      return next(
+        createError(
+          500,
+          `Error al modificar los datos de la cuenta del usuario [USER_ID: ${req.user_id}] (${user.message})`
+        )
+      );
+    }
+    logger.info(
+      `Datos de la cuenta del usuario modificados satisfactoriamente [USER_ID: ${req.user_id}]`
+    );
+    res.json({ updated: true });
+  },
+  validatePasswords: async (req, res, next) => {
+    let currentPassword = await userModel.getCurrentPassword(req);
+    if (currentPassword.rows[0].user_password != req.body.current_password) {
+      res.status(400).json({
+        message: `La contraseña no coincide con tu contraseña actual almacenada`,
+      });
+      return next(
+        createError(
+          400,
+          `La contraseña no coincide con tu contraseña actual almacenada [USER_ID: ${req.user_id}]`
+        )
+      );
+    }
+    next();
+  },
+  updatePassword: async (req, res, next) => {
+    let user = await userModel.updatePassword(req);
+    if (user instanceof Error || user.rowCount == 0) {
+      logger.error(
+        "Error en módulo user (PATCH /changePassword - updatePassword()"
+      );
+      res.json({ updated: false });
+      return next(
+        createError(
+          500,
+          `Error al modificar la contraseña de la cuenta del usuario [USER_ID: ${req.user_id}] (${user.message})`
+        )
+      );
+    }
+    logger.info(
+      `Contraseña de la cuenta del usuario modificada satisfactoriamente [USER_ID: ${req.user_id}]`
+    );
+    res.json({ updated: true });
+  },
   disableMyAccount: async (req, res, next) => {
     let user = await userModel.updateStatusAccount(req);
     if (user instanceof Error || user.rowCount == 0) {
@@ -113,7 +166,6 @@ module.exports = {
       product_id = req.body.fk_product_provider_id;
       type = "insert";
     }
-    console.log(product_id, type);
     let quantity = await userModel.checkProductAvailability(
       req.con,
       product_id,
