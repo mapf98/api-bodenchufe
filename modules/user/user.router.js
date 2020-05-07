@@ -5,7 +5,13 @@ const auth = require("../../middlewares/auth");
 const deliveryAddressController = require("../delivery_address/delivery_address.controller");
 const orderController = require("../order/order.controller");
 
-router.get("/all", userController.getAllUsers);
+router.use(auth.validateToken);
+
+router.get(
+  "/all",
+  auth.restrictTo("administrator"),
+  userController.getAllUsers
+);
 
 router.use(auth.validateToken);
 

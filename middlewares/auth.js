@@ -5,7 +5,8 @@ const logger = require("../config/logLevels");
 
 function createToken(user) {
   const payload = {
-    user_id: user,
+    user_id: user.user_id,
+    user_role: user.rol_name,
     iat: moment(),
     exp: moment().add(1, "day"),
   };
@@ -36,9 +37,21 @@ function validateToken(req, res, next) {
   } else {
     logger.info("Se validó el token de acceso");
     req.user_id = payload.user_id;
+    req.user_role = payload.user_role;
   }
-
   next();
 }
 
-module.exports = { createToken, validateToken };
+function restrictTo(...roles) {
+  return (req, res, next) => {
+    if (!roles.includes(req.user_role)) {
+      res.status(403).json({ message: "No authorized" });
+      return next(
+        createError(403, "No posees permisos para realizar esta accion")
+      );
+    }
+    next();
+  };
+}
+
+module.exports = { createToken, validateToken, restrictTo };
