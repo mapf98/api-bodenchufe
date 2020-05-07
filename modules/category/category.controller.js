@@ -96,7 +96,7 @@ module.exports = {
   },
   updateCategory: async (req, res, next) => {
     let result = await categoryModel.updateCategory(req.con, req.body);
-    if (result instanceof Error) {
+    if (result instanceof Error || result.rowCount == 0) {
       logger.error(
         "Error en el módulo category (PUT /category - updateCategory())"
       );
