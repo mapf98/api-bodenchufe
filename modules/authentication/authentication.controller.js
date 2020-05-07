@@ -13,35 +13,40 @@ module.exports = {
       user_id: user_id_test,
     });
   },
-
   logIn: async (req, res, next) => {
-    result = await authenticationModel.logIn(req.con, req.body);
+    let result = await authenticationModel.logIn(req.con, req.body);
 
     if (result instanceof Error) {
-      logger.error("Error en el modulo authentication (logIn)");
+      logger.error(
+        "Error en el módulo authentication (POST /authentication/login - logIn())"
+      );
       next(
         createError(
           500,
-          `Error al iniciar sesion en la aplicacion (${result.message})`
+          `Error en inicio de sesión [USER EMAIL: ${req.body.user_email} | PASSWORD: ${req.body.user_password}] (${result.message})`
         )
       );
     } else {
-      if (result[0] && result[0].status_name == "active") {
+      if (result[0] && result[0].status_name == "ACTIVE") {
         let token = auth.createToken(req.body.user_id);
-        logger.info("Inicio de sesion satisfactorio");
+        logger.info(
+          `Inicio de sesión satisfactorio [USER EMAIL: ${req.body.user_email} | PASSWORD: ${req.body.user_password}]`
+        );
         res.json({
-          status: "200",
-          validation: true,
+          status: 200,
+          validated: true,
           token: token,
-          response: result,
+          user: result,
         });
       } else {
         if (result.length == 0) {
-          logger.info("correo o contraseña invalidos");
-          res.json({ validation: false });
+          logger.info(
+            `Combinación de correo electrónico y password incorrecta [USER EMAIL: ${req.body.user_email} | PASSWORD: ${req.body.user_password}]`
+          );
+          res.json({ validated: false });
         } else {
-          logger.info("Usuario bloqueado");
-          res.json({ error: "Usuario bloqueado", response: result });
+          logger.info(`Usuario bloqueado [USER EMAIL: ${req.body.user_email}]`);
+          res.json({ validated: false, blocked: true });
         }
       }
     }
@@ -49,30 +54,45 @@ module.exports = {
   verifyEmail: async (req, res, next) => {
     let result = await authenticationModel.verifyEmail(req.con, req.params);
     if (result instanceof Error) {
-      logger.error("Error en el modulo authentication (verifyEmail)");
+      logger.error(
+        "Error en el módulo authentication (POST /authentication/login - verifyEmail())"
+      );
       next(
-        createError(500, `Error al verificar el correo (${result.message})`)
+        createError(
+          500,
+          `Error al verificar el correo [USER EMAIL: ${req.params.emailUser}] (${result.message})`
+        )
       );
     } else {
       if (result.length >= 1) {
-        logger.info("Correo ya registrado");
-        res.json({ registered: true });
+        logger.info(`Correo registrado [USER EMAIL: ${req.params.emailUser}]`);
+        res.json({ available: false });
       } else {
-        logger.info("Correo disponible");
-        res.json({ registered: false });
+        logger.info(`Correo disponible [USER EMAIL: ${req.params.emailUser}]`);
+        res.json({ available: true });
       }
     }
   },
-
   signUp: async (req, res, next) => {
     let result = await authenticationModel.signUp(req.con, req.body);
     if (result instanceof Error) {
-      logger.error("Error en el modulo authentication (signUp)");
-      return next(createError(500, `Error al registrarse (${result.message})`));
+      logger.error(
+        "Error en el módulo authentication (POST /authentication/signUp - signUp())"
+      );
+      res.json({ registered: false });
+      return next(
+        createError(
+          500,
+          `Error en el registro de usuario [USER EMAIL: ${req.body.user_email}] (${result.message})`
+        )
+      );
     }
-    await new Email(result[0]).sendWelcome();
 
-    logger.info("Usuario agregado correctamente");
-    res.json({ status: 200 });
+    new Email(result[0]).sendWelcome();
+
+    logger.info(
+      `Usuario registrado satisfactoriamente [USER EMAIL: ${req.body.user_email}]`
+    );
+    res.json({ status: 200, registered: true });
   },
 };
