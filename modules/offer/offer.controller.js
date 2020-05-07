@@ -6,15 +6,17 @@ module.exports = {
   getAllOffers: async (req, res, next) => {
     let offers = await offerModel.getAllOffers(req.con);
     if (offers instanceof Error) {
-      logger.error("Error en modulo offer (GET /offer)");
+      logger.error("Error en módulo offer (GET /offer - getAllOffers())");
+      res.json({ obtained: false });
       next(
         createError(500, `Error al obtener las ofertas (${offers.message})`)
       );
     } else {
-      logger.info("Listado de ofertas por proveedor");
+      logger.info("Listado de ofertas entregado satisfactoriamente");
       res.json({
-        data: { offers },
+        offers: offers,
         results: offers.length,
+        obtained: true,
       });
     }
   },

@@ -33,7 +33,6 @@ module.exports = {
           `Inicio de sesión satisfactorio [USER EMAIL: ${req.body.user_email} | PASSWORD: ${req.body.user_password}]`
         );
         res.json({
-          status: 200,
           validated: true,
           token: token,
           user: result,
@@ -93,6 +92,6 @@ module.exports = {
     logger.info(
       `Usuario registrado satisfactoriamente [USER EMAIL: ${req.body.user_email}]`
     );
-    res.json({ status: 200, registered: true });
+    res.json({ registered: true });
   },
 };

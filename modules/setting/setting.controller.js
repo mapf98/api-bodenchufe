@@ -6,36 +6,40 @@ module.exports = {
   getAllSettings: async (req, res, next) => {
     let result = await settingModel.getAllSettings(req.con);
     if (result instanceof Error) {
-      logger.error("Error en el modulo Setting (getAllSettings)");
+      logger.error(
+        "Error en el módulo setting (GET /setting - getAllSettings())"
+      );
+      res.json({ obtained: false });
       next(
         createError(
           500,
-          `Error al obtener los parametros globales (${result.message})`
+          `Error al obtener los parámetros generales (${result.message})`
         )
       );
     } else {
-      logger.info("Lista de configuraciones entregada");
-      res.json(result);
+      logger.info("Lista de parámetros generales entregada satisfactoriamente");
+      res.json({ settings: result, obtained: true });
     }
   },
 
   updateSettings: async (req, res, next) => {
     let result = await settingModel.updateSettings(req.con, req.body);
     if (result instanceof Error) {
-      logger.error("Error en el modulo Setting (updateSettings)");
+      logger.error(
+        "Error en el módulo setting (PUT /setting - updateSettings())"
+      );
+      res.json({ obtained: false });
       next(
         createError(
           500,
-          `Error al actualizar los parametros globales (${result.message})`
+          `Error al actualizar los parámetros generales (${result.message})`
         )
       );
     } else {
       logger.info(
-        "los parametros globales han sido actualizados correctamente"
+        "Los parámetros generales fueron actualizados satisfactoriamente"
       );
-      res.json({
-        status: 200,
-      });
+      res.json({ obtained: true });
     }
   },
 };

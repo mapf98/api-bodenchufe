@@ -3,14 +3,16 @@ module.exports = {
     con
       .query(
         `UPDATE EC_CATEGORY SET category_name = '${body.category_name}'
-               WHERE category_id = ${body.category_id}`)
+               WHERE category_id = ${body.category_id}`
+      )
       .catch((error) => {
         return new Error(error);
       });
   },
   getMainCategories: (con) => {
     return con
-      .query("SELECT * FROM EC_CATEGORY WHERE fk_category_id IS NULL").catch((error) => {
+      .query("SELECT * FROM EC_CATEGORY WHERE fk_category_id IS NULL")
+      .catch((error) => {
         return new Error(error);
       });
   },
