@@ -75,7 +75,6 @@ function restrictTo(...roles) {
       logger.info(
         `Ruta autorizada para el rol actual [ROL_NAME: ${req.user_role}] y token válido de acceso`
       );
-      res.json({ message: "Token válido", validated: true, authorized: false });
     }
     next();
   };
