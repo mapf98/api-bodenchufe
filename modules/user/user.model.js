@@ -14,7 +14,7 @@ module.exports = {
         WHERE PPO.fk_product_provider_id = PP.product_provider_id
         AND PP.fk_product_id = P.product_id
         AND PP.fk_provider_id = PR.provider_id
-        AND PPO.fk_status_id in (SELECT status_id FROM EC_STATUS WHERE status_name in ('selected','unselected'))
+        AND PPO.fk_status_id in (SELECT status_id FROM EC_STATUS WHERE status_name in ('SELECTED','UNSELECTED'))
         AND PPO.fk_status_id = S.STATUS_ID
         AND PPO.fk_user_id = ${req.user_id}`
       )
@@ -50,7 +50,7 @@ module.exports = {
         `INSERT INTO EC_PRODUCT_PROVIDER_ORDER (product_provider_order_quantity, fk_product_provider_id, 
         fk_user_id, fk_order_id, fk_status_id) VALUES (${req.body.product_provider_order_quantity}, 
         ${req.body.fk_product_provider_id}, ${req.user_id}, null, (SELECT status_id FROM EC_STATUS 
-        WHERE status_name = 'selected')) RETURNING product_provider_order_id`
+        WHERE status_name = 'SELECTED')) RETURNING product_provider_order_id`
       )
       .catch((error) => {
         return new Error(error);
@@ -58,9 +58,9 @@ module.exports = {
   },
   deleteShoppingCartProduct: (con, idCart) => {
     return con
-      .query(
+      .result(
         `DELETE FROM EC_PRODUCT_PROVIDER_ORDER WHERE PRODUCT_PROVIDER_ORDER_ID = ${idCart} 
-      AND FK_STATUS_ID IN (SELECT status_id FROM EC_STATUS WHERE status_name in ('selected','unselected'))`
+      AND FK_STATUS_ID IN (SELECT status_id FROM EC_STATUS WHERE status_name in ('SELECTED','UNSELECTED'))`
       )
       .catch((error) => {
         return new Error(error);
@@ -68,10 +68,10 @@ module.exports = {
   },
   updateShoppingCartProductQuantity: (con, cantidad, cartId) => {
     return con
-      .query(
+      .result(
         `UPDATE EC_PRODUCT_PROVIDER_ORDER SET product_provider_order_quantity = ${cantidad}
          WHERE PRODUCT_PROVIDER_ORDER_ID = ${cartId} AND FK_STATUS_ID IN 
-         (SELECT status_id FROM EC_STATUS WHERE status_name in ('selected','unselected'))`
+         (SELECT status_id FROM EC_STATUS WHERE status_name in ('SELECTED','UNSELECTED'))`
       )
       .catch((error) => {
         return new Error(error);
@@ -81,7 +81,7 @@ module.exports = {
     return req.con
       .query(
         `INSERT INTO EC_DELIVERY_ADDRESS (delivery_address_primary_line, delivery_address_secondary_line, delivery_address_city, delivery_address_state, delivery_address_zip_code, delivery_address_aditional_info, delivery_address_security_code, delivery_address_locker_code, fk_user_id, fk_status_id)
-         VALUES ('${req.body.delivery_address_primary_line}', '${req.body.delivery_address_secondary_line}', '${req.body.delivery_address_city}', '${req.body.delivery_address_state}', ${req.body.delivery_address_zip_code}, '${req.body.delivery_address_aditional_info}', '${req.body.delivery_address_security_code}', '${req.body.delivery_address_locker_code}', ${req.user_id}, (SELECT status_id FROM EC_STATUS WHERE status_name = 'active'))`
+         VALUES ('${req.body.delivery_address_primary_line}', '${req.body.delivery_address_secondary_line}', '${req.body.delivery_address_city}', '${req.body.delivery_address_state}', ${req.body.delivery_address_zip_code}, '${req.body.delivery_address_aditional_info}', '${req.body.delivery_address_security_code}', '${req.body.delivery_address_locker_code}', ${req.user_id}, (SELECT status_id FROM EC_STATUS WHERE status_name = 'ACTIVE')) RETURNING delivery_address_id`
       )
       .catch((error) => {
         return new Error(error);
@@ -89,7 +89,7 @@ module.exports = {
   },
   updateDeliveryAddress: (con, body, params) => {
     return con
-      .query(
+      .result(
         `UPDATE EC_DELIVERY_ADDRESS 
          SET delivery_address_primary_line = '${body.delivery_address_primary_line}', delivery_address_secondary_line = '${body.delivery_address_secondary_line}', delivery_address_city = '${body.delivery_address_city}', delivery_address_state ='${body.delivery_address_state}', delivery_address_zip_code = ${body.delivery_address_zip_code}, delivery_address_aditional_info = '${body.delivery_address_aditional_info}', delivery_address_security_code = ${body.delivery_address_security_code}, delivery_address_locker_code = ${body.delivery_address_locker_code}
          WHERE delivery_address_id = ${params.deliveryAddressId}`
