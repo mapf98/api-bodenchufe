@@ -7,7 +7,17 @@ router.get("/provider/:providerId", productController.getProductsByProvider);
 router.get("/offer/:offerId", productController.getProductsByOffer);
 router.get("/category/:categoryId", productController.getProductsByCategory);
 router.get("/:postId", productController.getProductDetail);
-router.get("/", auth.validateToken, productController.getAllProducts);
-router.post("/", auth.validateToken, productController.createPost);
+router.get(
+  "/",
+  auth.validateToken,
+  auth.restrictTo("administrator"),
+  productController.getAllProducts
+);
+router.post(
+  "/",
+  auth.validateToken,
+  auth.restrictTo("administrator"),
+  productController.createPost
+);
 
 module.exports = router;

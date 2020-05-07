@@ -28,6 +28,7 @@ module.exports = {
       );
     } else {
       if (result[0] && result[0].status_name == "ACTIVE") {
+        console.log(result[0]);
         let token = auth.createToken(result[0]);
         logger.info(
           `Inicio de sesión satisfactorio [USER EMAIL: ${req.body.user_email} | PASSWORD: ${req.body.user_password}]`
