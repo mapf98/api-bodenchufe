@@ -170,7 +170,7 @@ module.exports = {
       );
     } else {
       logger.info(
-        `Se creo una publicación satisfactoriamente [PRODUCT_PROVIDER_ID: ${post}]`
+        `Se creo una publicación satisfactoriamente [PRODUCT_PROVIDER_ID: ${post[0].product_provider_id}]`
       );
       res.json({ created: true });
     }
