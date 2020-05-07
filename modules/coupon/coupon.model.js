@@ -16,7 +16,7 @@ module.exports = {
   },
   updateCoupon: (con, body) => {
     return con.result(
-      `UPDATE EC_COUPON SET coupon_name = ${body.coupon_name}, coupon_discount_rate = ${body.coupon_discount_rate} WHERE coupon_id = ${body.coupon_id}`
+      `UPDATE EC_COUPON SET coupon_name = '${body.coupon_name}', coupon_discount_rate = '${body.coupon_discount_rate}' WHERE coupon_id = ${body.coupon_id}`
     );
   },
   disableCoupon: (con, body) => {
