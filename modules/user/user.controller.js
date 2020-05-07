@@ -23,6 +23,23 @@ module.exports = {
       data: { users },
     });
   },
+  disableAccount: async (req, res, next) => {
+    let user = await userModel.updateStatusAccount(req);
+    if (user instanceof Error) {
+      logger.error("Error en modulo user (PATCH /disableMe)");
+      return next(
+        createError(
+          500,
+          `Error al desactivar la cuenta del usuario (${users.message})`
+        )
+      );
+    }
+
+    logger.info("Cuenta del usuario desactivada");
+    res.json({
+      status: "success",
+    });
+  },
   getShoppingCart: async (req, res, next) => {
     let shoppingCart = await userModel.getShoppingCart(req);
     if (shoppingCart instanceof Error) {
