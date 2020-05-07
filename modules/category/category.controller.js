@@ -17,31 +17,43 @@ function getCategories(category_id, results) {
 }
 
 module.exports = {
-   getMainCategories: async (req, res, next) => {
-    let results = await categoryModel.getMainCategories(req.con);
+  getMainCategories: async (req, res, next) => {
+    let categories = await categoryModel.getMainCategories(req.con);
 
-    if (results instanceof Error) {
-      logger.error("Error en el modulo category (getMainCategories)");
+    if (categories instanceof Error) {
+      logger.error(
+        `Error en el módulo category (GET /category/main - getMainCategories())`
+      );
+      res.json({ obtained: false });
       next(
         createError(
           500,
-          `Error al obtener las categorias padres (${results.message})`
+          `Error al obtener las categorías principales (${categories.message})`
         )
       );
     } else {
-      logger.info("Lista de categorias padre obtenida satisfactoriamente");
-      res.json(results);
+      logger.info(
+        "Listado de categorías principales obtenido satisfactoriamente"
+      );
+      res.json({
+        categories: categories,
+        results: categories.length,
+        obtained: true,
+      });
     }
   },
   getAllCategories: async (req, res, next) => {
     let categories = await categoryModel.getAllCategories(req.con);
     let allCategories = [];
     if (categories instanceof Error) {
-      logger.error("Error en modulo category (GET /category/)");
+      logger.error(
+        "Error en módulo category (GET /category - getAllCategories())"
+      );
+      res.json({ obtained: false });
       next(
         createError(
           500,
-          `Error al obtener las categorias (${categories.message})`
+          `Error al obtener las categorías (${categories.message})`
         )
       );
     } else {
@@ -54,39 +66,52 @@ module.exports = {
           });
         }
       });
-      logger.info("Listado de categorias entregado");
+      logger.info("Listado de categorías entregado satisfactoriamente");
       res.json({
-        data: { allCategories },
+        categories: allCategories,
         results: categories.length,
+        obtained: false,
       });
     }
   },
   createCategory: async (req, res, next) => {
     let result = await categoryModel.createCategory(req.con, req.body);
-
     if (result instanceof Error) {
-      logger.error("Error en el modulo category (createCategory)");
+      logger.error(
+        "Error en el módulo category (POST /category - createCategory())"
+      );
+      res.json({ created: false });
       next(
         createError(
           500,
-          `Ha ocurrido un error al crear la categoria (${result.message})`
+          `Ha ocurrido un error al crear una categoría [CATEGORY: ${req.body.category_name}] (${result.message})`
         )
       );
     } else {
-      logger.info("La categoria se ha creado satisfactoriamente");
-      res.json({ status: 200 });
+      logger.info(
+        `Categoría creada satisfactoriamente [CATEGORY: ${req.body.category_name}] `
+      );
+      res.json({ created: true });
     }
   },
   updateCategory: async (req, res, next) => {
     let result = await categoryModel.updateCategory(req.con, req.body);
-    if (result instanceof Error) {
-      logger.error("Error en el modulo category (updateCategory)");
+    if (result instanceof Error || result.rowCount == 0) {
+      logger.error(
+        "Error en el módulo category (PUT /category - updateCategory())"
+      );
+      res.json({ updated: true });
       next(
-        createError(500, `Error al actualizar la categoria (${result.message})`)
+        createError(
+          500,
+          `Error al actualizar la categoría [CATEGORY_ID: ${req.body.category_id} | CATEGORY: ${req.body.category_name}] (${result.message})`
+        )
       );
     } else {
-      logger.info("Categoria actualizada correctamente");
-      res.json({ status: 200 });
+      logger.info(
+        `Categoría actualizada satisfactoriamente [CATEGORY_ID: ${req.body.category_id} | CATEGORY: ${req.body.category_name}]`
+      );
+      res.json({ updated: true });
     }
   },
 };

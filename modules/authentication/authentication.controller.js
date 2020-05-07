@@ -28,19 +28,19 @@ module.exports = {
       );
     } else {
       if (result[0] && result[0].status_name == "ACTIVE") {
+        console.log(result[0]);
         let token = auth.createToken(result[0]);
         logger.info(
           `Inicio de sesión satisfactorio [USER EMAIL: ${req.body.user_email} | PASSWORD: ${req.body.user_password}]`
         );
         res.json({
-          status: 200,
           validated: true,
           token: token,
           user: result,
         });
       } else {
         if (result.length == 0) {
-          logger.info(
+          logger.error(
             `Combinación de correo electrónico y password incorrecta [USER EMAIL: ${req.body.user_email} | PASSWORD: ${req.body.user_password}]`
           );
           res.json({ validated: false });
@@ -93,6 +93,6 @@ module.exports = {
     logger.info(
       `Usuario registrado satisfactoriamente [USER EMAIL: ${req.body.user_email}]`
     );
-    res.json({ status: 200, registered: true });
+    res.json({ registered: true });
   },
 };

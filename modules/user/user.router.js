@@ -17,8 +17,16 @@ router.use(auth.validateToken);
 
 router.patch("/disableMe", userController.disableMyAccount);
 
-router.patch("/activateAccount/:userId", userController.activateAccount);
-router.patch("/blockAccount/:userId", userController.blockAccount);
+router.patch(
+  "/activateAccount/:userId",
+  auth.restrictTo("administrator"),
+  userController.activateAccount
+);
+router.patch(
+  "/blockAccount/:userId",
+  auth.restrictTo("administrator"),
+  userController.blockAccount
+);
 
 router
   .route("/shoppingCart")

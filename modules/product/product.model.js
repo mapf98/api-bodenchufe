@@ -30,7 +30,7 @@ module.exports = {
             AND PP.fk_provider_id = PVD.provider_id
             AND STA.status_id = PP.fk_status_id
             AND CAT.category_id = PRO.fk_category_id
-            AND STA.status_name = 'available'
+            AND STA.status_name = 'AVAILABLE'
             AND PVD.provider_id = ${provider_id}
         `
       )
@@ -69,7 +69,7 @@ module.exports = {
             AND PP.fk_provider_id = PVD.provider_id
             AND STA.status_id = PP.fk_status_id
             AND CAT.category_id = PRO.fk_category_id
-            AND STA.status_name = 'available'
+            AND STA.status_name = 'AVAILABLE'
             AND PP.fk_offer_id = ${offer_id}`
       )
       .catch((error) => {
@@ -107,7 +107,7 @@ module.exports = {
             AND PP.fk_provider_id = PVD.provider_id
             AND STA.status_id = PP.fk_status_id
             AND CAT.category_id = PRO.fk_category_id
-            AND STA.status_name = 'available'
+            AND STA.status_name = 'AVAILABLE'
             AND CAT.category_id = ${category_id}`
       )
       .catch((error) => {
@@ -146,7 +146,7 @@ module.exports = {
             AND PP.fk_provider_id = PVD.provider_id
             AND STA.status_id = PP.fk_status_id
             AND CAT.category_id = PRO.fk_category_id
-            AND STA.status_name = 'selected'
+            AND STA.status_name = 'AVAILABLE'
             AND PP.product_provider_id = ${postId}`
       )
       .catch((error) => {
@@ -196,7 +196,7 @@ module.exports = {
                         ? `(SELECT offer_id FROM EC_OFFER WHERE offer_rate = '${post.offer_rate}')`
                         : null
                     }, 
-                    (SELECT status_id FROM EC_STATUS WHERE status_name = 'active'))
+                    (SELECT status_id FROM EC_STATUS WHERE status_name = 'AVAILABLE')) RETURNING product_provider_id
         `
       )
       .catch((error) => {
