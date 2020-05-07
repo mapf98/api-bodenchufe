@@ -11,7 +11,7 @@ A continuación nombraremos los requisitos necesarios para ejecturar la aplicaci
 + Administrador de paquetes: [NPM](https://www.npmjs.com/) >= 6.7.0
 + Sistema de control de versiones: [GIT](https://git-scm.com/) >= 2.20
 
-**Nota**: sugerimos usar Postman para realizar peticiones de prueba hacia la API, puede encontrar una collección de peticiones y ejecutarlas desde la herramienta [API-BODEnchufe](https://documenter.getpostman.com/view/6132312/SzfDxkL6?version=latest).
+**Nota**: sugerimos usar Postman para realizar peticiones de prueba hacia la API, puede encontrar una collección de peticiones y ejecutarlas desde la herramienta [API-BODEnchufe](https://documenter.getpostman.com/view/6132312/Szme4dvV).
 
 ## Empecemos 📚
 
@@ -49,6 +49,7 @@ Y listo, la API ya estará disponible para su uso 🚀
 
 ```
 "dependencies": {
+    "@sendgrid/mail": "^7.1.0",
     "body-parser": "^1.19.0",
     "chalk": "^4.0.0",
     "compression": "^1.7.4",
@@ -59,8 +60,9 @@ Y listo, la API ya estará disponible para su uso 🚀
     "http-errors": "^1.7.3",
     "humps": "^2.0.1",
     "jwt-simple": "^0.5.6",
-    "moment": "^2.24.0",
-    "pg-promise": "^10.5.2",
+    "lob": "^6.1.0",
+    "moment": "^2.25.3",
+    "pg-promise": "^10.5.3",
     "winston": "^3.2.1"
 }
 ```
@@ -73,7 +75,7 @@ Y listo, la API ya estará disponible para su uso 🚀
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-prettier": "^3.1.3",
-    "jest": "^25.5.2",
+    "jest": "^26.0.1",
     "nodemon": "^2.0.3",
     "prettier": "^2.0.5",
     "superagent": "^5.2.2",
