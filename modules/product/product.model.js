@@ -30,7 +30,7 @@ module.exports = {
             AND PP.fk_provider_id = PVD.provider_id
             AND STA.status_id = PP.fk_status_id
             AND CAT.category_id = PRO.fk_category_id
-            AND STA.status_name = 'available'
+            AND STA.status_name = 'AVAILABLE'
             AND PVD.provider_id = ${provider_id}
         `
       )
@@ -69,7 +69,7 @@ module.exports = {
             AND PP.fk_provider_id = PVD.provider_id
             AND STA.status_id = PP.fk_status_id
             AND CAT.category_id = PRO.fk_category_id
-            AND STA.status_name = 'available'
+            AND STA.status_name = 'AVAILABLE'
             AND PP.fk_offer_id = ${offer_id}`
       )
       .catch((error) => {
@@ -107,7 +107,7 @@ module.exports = {
             AND PP.fk_provider_id = PVD.provider_id
             AND STA.status_id = PP.fk_status_id
             AND CAT.category_id = PRO.fk_category_id
-            AND STA.status_name = 'available'
+            AND STA.status_name = 'AVAILABLE'
             AND CAT.category_id = ${category_id}`
       )
       .catch((error) => {
@@ -146,7 +146,7 @@ module.exports = {
             AND PP.fk_provider_id = PVD.provider_id
             AND STA.status_id = PP.fk_status_id
             AND CAT.category_id = PRO.fk_category_id
-            AND STA.status_name = 'selected'
+            AND STA.status_name = 'AVAILABLE'
             AND PP.product_provider_id = ${postId}`
       )
       .catch((error) => {
@@ -161,6 +161,43 @@ module.exports = {
                   QUA.qualification_stars
           FROM EC_QUALIFICATION AS QUA
           WHERE QUA.fk_product_provider_id = ${postId}`
+      )
+      .catch((error) => {
+        return new Error(error);
+      });
+  },
+  getAllProducts: (con, postId) => {
+    return con.query(`SELECT * FROM EC_PRODUCT`).catch((error) => {
+      return new Error(error);
+    });
+  },
+  createProduct: (con, product) => {
+    return con
+      .query(
+        `INSERT INTO EC_PRODUCT (product_name, product_photo,product_description, product_long, product_height, product_width, fk_category_id) 
+          VALUES ('${product.product_name}', '${product.product_photo}', '${product.product_description}', 
+                    '${product.product_long}', '${product.product_height}', '${product.product_width}', 
+                      (SELECT category_id FROM EC_CATEGORY WHERE category_name = '${product.category_name}')) RETURNING product_id;
+        `
+      )
+      .catch((error) => {
+        return new Error(error);
+      });
+  },
+  createPost: (con, post, product) => {
+    return con
+      .query(
+        `INSERT INTO EC_PRODUCT_PROVIDER (product_provider_description, product_provider_price, product_provider_available_quantity, fk_provider_id, fk_product_id, fk_offer_id, fk_status_id) 
+          VALUES ('${post.provider_description}', ${post.provider_price}, 
+          ${post.provider_available_quantity}, 
+                    ${post.provider_id}, ${product}, 
+                    ${
+                      post.offer_rate !== undefined
+                        ? `(SELECT offer_id FROM EC_OFFER WHERE offer_rate = '${post.offer_rate}')`
+                        : null
+                    }, 
+                    (SELECT status_id FROM EC_STATUS WHERE status_name = 'AVAILABLE')) RETURNING product_provider_id
+        `
       )
       .catch((error) => {
         return new Error(error);
