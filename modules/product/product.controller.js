@@ -175,4 +175,41 @@ module.exports = {
       res.json({ created: true });
     }
   },
+  purchasedProductsOfUser: async (req, res, next) => {
+    let product = await productModel.getPurchasedProducts(req);
+    if (product.length === 0) {
+      res.status(403).json({
+        message: "No puedes calificar productos que no hayas comprado",
+      });
+      return next(
+        createError(
+          403,
+          `No puedes calificar el producto (PRODUC_ID:${req.params.productProviderId}) ya que no lo has comprado (ID:${req.params.productProviderId}), [USER_ID: ${req.user_id}]`
+        )
+      );
+    }
+    next();
+  },
+  rateProduct: async (req, res, next) => {
+    let qualification = await productModel.createProductQualification(req);
+    if (qualification instanceof Error) {
+      logger.error(
+        "Error en módulo product (POST /user/product/:productProviderId/qualification - rateProduct())"
+      );
+      res.json({ rated: false });
+      return next(
+        createError(
+          500,
+          `Error al crear la calificacion del producto [PRODUCT_ID: ${req.params.productProviderId}] (${qualification.message})`
+        )
+      );
+    } else {
+      logger.info(
+        `Producto calificado satisfactoriamente [PRODUCT_ID: ${req.params.productProviderId}]`
+      );
+      res.json({
+        rated: true,
+      });
+    }
+  },
 };
