@@ -178,13 +178,14 @@ module.exports = {
   purchasedProductsOfUser: async (req, res, next) => {
     let product = await productModel.getPurchasedProducts(req);
     if (product.length === 0) {
-      res.status(403).json({
-        message: "No puedes calificar productos que no hayas comprado",
+      res.status(404).json({
+        message:
+          "Operacion invalida, no se pueden calificar productos no comprados",
       });
       return next(
         createError(
-          403,
-          `No puedes calificar el producto (PRODUC_ID:${req.params.productProviderId}) ya que no lo has comprado (ID:${req.params.productProviderId}), [USER_ID: ${req.user_id}]`
+          404,
+          `Operacion invalida, no se puede calificar el producto (PRODUC_ID:${req.params.productProviderId}), (ID:${req.params.productProviderId}), [USER_ID: ${req.user_id}]`
         )
       );
     }
@@ -200,7 +201,7 @@ module.exports = {
       return next(
         createError(
           500,
-          `Error al crear la calificacion del producto [PRODUCT_ID: ${req.params.productProviderId}] (${qualification.message})`
+          `Error al crear la calificación del producto [PRODUCT_ID: ${req.params.productProviderId}] (${qualification.message})`
         )
       );
     } else {
