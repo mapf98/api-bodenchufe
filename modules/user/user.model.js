@@ -9,6 +9,51 @@ module.exports = {
         return new Error(error);
       });
   },
+  updateUserPersonalInfo: (req) => {
+    return req.con
+      .result(
+        `UPDATE EC_USER SET 
+        user_first_name = '${req.body.user_first_name}', 
+        user_first_lastname = '${req.body.user_first_lastname}',
+        user_second_name = '${req.body.user_second_name}', 
+        user_second_lastname = '${req.body.user_second_lastname}',
+        user_birthdate = '${req.body.user_birthdate}', 
+        fk_language_id = (SELECT LANGUAGE_ID FROM EC_LANGUAGE WHERE LANGUAGE_NAME = '${req.body.language}')
+        WHERE USER_ID = ${req.user_id}`
+      )
+      .catch((error) => {
+        return new Error(error);
+      });
+  },
+  setUserPhoto: (req) => {
+    return req.con
+      .result(
+        `UPDATE EC_USER SET user_photo = ${req.body.user_photo},
+        WHERE USER_ID = ${req.user_id}`
+      )
+      .catch((error) => {
+        return new Error(error);
+      });
+  },
+  getCurrentPassword: (req) => {
+    return req.con
+      .result(
+        `SELECT USER_PASSWORD FROM EC_USER WHERE USER_ID = ${req.user_id}`
+      )
+      .catch((error) => {
+        return new Error(error);
+      });
+  },
+  updatePassword: (req) => {
+    return req.con
+      .result(
+        `UPDATE EC_USER SET user_password = ${req.body.new_password} 
+       WHERE USER_ID = ${req.user_id}`
+      )
+      .catch((error) => {
+        return new Error(error);
+      });
+  },
   updateStatusAccount: (req) => {
     return req.con
       .result(
@@ -115,8 +160,16 @@ module.exports = {
   addDeliveryAddress: (req) => {
     return req.con
       .query(
-        `INSERT INTO EC_DELIVERY_ADDRESS (delivery_address_primary_line, delivery_address_secondary_line, delivery_address_city, delivery_address_state, delivery_address_zip_code, delivery_address_aditional_info, delivery_address_security_code, delivery_address_locker_code, fk_user_id, fk_status_id)
-         VALUES ('${req.body.delivery_address_primary_line}', '${req.body.delivery_address_secondary_line}', '${req.body.delivery_address_city}', '${req.body.delivery_address_state}', ${req.body.delivery_address_zip_code}, '${req.body.delivery_address_aditional_info}', '${req.body.delivery_address_security_code}', '${req.body.delivery_address_locker_code}', ${req.user_id}, (SELECT status_id FROM EC_STATUS WHERE status_name = 'ACTIVE')) RETURNING delivery_address_id`
+        `INSERT INTO EC_DELIVERY_ADDRESS (delivery_address_primary_line, delivery_address_secondary_line, 
+        delivery_address_city, delivery_address_state, delivery_address_zip_code, 
+        delivery_address_aditional_info, delivery_address_security_code, delivery_address_locker_code, 
+        fk_user_id, fk_status_id)
+        VALUES ('${req.body.delivery_address_primary_line}', '${req.body.delivery_address_secondary_line}', 
+        '${req.body.delivery_address_city}', '${req.body.delivery_address_state}', 
+        ${req.body.delivery_address_zip_code}, '${req.body.delivery_address_aditional_info}',
+        '${req.body.delivery_address_security_code}', '${req.body.delivery_address_locker_code}', 
+        ${req.user_id}, (SELECT status_id FROM EC_STATUS WHERE status_name = 'ACTIVE')) 
+        RETURNING delivery_address_id`
       )
       .catch((error) => {
         return new Error(error);
@@ -126,7 +179,14 @@ module.exports = {
     return con
       .result(
         `UPDATE EC_DELIVERY_ADDRESS 
-         SET delivery_address_primary_line = '${body.delivery_address_primary_line}', delivery_address_secondary_line = '${body.delivery_address_secondary_line}', delivery_address_city = '${body.delivery_address_city}', delivery_address_state ='${body.delivery_address_state}', delivery_address_zip_code = ${body.delivery_address_zip_code}, delivery_address_aditional_info = '${body.delivery_address_aditional_info}', delivery_address_security_code = ${body.delivery_address_security_code}, delivery_address_locker_code = ${body.delivery_address_locker_code}
+         SET delivery_address_primary_line = '${body.delivery_address_primary_line}', 
+         delivery_address_secondary_line = '${body.delivery_address_secondary_line}', 
+         delivery_address_city = '${body.delivery_address_city}', 
+         delivery_address_state ='${body.delivery_address_state}', 
+         delivery_address_zip_code = ${body.delivery_address_zip_code}, 
+         delivery_address_aditional_info = '${body.delivery_address_aditional_info}', 
+         delivery_address_security_code = ${body.delivery_address_security_code}, 
+         delivery_address_locker_code = ${body.delivery_address_locker_code}
          WHERE delivery_address_id = ${params.deliveryAddressId}`
       )
       .catch((error) => {
