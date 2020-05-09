@@ -28,7 +28,7 @@ module.exports = {
     let user = await userModel.updateUserPersonalInfo(req);
     if (user instanceof Error || user.rowCount == 0) {
       logger.error(
-        "Error en módulo user (PATCH /user - updateUserPersonalInfo()"
+        "Error en módulo user (PATCH /user - updateUserPersonalInfo())"
       );
       res.json({ updated: false });
       return next(
@@ -49,20 +49,24 @@ module.exports = {
       res.status(400).json({
         message: `La contraseña no coincide con tu contraseña actual almacenada`,
       });
+      logger.error("Error al validar las contraseñas");
       return next(
         createError(
           400,
-          `La contraseña no coincide con tu contraseña actual almacenada [USER_ID: ${req.user_id}]`
+          `La contraseña ingresada no coincide con la contraseña actual almacenada [USER_ID: ${req.user_id}]`
         )
       );
     }
+    logger.info(
+      `Contraseñas validadas correctamente [USER_ID: ${req.user_id}]`
+    );
     next();
   },
   updatePassword: async (req, res, next) => {
     let user = await userModel.updatePassword(req);
     if (user instanceof Error || user.rowCount == 0) {
       logger.error(
-        "Error en módulo user (PATCH /changePassword - updatePassword()"
+        "Error en módulo user (PATCH /changePassword - updatePassword())"
       );
       res.json({ updated: false });
       return next(
