@@ -193,4 +193,31 @@ module.exports = {
         return new Error(error);
       });
   },
+  getUserCoupons: (req) => {
+    return req.con
+      .query(`SELECT * FROM EC_COUPON WHERE fk_user_id = ${req.user_id}`)
+      .catch((error) => {
+        return new Error(error);
+      });
+  },
+  getUserCouponsForOrders: (con, user_id, orderPrice) => {
+    return con
+      .query(
+        `SELECT COU.coupon_name,
+                COU.coupon_discount_rate,
+                COU.coupon_min_use,
+                COU.coupon_max_use
+          FROM EC_COUPON AS COU,
+                EC_USER AS USR
+          WHERE COU.fk_user_id = USR.user_id
+                AND COU.fk_status_id = (SELECT status_id FROM EC_STATUS WHERE status_name = 'AVAILABLE')
+                  AND COU.fk_user_id = ${user_id}
+                  AND COU.coupon_min_use < ${orderPrice}
+                  AND COU.coupon_max_use > ${orderPrice}
+      `
+      )
+      .catch((error) => {
+        return new Error(error);
+      });
+  },
 };

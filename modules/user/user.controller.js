@@ -339,4 +339,48 @@ module.exports = {
       res.json({ verified: false });
     }
   },
+  getUserCoupons: async (req, res, next) => {
+    let coupons = await userModel.getUserCoupons(req);
+    if (coupons instanceof Error) {
+      logger.error(
+        "Error en módulo user (GET /user/coupon - getUserCoupons())"
+      );
+      res.json({ obtained: false });
+      next(
+        createError(
+          500,
+          `Error al obtener los cupones de un usuario [USER_ID: ${req.user_id}] (${result.message})`
+        )
+      );
+    } else {
+      logger.info(
+        `Cupones obtenidos satisfactoriamente [USER_ID: ${req.user_id}]`
+      );
+      res.json({ obtained: true, coupons: coupons });
+    }
+  },
+  getUserCouponsForOrders: async (req, res, next) => {
+    let coupons = await userModel.getUserCouponsForOrders(
+      req.con,
+      req.user_id,
+      req.params.orderPrice
+    );
+    if (coupons instanceof Error) {
+      logger.error(
+        "Error en módulo user (GET /user/order/coupon - getUserCouponsForOrders())"
+      );
+      res.json({ obtained: false });
+      next(
+        createError(
+          500,
+          `Error al obtener lo cupones disponibles de acuerdo al subtotal de la orden [USER_ID: ${req.user_id} | ORDER_PRICE: ${req.params.orderPrice}] (${result.message})`
+        )
+      );
+    } else {
+      logger.info(
+        `Se obtuvo satisfactoriamente el listado de cupones disponibles de acuerto al subtotal de la orden [USER_ID: ${req.user_id} | ORDER_PRICE: ${req.params.orderPrice}]`
+      );
+      res.json({ obtained: true, coupons: coupons });
+    }
+  },
 };
