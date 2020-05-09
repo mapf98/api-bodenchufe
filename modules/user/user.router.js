@@ -14,7 +14,13 @@ router.get(
   userController.getAllUsers
 );
 
-router.use(auth.validateToken);
+router.put("/", userController.updateUserPersonalInfo);
+
+router.patch(
+  "/changePassword",
+  userController.validatePasswords,
+  userController.updatePassword
+);
 
 router.patch("/disableMe", userController.disableMyAccount);
 
@@ -46,7 +52,7 @@ router.get(
 );
 
 router.post(
-  "/deliveryAddress/:userId",
+  "/deliveryAddress",
   auth.validateToken,
   userController.addDeliveryAddress
 );
@@ -56,12 +62,12 @@ router.patch(
   deliveryAddressController.changeAddressStatus
 );
 
-router.get("/orders", orderController.getUserOrders);
-
 router.put(
   "/deliveryAddress/:deliveryAddressId",
   auth.validateToken,
   userController.updateDeliveryAddress
 );
+
+router.get("/orders", orderController.getUserOrders);
 
 module.exports = router;
