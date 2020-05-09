@@ -16,7 +16,10 @@ function createToken(user) {
 
 function validateToken(req, res, next) {
   if (!req.headers.authorization) {
-    return res.status(403).send({ message: "Acceso denegado" });
+    logger.error(`La petición actual no maneja ningún tipo de autorización`);
+    return res
+      .status(403)
+      .json({ message: "Acceso denegado", validated: false });
   }
 
   const token = req.headers.authorization.split(" ")[1];
@@ -25,17 +28,26 @@ function validateToken(req, res, next) {
   try {
     payload = jwt.decode(token, process.env.SECRET_TOKEN);
   } catch (error) {
-    logger.error("Se proporcionó un token no válido como mecanismo de acceso");
-    next(createError(500, "El token proporcionado no es válido"));
+    logger.error(
+      `Se proporcionó un token no válido como mecanismo de acceso (${error.message})`
+    );
+    res.json({
+      message: "Acceso denegado por token inválido",
+      validated: false,
+    });
+    return next(createError(500, "El token proporcionado no es válido"));
   }
 
   const tokenExp = new Date(payload.exp);
   const actualDate = new Date(moment());
 
   if (tokenExp <= actualDate) {
-    return res.status(401).send({ message: "Token expirado" });
+    logger.error(`El token proporcionado ha expirado`);
+    return res
+      .status(401)
+      .json({ message: "Token expirado", validated: false });
   } else {
-    logger.info("Se validó el token de acceso");
+    logger.info("Se validó el token de acceso satisfactoriamente");
     req.user_id = payload.user_id;
     req.user_role = payload.user_role;
   }
@@ -45,9 +57,23 @@ function validateToken(req, res, next) {
 function restrictTo(...roles) {
   return (req, res, next) => {
     if (!roles.includes(req.user_role)) {
-      res.status(403).json({ message: "No authorized" });
+      logger.error(
+        `Ruta no autorizada para el rol actual [ROL_NAME: ${req.user_role}]`
+      );
+      res.status(403).json({
+        message: `Ruta no autorizada para el rol actual [ROL_NAME: ${req.user_role}]`,
+        validated: true,
+        authorized: false,
+      });
       return next(
-        createError(403, "No posees permisos para realizar esta accion")
+        createError(
+          403,
+          `El rol actual no posee los permisos necesarios para realizar la acción [ROL_NAME: ${req.user_role}]`
+        )
+      );
+    } else {
+      logger.info(
+        `Ruta autorizada para el rol actual [ROL_NAME: ${req.user_role}] y token válido de acceso`
       );
     }
     next();

@@ -26,52 +26,61 @@ module.exports = {
   },
   disableMyAccount: async (req, res, next) => {
     let user = await userModel.updateStatusAccount(req);
-    if (user instanceof Error) {
-      logger.error("Error en modulo user (PATCH /disableMe)");
+    if (user instanceof Error || user.rowCount == 0) {
+      logger.error(
+        "Error en módulo user (PATCH /user/disableMe - disableMyAccount())"
+      );
+      res.json({ disabled: false });
       return next(
         createError(
           500,
-          `Error al desactivar la cuenta del usuario (${user.message})`
+          `Error al desactivar la cuenta de un usuario [USER_ID: ${req.user_id}] (${user.message})`
         )
       );
     }
 
-    logger.info("Cuenta del usuario desactivada");
-    res.json({
-      status: "success",
-    });
+    logger.info(
+      `Cuenta del usuario desactivada satisfactoriamente [USER_ID: ${req.user_id}]`
+    );
+    res.json({ disabled: true });
   },
   activateAccount: async (req, res, next) => {
     let user = await userModel.activateAccount(req);
-    if (user instanceof Error) {
-      logger.error("Error en modulo user (PATCH /activateAccount/:userId)");
+    if (user instanceof Error || user.rowCount == 0) {
+      logger.error(
+        "Error en módulo user (PATCH /user/activateAccount/:userId - activateAccount())"
+      );
+      res.json({ activated: false });
       return next(
         createError(
           500,
-          `Error al activar la cuenta del usuario (${user.message})`
+          `Error al activar la cuenta del usuario [USER_ID: ${req.user_id}] (${user.message})`
         )
       );
     }
-    logger.info("Cuenta del usuario activada");
-    res.json({
-      status: "success",
-    });
+    logger.info(
+      `Cuenta del usuario activada satisfactoriamente [USER_ID: ${req.user_id}]`
+    );
+    res.json({ activated: true });
   },
   blockAccount: async (req, res, next) => {
     let user = await userModel.blockAccount(req);
-    if (user instanceof Error) {
-      logger.error("Error en modulo user (PATCH /blockAccount/:userId)");
+    if (user instanceof Error || user.rowCount == 0) {
+      logger.error(
+        "Error en módulo user (PATCH /user/blockAccount/:userId - blockAccount())"
+      );
+      res.json({ blocked: false });
       return next(
         createError(
           500,
-          `Error al bloquear la cuenta del usuario (${user.message})`
+          `Error al bloquear la cuenta del usuario [USER_ID: ${req.user_id}] (${user.message})`
         )
       );
     }
-    logger.info("Cuenta del usuario bloqueada");
-    res.json({
-      status: "success",
-    });
+    logger.info(
+      `Cuenta del usuario bloqueada satisfactoriamente [USER_ID: ${req.user_id}]`
+    );
+    res.json({ blocked: true });
   },
   getShoppingCart: async (req, res, next) => {
     let shoppingCart = await userModel.getShoppingCart(req);
@@ -253,7 +262,7 @@ module.exports = {
         req.body,
         req.params
       );
-      if (result instanceof Error) {
+      if (result instanceof Error || result.rowCount == 0) {
         logger.error(
           "Error en módulo user (PUT /user/deliveryAddress/:deliveryAddressId - updateDeliveryAddress())"
         );

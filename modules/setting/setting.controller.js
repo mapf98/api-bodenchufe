@@ -24,7 +24,7 @@ module.exports = {
 
   updateSettings: async (req, res, next) => {
     let result = await settingModel.updateSettings(req.con, req.body);
-    if (result instanceof Error) {
+    if (result instanceof Error || result.rowCount == 0) {
       logger.error(
         "Error en el módulo setting (PUT /setting - updateSettings())"
       );

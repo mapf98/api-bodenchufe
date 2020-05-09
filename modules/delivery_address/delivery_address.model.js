@@ -19,7 +19,7 @@ module.exports = {
   },
   updateAddressStatus: (req) => {
     return req.con
-      .query(
+      .result(
         `UPDATE EC_DELIVERY_ADDRESS SET fk_status_id = 
         (SELECT status_id FROM EC_STATUS WHERE status_name = '${req.body.status_name}')
         WHERE fk_user_id = ${req.user_id}

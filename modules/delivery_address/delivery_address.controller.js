@@ -28,7 +28,7 @@ module.exports = {
   },
   changeAddressStatus: async (req, res, next) => {
     let adresses = await deliveryAddressModel.updateAddressStatus(req);
-    if (adresses instanceof Error) {
+    if (adresses instanceof Error || adresses.rowCount == 0) {
       logger.error(
         "Error en módulo user (PATCH /deliveryAddress/:deliveryAddressId - changeAddressStatus())"
       );

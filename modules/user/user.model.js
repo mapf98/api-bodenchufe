@@ -11,7 +11,7 @@ module.exports = {
   },
   updateStatusAccount: (req) => {
     return req.con
-      .query(
+      .result(
         `UPDATE EC_USER SET FK_STATUS_ID = (SELECT S.STATUS_ID FROM EC_STATUS S
       WHERE S.STATUS_NAME = 'INACTIVE') WHERE USER_ID = ${req.user_id}`
       )
@@ -21,7 +21,7 @@ module.exports = {
   },
   activateAccount: (req) => {
     return req.con
-      .query(
+      .result(
         `UPDATE EC_USER SET FK_STATUS_ID = (SELECT S.STATUS_ID FROM EC_STATUS S
     WHERE S.STATUS_NAME = 'ACTIVE') WHERE USER_ID = ${req.params.userId}`
       )
@@ -31,7 +31,7 @@ module.exports = {
   },
   blockAccount: (req) => {
     return req.con
-      .query(
+      .result(
         `UPDATE EC_USER SET FK_STATUS_ID = (SELECT S.STATUS_ID FROM EC_STATUS S
     WHERE S.STATUS_NAME = 'INACTIVE') WHERE USER_ID = ${req.params.userId}`
       )
