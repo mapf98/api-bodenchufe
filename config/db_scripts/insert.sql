@@ -123,11 +123,24 @@ fk_product_id, fk_offer_id, fk_status_id) VALUES (null,50.99 , 98 , 5, 10, (SELE
 
 /* USER */
 INSERT INTO EC_USER (user_first_name, user_first_lastname, user_second_name, user_second_lastname, user_birthdate, user_email, user_password, user_photo, fk_language_id, fk_rol_id, fk_status_id) 
-VALUES ('Diego', 'De Quintal', 'Alejandro', 'Nobrega', '1999-07-26', 'diego@ucab.com', 'test1234', 'foto', 1, 1, (SELECT status_id FROM EC_STATUS WHERE status_name = 'ACTIVE'));
+VALUES ('Diego', 'De Quintal', 'Alejandro', 'Nobrega', '1999-07-26', 'diego@ucab.com', 'user1234', 'foto', 1, 1, (SELECT status_id FROM EC_STATUS WHERE status_name = 'ACTIVE'));
 INSERT INTO EC_USER (user_first_name, user_first_lastname, user_second_name, user_second_lastname, user_birthdate, user_email, user_password, user_photo, fk_language_id, fk_rol_id, fk_status_id) 
-VALUES ('Alexander', 'Fernandez',null ,null , '1999-07-07', 'alexader@ucab.com', 'test1234', 'foto', 2, 1,  (SELECT status_id FROM EC_STATUS WHERE status_name = 'ACTIVE'));
+VALUES ('Alexander', 'Fernandez',null ,null , '1999-07-07', 'alexader@ucab.com', 'user1234', 'foto', 2, 1,  (SELECT status_id FROM EC_STATUS WHERE status_name = 'INACTIVE'));
 INSERT INTO EC_USER (user_first_name, user_first_lastname, user_second_name, user_second_lastname, user_birthdate, user_email, user_password, user_photo, fk_language_id, fk_rol_id, fk_status_id) 
-VALUES ('Miguel', 'Peña',null ,null , '1998-04-03', 'miguel@ucab.com', 'test1234', 'foto', 2, 1,  (SELECT status_id FROM EC_STATUS WHERE status_name = 'ACTIVE'));
+VALUES ('Miguel', 'Peña',null ,null , '1998-04-03', 'miguel@ucab.com', 'user1234', 'foto', 2, 1,  (SELECT status_id FROM EC_STATUS WHERE status_name = 'ACTIVE'));
+INSERT INTO EC_USER (user_first_name, user_first_lastname, user_second_name, user_second_lastname, user_birthdate, user_email, user_password, user_photo, fk_language_id, fk_rol_id, fk_status_id) 
+VALUES ('Alba', 'Sánchez', 'Sofía', 'Silvestre', '1999-01-31', 'albita@gmail.com', 'admin1234', 'foto', 2, 2, (SELECT status_id FROM EC_STATUS WHERE status_name = 'ACTIVE'));
+INSERT INTO EC_USER (user_first_name, user_first_lastname, user_second_name, user_second_lastname, user_birthdate, user_email, user_password, user_photo, fk_language_id, fk_rol_id, fk_status_id) 
+VALUES ('Carolina', 'Patiño', null, null, '1999-07-07', 'carolina@ucab.com', 'admin1234', 'foto', 1, 2, (SELECT status_id FROM EC_STATUS WHERE status_name = 'ACTIVE'));
+INSERT INTO EC_USER (user_first_name, user_first_lastname, user_second_name, user_second_lastname, user_birthdate, user_email, user_password, user_photo, fk_language_id, fk_rol_id, fk_status_id) 
+VALUES ('Vanessa', 'Apellido', 'Alejandra', null, '1998-04-03', 'vanessa@ucab.com', 'admin1234', 'foto', 2, 2, (SELECT status_id FROM EC_STATUS WHERE status_name = 'INACTIVE'));
+INSERT INTO EC_USER (user_first_name, user_first_lastname, user_second_name, user_second_lastname, user_birthdate, user_email, user_password, user_photo, fk_language_id, fk_rol_id, fk_status_id) 
+VALUES ('Rafael', 'Méndez', null, null, '1999-01-31', 'rafa@gmail.com', 'admin1234', 'foto', 2, 2, (SELECT status_id FROM EC_STATUS WHERE status_name = 'ACTIVE'));
+INSERT INTO EC_USER (user_first_name, user_first_lastname, user_second_name, user_second_lastname, user_birthdate, user_email, user_password, user_photo, fk_language_id, fk_rol_id, fk_status_id) 
+VALUES ('Gabriel', 'Ram', null, null, '1999-07-07', 'gabriel@ucab.com', 'admin1234', 'foto', 1, 2, (SELECT status_id FROM EC_STATUS WHERE status_name = 'INACTIVE'));
+INSERT INTO EC_USER (user_first_name, user_first_lastname, user_second_name, user_second_lastname, user_birthdate, user_email, user_password, user_photo, fk_language_id, fk_rol_id, fk_status_id) 
+VALUES ('Christian', 'Neira', null, null, '1998-04-03', 'christian@ucab.com', 'admin1234', 'foto', 2, 1, (SELECT status_id FROM EC_STATUS WHERE status_name = 'INACTIVE'));
+
 
 /* DELIVERY ADDRESS */
 INSERT INTO EC_DELIVERY_ADDRESS (delivery_address_primary_line, delivery_address_secondary_line, delivery_address_city, delivery_address_state, delivery_address_zip_code, delivery_address_aditional_info, delivery_address_security_code, delivery_address_locker_code, fk_user_id, fk_status_id) 
