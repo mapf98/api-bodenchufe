@@ -100,7 +100,6 @@ INSERT INTO EC_PRODUCT_PROVIDER (product_provider_description, product_provider_
 fk_product_id, fk_offer_id, fk_status_id) VALUES (null, 200, 50, 1, 2, null, (SELECT status_id FROM EC_STATUS WHERE status_name = 'ACTIVE'));
 INSERT INTO EC_PRODUCT_PROVIDER (product_provider_description, product_provider_price, product_provider_available_quantity, fk_provider_id,
 fk_product_id, fk_offer_id, fk_status_id) VALUES (null, 200, 50, 1, 4, null, (SELECT status_id FROM EC_STATUS WHERE status_name = 'ACTIVE'));
-
 INSERT INTO EC_PRODUCT_PROVIDER (product_provider_description, product_provider_price, product_provider_available_quantity, fk_provider_id,
 fk_product_id, fk_offer_id, fk_status_id) VALUES (null,2500.56 , 70, 5, 1, (SELECT offer_id FROM EC_OFFER WHERE offer_rate='10%'), (SELECT status_id FROM EC_STATUS WHERE status_name = 'INACTIVE'));
 INSERT INTO EC_PRODUCT_PROVIDER (product_provider_description, product_provider_price, product_provider_available_quantity, fk_provider_id,
