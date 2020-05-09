@@ -149,6 +149,26 @@ INSERT INTO EC_DELIVERY_ADDRESS (delivery_address_primary_line, delivery_address
 VALUES ('Po Box 1256', null ,'Medical Lake', 'WA', 99022, null, null, null, 2,  (SELECT status_id FROM EC_STATUS WHERE status_name = 'ACTIVE'));
 INSERT INTO EC_DELIVERY_ADDRESS (delivery_address_primary_line, delivery_address_secondary_line, delivery_address_city, delivery_address_state, delivery_address_zip_code, delivery_address_aditional_info, delivery_address_security_code, delivery_address_locker_code, fk_user_id, fk_status_id) 
 VALUES ('246 E Miller St', null ,'Newark', 'NY', 14513, null, null, null, 3, (SELECT status_id FROM EC_STATUS WHERE status_name = 'ACTIVE'));
+INSERT INTO EC_DELIVERY_ADDRESS (delivery_address_primary_line, delivery_address_secondary_line, delivery_address_city, delivery_address_state, delivery_address_zip_code, delivery_address_aditional_info, delivery_address_security_code, delivery_address_locker_code, fk_user_id, fk_status_id) 
+VALUES ('246 E Miller St', null ,'Newark', 'NY', 14513, null, null, null, 3, (SELECT status_id FROM EC_STATUS WHERE status_name = 'ACTIVE'));
+INSERT INTO EC_DELIVERY_ADDRESS (delivery_address_primary_line, delivery_address_secondary_line, delivery_address_city, delivery_address_state, delivery_address_zip_code, delivery_address_aditional_info, delivery_address_security_code, delivery_address_locker_code, fk_user_id, fk_status_id) 
+VALUES ('5724 176th Dr SE', null, 'Snohomish', 'WA', 98290, null, null, null, 1,  (SELECT status_id FROM EC_STATUS WHERE status_name = 'ACTIVE'));
+INSERT INTO EC_DELIVERY_ADDRESS (delivery_address_primary_line, delivery_address_secondary_line, delivery_address_city, delivery_address_state, delivery_address_zip_code, delivery_address_aditional_info, delivery_address_security_code, delivery_address_locker_code, fk_user_id, fk_status_id) 
+VALUES ('Po Box 1256', null ,'Medical Lake', 'WA', 99022, null, null, null, 2,  (SELECT status_id FROM EC_STATUS WHERE status_name = 'INACTIVE'));
+INSERT INTO EC_DELIVERY_ADDRESS (delivery_address_primary_line, delivery_address_secondary_line, delivery_address_city, delivery_address_state, delivery_address_zip_code, delivery_address_aditional_info, delivery_address_security_code, delivery_address_locker_code, fk_user_id, fk_status_id) 
+VALUES ('246 E Miller St', null ,'Newark', 'NY', 14513, null, null, null, 3, (SELECT status_id FROM EC_STATUS WHERE status_name = 'ACTIVE'));
+INSERT INTO EC_DELIVERY_ADDRESS (delivery_address_primary_line, delivery_address_secondary_line, delivery_address_city, delivery_address_state, delivery_address_zip_code, delivery_address_aditional_info, delivery_address_security_code, delivery_address_locker_code, fk_user_id, fk_status_id) 
+VALUES ('5724 176th Dr SE', null, 'Snohomish', 'WA', 98290, null, null, null, 4,  (SELECT status_id FROM EC_STATUS WHERE status_name = 'INACTIVE'));
+INSERT INTO EC_DELIVERY_ADDRESS (delivery_address_primary_line, delivery_address_secondary_line, delivery_address_city, delivery_address_state, delivery_address_zip_code, delivery_address_aditional_info, delivery_address_security_code, delivery_address_locker_code, fk_user_id, fk_status_id) 
+VALUES ('Po Box 1256', null ,'Medical Lake', 'WA', 99022, null, null, null, 5,  (SELECT status_id FROM EC_STATUS WHERE status_name = 'ACTIVE'));
+INSERT INTO EC_DELIVERY_ADDRESS (delivery_address_primary_line, delivery_address_secondary_line, delivery_address_city, delivery_address_state, delivery_address_zip_code, delivery_address_aditional_info, delivery_address_security_code, delivery_address_locker_code, fk_user_id, fk_status_id) 
+VALUES ('246 E Miller St', null ,'Newark', 'NY', 14513, null, null, null, 6, (SELECT status_id FROM EC_STATUS WHERE status_name = 'ACTIVE'));
+INSERT INTO EC_DELIVERY_ADDRESS (delivery_address_primary_line, delivery_address_secondary_line, delivery_address_city, delivery_address_state, delivery_address_zip_code, delivery_address_aditional_info, delivery_address_security_code, delivery_address_locker_code, fk_user_id, fk_status_id) 
+VALUES ('5724 176th Dr SE', null, 'Snohomish', 'WA', 98290, null, null, null, 7,  (SELECT status_id FROM EC_STATUS WHERE status_name = 'INACTIVE'));
+INSERT INTO EC_DELIVERY_ADDRESS (delivery_address_primary_line, delivery_address_secondary_line, delivery_address_city, delivery_address_state, delivery_address_zip_code, delivery_address_aditional_info, delivery_address_security_code, delivery_address_locker_code, fk_user_id, fk_status_id) 
+VALUES ('Po Box 1256', null ,'Medical Lake', 'WA', 99022, null, null, null, 8,  (SELECT status_id FROM EC_STATUS WHERE status_name = 'INACTIVE'));
+INSERT INTO EC_DELIVERY_ADDRESS (delivery_address_primary_line, delivery_address_secondary_line, delivery_address_city, delivery_address_state, delivery_address_zip_code, delivery_address_aditional_info, delivery_address_security_code, delivery_address_locker_code, fk_user_id, fk_status_id) 
+VALUES ('246 E Miller St', null ,'Newark', 'NY', 14513, null, null, null, 9, (SELECT status_id FROM EC_STATUS WHERE status_name = 'ACTIVE'));
 
 /* COUPON */
 INSERT INTO EC_COUPON (coupon_name, coupon_discount_rate, coupon_min_use, coupon_max_use, fk_user_id, fk_status_id) 
@@ -178,7 +198,6 @@ INSERT INTO EC_PRODUCT_PROVIDER_ORDER (product_provider_order_quantity, fk_produ
 VALUES (2, 2, 1, null, (SELECT status_id FROM EC_STATUS WHERE status_name = 'SELECTED'));
 INSERT INTO EC_PRODUCT_PROVIDER_ORDER (product_provider_order_quantity, fk_product_provider_id, fk_user_id, fk_order_id, fk_status_id) 
 VALUES (1, 3, 1, null, (SELECT status_id FROM EC_STATUS WHERE status_name = 'UNSELECTED'));
-
 
 /* QUALIFICATION */
 INSERT INTO EC_QUALIFICATION (qualification_commentary, qualification_stars, fk_product_provider_id, fk_user_id)
