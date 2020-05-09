@@ -210,11 +210,18 @@ VALUES ('Welcome coupon', '15%', 100, 300, 8, (SELECT status_id FROM EC_STATUS W
 INSERT INTO EC_COUPON (coupon_name, coupon_discount_rate, coupon_min_use, coupon_max_use, fk_user_id, fk_status_id) 
 VALUES ('Welcome coupon', '15%', 100, 300, 9, (SELECT status_id FROM EC_STATUS WHERE status_name = 'UNAVAILABLE'));
 
+
+
 /* ORDER */
 INSERT INTO EC_ORDER (order_date, order_amount_dollars, order_weight, order_cryptocurrency_type, order_amount_cryptocurrency, fk_delivery_address_id, fk_status_id, fk_coupon_id) 
 VALUES ('2020-01-31', 3772.97, 40, 'BTC', 0.4, 1, (SELECT status_id FROM EC_STATUS WHERE status_name = 'PAID'), null);
 INSERT INTO EC_ORDER (order_date, order_amount_dollars, order_weight, order_cryptocurrency_type, order_amount_cryptocurrency, fk_delivery_address_id, fk_status_id, fk_coupon_id) 
 VALUES ('2020-03-31', 3399.98, 40, 'ETH', 15 , 1, (SELECT status_id FROM EC_STATUS WHERE status_name = 'PAID'), null);
+INSERT INTO EC_ORDER (order_date, order_amount_dollars, order_weight, order_cryptocurrency_type, order_amount_cryptocurrency, fk_delivery_address_id, fk_status_id, fk_coupon_id) 
+VALUES ('2020-01-31', 32699.97, 40, 'BTC', 2, 1, (SELECT status_id FROM EC_STATUS WHERE status_name = 'PAID'), null);
+INSERT INTO EC_ORDER (order_date, order_amount_dollars, order_weight, order_cryptocurrency_type, order_amount_cryptocurrency, fk_delivery_address_id, fk_status_id, fk_coupon_id) 
+VALUES ('2020-03-31', 33990.98, 40, 'ETH', 150 , 1, (SELECT status_id FROM EC_STATUS WHERE status_name = 'PAID'), null);
+
 
 /* PRODUCT_PROVIDER_ORDER */
 
@@ -227,9 +234,14 @@ VALUES (2, 2, 1, 2, (SELECT status_id FROM EC_STATUS WHERE status_name = 'PAID')
 INSERT INTO EC_PRODUCT_PROVIDER_ORDER (product_provider_order_quantity, fk_product_provider_id, fk_user_id, fk_order_id, fk_status_id) 
 VALUES (1, 3, 1, 2, (SELECT status_id FROM EC_STATUS WHERE status_name = 'PAID'));
 INSERT INTO EC_PRODUCT_PROVIDER_ORDER (product_provider_order_quantity, fk_product_provider_id, fk_user_id, fk_order_id, fk_status_id) 
-VALUES (2, 2, 1, null, (SELECT status_id FROM EC_STATUS WHERE status_name = 'SELECTED'));
+VALUES (3, 2, 2, 3, (SELECT status_id FROM EC_STATUS WHERE status_name = 'PAID'));
 INSERT INTO EC_PRODUCT_PROVIDER_ORDER (product_provider_order_quantity, fk_product_provider_id, fk_user_id, fk_order_id, fk_status_id) 
-VALUES (1, 3, 1, null, (SELECT status_id FROM EC_STATUS WHERE status_name = 'UNSELECTED'));
+VALUES (2, 3, 2, 3, (SELECT status_id FROM EC_STATUS WHERE status_name = 'PAID'));
+INSERT INTO EC_PRODUCT_PROVIDER_ORDER (product_provider_order_quantity, fk_product_provider_id, fk_user_id, fk_order_id, fk_status_id) 
+VALUES (4, 2, 3, 4, (SELECT status_id FROM EC_STATUS WHERE status_name = 'PAID'));
+INSERT INTO EC_PRODUCT_PROVIDER_ORDER (product_provider_order_quantity, fk_product_provider_id, fk_user_id, fk_order_id, fk_status_id) 
+VALUES (5, 3, 3, 4, (SELECT status_id FROM EC_STATUS WHERE status_name = 'PAID'));
+
 
 /* QUALIFICATION */
 INSERT INTO EC_QUALIFICATION (qualification_commentary, qualification_stars, fk_product_provider_id, fk_user_id)
