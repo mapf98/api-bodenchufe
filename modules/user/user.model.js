@@ -193,4 +193,11 @@ module.exports = {
         return new Error(error);
       });
   },
+  getUserCoupons: (req) => {
+    return req.con
+      .query(`SELECT * FROM EC_COUPON WHERE fk_user_id = ${req.user_id}`)
+      .catch((error) => {
+        return new Error(error);
+      });
+  },
 };

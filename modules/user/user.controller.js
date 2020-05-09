@@ -339,4 +339,24 @@ module.exports = {
       res.json({ verified: false });
     }
   },
+  getUserCoupons: async (req, res, next) => {
+    coupons = await userModel.getUserCoupons(req);
+    if (coupons instanceof Error) {
+      logger.error(
+        "Error en módulo user (GET /user/coupon/:userId - getUserCoupons())"
+      );
+      res.json({ obtained: false });
+      next(
+        createError(
+          500,
+          `Error al agregar una dirección de entrega asociada a un usuario [USER_ID: ${req.user_id}] (${result.message})`
+        )
+      );
+    } else {
+      logger.info(
+        `Cupones obtenidos satisfactoriamente [USER_ID: ${req.user_id}]`
+      );
+      res.json({ obtained: true, coupons: coupons });
+    }
+  },
 };

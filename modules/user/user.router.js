@@ -75,5 +75,6 @@ router.put(
 );
 
 router.get("/orders", orderController.getUserOrders);
+router.get("/coupon", userController.getUserCoupons);
 
 module.exports = router;
