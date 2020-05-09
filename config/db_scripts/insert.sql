@@ -30,6 +30,10 @@ INSERT INTO EC_OFFER (offer_rate) VALUES ('70%');
 INSERT INTO EC_PROVIDER (provider_name, provider_description, fk_status_id) VALUES ('Techno Fan','We are a technology provider', (SELECT status_id FROM EC_STATUS WHERE status_name = 'ACTIVE'));
 INSERT INTO EC_PROVIDER (provider_name, provider_description, fk_status_id) VALUES ('All You Want','We are a provider', (SELECT status_id FROM EC_STATUS WHERE status_name = 'ACTIVE'));
 INSERT INTO EC_PROVIDER (provider_name, provider_description, fk_status_id) VALUES ('Mix Pro','We are a provider', (SELECT status_id FROM EC_STATUS WHERE status_name = 'ACTIVE'));
+INSERT INTO EC_PROVIDER (provider_name, provider_description, fk_status_id) VALUES ('Zara','We are a clothes provider', (SELECT status_id FROM EC_STATUS WHERE status_name = 'INACTIVE'));
+INSERT INTO EC_PROVIDER (provider_name, provider_description, fk_status_id) VALUES ('Pull Bear','We are a clothes provider', (SELECT status_id FROM EC_STATUS WHERE status_name = 'INACTIVE'));
+INSERT INTO EC_PROVIDER (provider_name, provider_description, fk_status_id) VALUES ('Corp Tum','We are a thing', (SELECT status_id FROM EC_STATUS WHERE status_name = 'INACTIVE'));
+
 
 /* CATEGORY */
 INSERT INTO EC_CATEGORY (category_name) VALUES ('Technology');
@@ -43,7 +47,21 @@ INSERT INTO EC_CATEGORY (category_name, fk_category_id) VALUES ('Apple', (SELECT
 INSERT INTO EC_CATEGORY (category_name, fk_category_id) VALUES ('Xiomi', (SELECT category_id FROM EC_CATEGORY WHERE category_name = 'Android'));
 INSERT INTO EC_CATEGORY (category_name, fk_category_id) VALUES ('Huawei', (SELECT category_id FROM EC_CATEGORY WHERE category_name = 'Android'));;
 INSERT INTO EC_CATEGORY (category_name) VALUES ('Clothes');
+INSERT INTO EC_CATEGORY (category_name, fk_category_id) VALUES ('Shirt', (SELECT category_id FROM EC_CATEGORY WHERE category_name = 'Clothes'));
+INSERT INTO EC_CATEGORY (category_name, fk_category_id) VALUES ('Pant', (SELECT category_id FROM EC_CATEGORY WHERE category_name = 'Clothes'));
+INSERT INTO EC_CATEGORY (category_name, fk_category_id) VALUES ('Dress', (SELECT category_id FROM EC_CATEGORY WHERE category_name = 'Clothes'));
+INSERT INTO EC_CATEGORY (category_name, fk_category_id) VALUES ('Shoes', (SELECT category_id FROM EC_CATEGORY WHERE category_name = 'Clothes'));
+INSERT INTO EC_CATEGORY (category_name, fk_category_id) VALUES ('Nike', (SELECT category_id FROM EC_CATEGORY WHERE category_name = 'Shoes'));
+INSERT INTO EC_CATEGORY (category_name, fk_category_id) VALUES ('Adidas', (SELECT category_id FROM EC_CATEGORY WHERE category_name = 'Shoes'));
+INSERT INTO EC_CATEGORY (category_name, fk_category_id) VALUES ('Puma', (SELECT category_id FROM EC_CATEGORY WHERE category_name = 'Shoes'));
+INSERT INTO EC_CATEGORY (category_name, fk_category_id) VALUES ('Gucchi', (SELECT category_id FROM EC_CATEGORY WHERE category_name = 'Dress'));
+INSERT INTO EC_CATEGORY (category_name, fk_category_id) VALUES ('Supreme', (SELECT category_id FROM EC_CATEGORY WHERE category_name = 'Shirt'));;
 INSERT INTO EC_CATEGORY (category_name) VALUES ('Home');
+INSERT INTO EC_CATEGORY (category_name, fk_category_id) VALUES ('Backyard', (SELECT category_id FROM EC_CATEGORY WHERE category_name = 'Home'));
+INSERT INTO EC_CATEGORY (category_name, fk_category_id) VALUES ('Garden', (SELECT category_id FROM EC_CATEGORY WHERE category_name = 'Home'));
+INSERT INTO EC_CATEGORY (category_name, fk_category_id) VALUES ('Kitchen', (SELECT category_id FROM EC_CATEGORY WHERE category_name = 'Home'));
+INSERT INTO EC_CATEGORY (category_name, fk_category_id) VALUES ('Fridge', (SELECT category_id FROM EC_CATEGORY WHERE category_name = 'Kitchen'));
+INSERT INTO EC_CATEGORY (category_name, fk_category_id) VALUES ('Microwave', (SELECT category_id FROM EC_CATEGORY WHERE category_name = 'Kitchen'));
 
 /* PRODUCT */
 INSERT INTO EC_PRODUCT (product_name, product_photo,product_description, product_long,
@@ -56,6 +74,17 @@ INSERT INTO EC_PRODUCT (product_name, product_photo,product_description, product
 product_height, product_width, fk_category_id) VALUES ('Samsung Smart TV', 'foto', 'This is a 60" TV', '70', '100', '220', (SELECT category_id FROM EC_CATEGORY WHERE category_name = 'TV'));
 INSERT INTO EC_PRODUCT (product_name, product_photo,product_description, product_long,
 product_height, product_width, fk_category_id) VALUES ('Asus Mass', 'foto', 'This is a 60" TV', '70', '100', '220', (SELECT category_id FROM EC_CATEGORY WHERE category_name = 'Asus'));
+INSERT INTO EC_PRODUCT (product_name, product_photo,product_description, product_long,
+product_height, product_width, fk_category_id) VALUES ('Adidas A30', 'foto', 'Soccer shoes', '10', '10', '30', (SELECT category_id FROM EC_CATEGORY WHERE category_name = 'Adidas'));
+INSERT INTO EC_PRODUCT (product_name, product_photo,product_description, product_long,
+product_height, product_width, fk_category_id) VALUES ('Nike mercurial', 'foto', 'Soccer shoes pro', '10', '15', '10', (SELECT category_id FROM EC_CATEGORY WHERE category_name = 'Nike'));
+INSERT INTO EC_PRODUCT (product_name, product_photo,product_description, product_long,
+product_height, product_width, fk_category_id) VALUES ('LG 350LPP', 'foto', 'Fridge K3 hyper', '50', '90', '70', (SELECT category_id FROM EC_CATEGORY WHERE category_name = 'Fridge'));
+INSERT INTO EC_PRODUCT (product_name, product_photo,product_description, product_long,
+product_height, product_width, fk_category_id) VALUES ('Garden keys', 'foto', 'Garden full top', '70', '100', '220', (SELECT category_id FROM EC_CATEGORY WHERE category_name = 'Garden'));
+INSERT INTO EC_PRODUCT (product_name, product_photo,product_description, product_long,
+product_height, product_width, fk_category_id) VALUES ('Supreme Shirt', 'foto', 'Rich shirt', '10', '10', '5', (SELECT category_id FROM EC_CATEGORY WHERE category_name = 'Supreme'));
+
 
 
 /* PRODUCT_PROVIDER */
