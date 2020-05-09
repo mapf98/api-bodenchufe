@@ -14,7 +14,7 @@ module.exports = {
   productOrderDetail: (con, order_id) => {
     return con
       .query(
-        `SELECT P.*, PPO.PRODUCT_PROVIDER_ORDER_QUANTITY 
+        `SELECT P.*, PPO.PRODUCT_PROVIDER_ORDER_QUANTITY, PP.PRODUCT_PROVIDER_ID
         FROM EC_PRODUCT P, EC_PRODUCT_PROVIDER PP, 
         EC_PRODUCT_PROVIDER_ORDER PPO
         WHERE P.PRODUCT_ID = PP.FK_PRODUCT_ID

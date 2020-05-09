@@ -203,4 +203,35 @@ module.exports = {
         return new Error(error);
       });
   },
+  getPurchasedProducts: (req) => {
+    return req.con
+      .query(
+        `SELECT FK_PRODUCT_PROVIDER_ID FROM EC_PRODUCT_PROVIDER_ORDER 
+        WHERE FK_STATUS_ID = (SELECT STATUS_ID FROM EC_STATUS WHERE STATUS_NAME = 'PAID')
+        AND FK_PRODUCT_PROVIDER_ID = ${req.params.productProviderId * 1}
+        AND FK_USER_ID = ${req.user_id}`
+      )
+      .catch((error) => {
+        return new Error(error);
+      });
+  },
+  createProductQualification: (req) => {
+    console.log(
+      req.body.qualification_commentary,
+      req.body.qualification_stars
+    );
+    return req.con
+      .query(
+        `INSERT INTO EC_QUALIFICATION 
+        (qualification_commentary, qualification_stars, fk_product_provider_id,fk_user_id) 
+        VALUES (
+        '${req.body.qualification_commentary}', 
+        ${req.body.qualification_stars},
+        ${req.params.productProviderId},
+        ${req.user_id})`
+      )
+      .catch((error) => {
+        return new Error(error);
+      });
+  },
 };
