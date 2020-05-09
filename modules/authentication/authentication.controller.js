@@ -14,9 +14,9 @@ module.exports = {
     });
   },
   logIn: async (req, res, next) => {
+    let email = await authenticationModel.verifyEmail(req.con, req.body);
     let result = await authenticationModel.logIn(req.con, req.body);
-
-    if (result instanceof Error) {
+    if (result instanceof Error || email instanceof Error) {
       logger.error(
         "Error en el módulo authentication (POST /authentication/login - logIn())"
       );
@@ -38,10 +38,13 @@ module.exports = {
           user: result,
         });
       } else {
-        if (result.length == 0) {
+        if (result.length == 0 && email.length != 0) {
           logger.error(
             `Combinación de correo electrónico y password incorrecta [USER EMAIL: ${req.body.user_email} | PASSWORD: ${req.body.user_password}]`
           );
+          res.json({ validated: false });
+        } else if (email.length == 0 && result.length == 0) {
+          logger.info(`El correo que ingresó no está registrado`);
           res.json({ validated: false });
         } else {
           logger.info(`Usuario bloqueado [USER EMAIL: ${req.body.user_email}]`);
