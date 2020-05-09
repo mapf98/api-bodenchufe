@@ -126,8 +126,10 @@ CREATE TABLE EC_DELIVERY_ADDRESS
 CREATE TABLE EC_COUPON
 (
     coupon_id SERIAL,
-    coupon_name VARCHAR(50) NOT NULL UNIQUE,
+    coupon_name VARCHAR(50) NOT NULL,
     coupon_discount_rate VARCHAR(10) NOT NULL,
+    coupon_min_use INTEGER NOT NULL,
+    coupon_max_use INTEGER NOT NULL,
     fk_status_id INTEGER NOT NULL,
     fk_user_id INTEGER,
     PRIMARY KEY (coupon_id),

@@ -25,7 +25,7 @@ module.exports = {
         '${body.user_email}', ${body.user_password}, '${body.user_photo}', 
         (SELECT language_id FROM EC_LANGUAGE WHERE language_name = '${body.language_name}'), 
         (SELECT rol_id FROM EC_ROL WHERE rol_name = '${body.rol_name}'), 
-        (SELECT status_id FROM EC_STATUS WHERE status_name = 'ACTIVE')) RETURNING user_first_name,user_first_lastname,user_email`
+        (SELECT status_id FROM EC_STATUS WHERE status_name = 'ACTIVE')) RETURNING user_id, user_first_name,user_first_lastname,user_email`
       )
       .catch((error) => {
         return new Error(error);
@@ -39,5 +39,9 @@ module.exports = {
       .catch((error) => {
         return new Error(error);
       });
+  },
+  addWelcomeCoupon: (con, userId) => {
+    return con.query(`INSERT INTO EC_COUPON (coupon_name, coupon_discount_rate, coupon_min_use, coupon_max_use, fk_status_id, fk_user_id)
+                      VALUES ('WelcomeCoupon', '15%', 100, 300, (SELECT status_id FROM EC_STATUS WHERE status_name = 'ACTIVE'), ${userId})`);
   },
 };
