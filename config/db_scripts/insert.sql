@@ -90,12 +90,12 @@ INSERT INTO EC_DELIVERY_ADDRESS (delivery_address_primary_line, delivery_address
 VALUES ('246 E Miller St', null ,'Newark', 'NY', 14513, null, null, null, 3, (SELECT status_id FROM EC_STATUS WHERE status_name = 'ACTIVE'));
 
 /* COUPON */
-INSERT INTO EC_COUPON (coupon_name, coupon_discount_rate, fk_user_id, fk_status_id) 
-VALUES ('Summer discount', '50%', 1, (SELECT status_id FROM EC_STATUS WHERE status_name = 'AVAILABLE'));
-INSERT INTO EC_COUPON (coupon_name, coupon_discount_rate, fk_user_id, fk_status_id) 
-VALUES ('BODEnchufe leal', '30%', 2, (SELECT status_id FROM EC_STATUS WHERE status_name = 'AVAILABLE'));
-INSERT INTO EC_COUPON (coupon_name, coupon_discount_rate, fk_user_id, fk_status_id) 
-VALUES ('Una escopeta para matar una mosca', '40%', 3, (SELECT status_id FROM EC_STATUS WHERE status_name = 'AVAILABLE'));
+INSERT INTO EC_COUPON (coupon_name, coupon_discount_rate, coupon_min_use, coupon_max_use, fk_user_id, fk_status_id) 
+VALUES ('Summer discount', '50%', 100, 200,1, (SELECT status_id FROM EC_STATUS WHERE status_name = 'AVAILABLE'));
+INSERT INTO EC_COUPON (coupon_name, coupon_discount_rate, coupon_min_use, coupon_max_use, fk_user_id, fk_status_id) 
+VALUES ('BODEnchufe leal', '30%', 200, 350, 2, (SELECT status_id FROM EC_STATUS WHERE status_name = 'AVAILABLE'));
+INSERT INTO EC_COUPON (coupon_name, coupon_discount_rate, coupon_min_use, coupon_max_use, fk_user_id, fk_status_id) 
+VALUES ('Una escopeta para matar una mosca', '40%', 300, 450, 3, (SELECT status_id FROM EC_STATUS WHERE status_name = 'AVAILABLE'));
 
 /* ORDER */
 INSERT INTO EC_ORDER (order_date, order_amount_dollars, order_weight, order_cryptocurrency_type, order_amount_cryptocurrency, fk_delivery_address_id, fk_status_id, fk_coupon_id) 

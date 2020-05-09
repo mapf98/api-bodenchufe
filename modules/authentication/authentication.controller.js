@@ -75,6 +75,7 @@ module.exports = {
   },
   signUp: async (req, res, next) => {
     let result = await authenticationModel.signUp(req.con, req.body);
+
     if (result instanceof Error) {
       logger.error(
         "Error en el módulo authentication (POST /authentication/signUp - signUp())"
@@ -88,6 +89,10 @@ module.exports = {
       );
     }
 
+    let addCouponToUser = await authenticationModel.addWelcomeCoupon(
+      req.con,
+      result[0].user_id
+    );
     new Email(result[0]).sendWelcome();
 
     logger.info(
