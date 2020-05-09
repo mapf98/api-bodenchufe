@@ -72,6 +72,26 @@ fk_product_id, fk_offer_id, fk_status_id) VALUES (null, 200, 50, 1, 2, null, (SE
 INSERT INTO EC_PRODUCT_PROVIDER (product_provider_description, product_provider_price, product_provider_available_quantity, fk_provider_id,
 fk_product_id, fk_offer_id, fk_status_id) VALUES (null, 200, 50, 1, 4, null, (SELECT status_id FROM EC_STATUS WHERE status_name = 'ACTIVE'));
 
+INSERT INTO EC_PRODUCT_PROVIDER (product_provider_description, product_provider_price, product_provider_available_quantity, fk_provider_id,
+fk_product_id, fk_offer_id, fk_status_id) VALUES (null,2500.56 , 70, 5, 1, (SELECT offer_id FROM EC_OFFER WHERE offer_rate='10%'), (SELECT status_id FROM EC_STATUS WHERE status_name = 'INACTIVE'));
+INSERT INTO EC_PRODUCT_PROVIDER (product_provider_description, product_provider_price, product_provider_available_quantity, fk_provider_id,
+fk_product_id, fk_offer_id, fk_status_id) VALUES (null,400.99 , 41 , 6, 2, null, (SELECT status_id FROM EC_STATUS WHERE status_name = 'ACTIVE'));
+INSERT INTO EC_PRODUCT_PROVIDER (product_provider_description, product_provider_price, product_provider_available_quantity, fk_provider_id,
+fk_product_id, fk_offer_id, fk_status_id) VALUES (null,390.10 , 1 , 4, 3, (SELECT offer_id FROM EC_OFFER WHERE offer_rate='50%'), (SELECT status_id FROM EC_STATUS WHERE status_name = 'INACTIVE'));
+INSERT INTO EC_PRODUCT_PROVIDER (product_provider_description, product_provider_price, product_provider_available_quantity, fk_provider_id,
+fk_product_id, fk_offer_id, fk_status_id) VALUES (null,550, 2 , 3, 4, null, (SELECT status_id FROM EC_STATUS WHERE status_name = 'ACTIVE'));
+INSERT INTO EC_PRODUCT_PROVIDER (product_provider_description, product_provider_price, product_provider_available_quantity, fk_provider_id,
+fk_product_id, fk_offer_id, fk_status_id) VALUES (null,100 , 30 , 2, 5, (SELECT offer_id FROM EC_OFFER WHERE offer_rate='70%'), (SELECT status_id FROM EC_STATUS WHERE status_name = 'ACTIVE'));
+INSERT INTO EC_PRODUCT_PROVIDER (product_provider_description, product_provider_price, product_provider_available_quantity, fk_provider_id,
+fk_product_id, fk_offer_id, fk_status_id) VALUES (null,99.99 , 69 , 1, 6, null, (SELECT status_id FROM EC_STATUS WHERE status_name = 'INACTIVE'));
+INSERT INTO EC_PRODUCT_PROVIDER (product_provider_description, product_provider_price, product_provider_available_quantity, fk_provider_id,
+fk_product_id, fk_offer_id, fk_status_id) VALUES (null,7520 , 99 , 2, 7, (SELECT offer_id FROM EC_OFFER WHERE offer_rate='10%'), (SELECT status_id FROM EC_STATUS WHERE status_name = 'ACTIVE'));
+INSERT INTO EC_PRODUCT_PROVIDER (product_provider_description, product_provider_price, product_provider_available_quantity, fk_provider_id,
+fk_product_id, fk_offer_id, fk_status_id) VALUES (null,999.89 , 75, 3, 8, (SELECT offer_id FROM EC_OFFER WHERE offer_rate='40%'), (SELECT status_id FROM EC_STATUS WHERE status_name = 'ACTIVE'));
+INSERT INTO EC_PRODUCT_PROVIDER (product_provider_description, product_provider_price, product_provider_available_quantity, fk_provider_id,
+fk_product_id, fk_offer_id, fk_status_id) VALUES (null,780 , 66 , 4, 9, null, (SELECT status_id FROM EC_STATUS WHERE status_name = 'INACTIVE'));
+INSERT INTO EC_PRODUCT_PROVIDER (product_provider_description, product_provider_price, product_provider_available_quantity, fk_provider_id,
+fk_product_id, fk_offer_id, fk_status_id) VALUES (null,50.99 , 98 , 5, 10, (SELECT offer_id FROM EC_OFFER WHERE offer_rate='90%'), (SELECT status_id FROM EC_STATUS WHERE status_name = 'ACTIVE'));
 
 /* USER */
 INSERT INTO EC_USER (user_first_name, user_first_lastname, user_second_name, user_second_lastname, user_birthdate, user_email, user_password, user_photo, fk_language_id, fk_rol_id, fk_status_id) 
