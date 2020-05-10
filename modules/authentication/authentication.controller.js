@@ -20,17 +20,18 @@ module.exports = {
       logger.error(
         "Error en el módulo authentication (POST /authentication/login - logIn())"
       );
+      res.json({validated: false});
       next(
         createError(
           500,
-          `Error en inicio de sesión [USER EMAIL: ${req.body.user_email} | PASSWORD: ${req.body.user_password}] (${result.message})`
+          `Error en inicio de sesión [USER_EMAIL: ${req.body.user_email} | PASSWORD: ${req.body.user_password}] (${result.message})`
         )
       );
     } else {
       if (result[0] && result[0].status_name == "ACTIVE") {
         let token = auth.createToken(result[0]);
         logger.info(
-          `Inicio de sesión satisfactorio [USER EMAIL: ${req.body.user_email} | PASSWORD: ${req.body.user_password}]`
+          `Inicio de sesión satisfactorio [USER_EMAIL: ${req.body.user_email} | PASSWORD: ${req.body.user_password}]`
         );
         res.json({
           validated: true,
@@ -40,14 +41,14 @@ module.exports = {
       } else {
         if (result.length == 0 && email.length != 0) {
           logger.error(
-            `Combinación de correo electrónico y password incorrecta [USER EMAIL: ${req.body.user_email} | PASSWORD: ${req.body.user_password}]`
+            `Combinación de correo electrónico y password incorrecta [USER_EMAIL: ${req.body.user_email} | PASSWORD: ${req.body.user_password}]`
           );
           res.json({ validated: false });
         } else if (email.length == 0 && result.length == 0) {
-          logger.info(`El correo que ingresó no está registrado`);
-          res.json({ validated: false });
+          logger.info(`El correo que ingresó no está registrado [USER_EMAIL: ${req.body.user_email}]`);
+          res.json({ registered: false });
         } else {
-          logger.info(`Usuario bloqueado [USER EMAIL: ${req.body.user_email}]`);
+          logger.info(`Usuario bloqueado [USER_EMAIL: ${req.body.user_email}]`);
           res.json({ validated: false, blocked: true });
         }
       }
@@ -59,18 +60,19 @@ module.exports = {
       logger.error(
         "Error en el módulo authentication (POST /authentication/login - verifyEmail())"
       );
+      res.json({ available: false });
       next(
         createError(
           500,
-          `Error al verificar el correo [USER EMAIL: ${req.params.emailUser}] (${result.message})`
+          `Error al verificar el correo [USER_EMAIL: ${req.params.emailUser}] (${result.message})`
         )
       );
     } else {
       if (result.length >= 1) {
-        logger.info(`Correo registrado [USER EMAIL: ${req.params.emailUser}]`);
+        logger.info(`Correo registrado [USER_EMAIL: ${req.params.emailUser}]`);
         res.json({ available: false });
       } else {
-        logger.info(`Correo disponible [USER EMAIL: ${req.params.emailUser}]`);
+        logger.info(`Correo disponible [USER_EMAIL: ${req.params.emailUser}]`);
         res.json({ available: true });
       }
     }
@@ -86,7 +88,7 @@ module.exports = {
       return next(
         createError(
           500,
-          `Error en el registro de usuario [USER EMAIL: ${req.body.user_email}] (${result.message})`
+          `Error en el registro de usuario [USER_EMAIL: ${req.body.user_email}] (${result.message})`
         )
       );
     }
@@ -98,7 +100,7 @@ module.exports = {
     new Email(result[0]).sendWelcome();
 
     logger.info(
-      `Usuario registrado satisfactoriamente [USER EMAIL: ${req.body.user_email}]`
+      `Usuario registrado satisfactoriamente [USER_EMAIL: ${req.body.user_email}]`
     );
     res.json({ registered: true });
   },
