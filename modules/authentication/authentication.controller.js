@@ -20,7 +20,7 @@ module.exports = {
       logger.error(
         "Error en el módulo authentication (POST /authentication/login - logIn())"
       );
-      res.json({validated: false});
+      res.json({ validated: false });
       next(
         createError(
           500,
@@ -45,7 +45,9 @@ module.exports = {
           );
           res.json({ validated: false });
         } else if (email.length == 0 && result.length == 0) {
-          logger.info(`El correo que ingresó no está registrado [USER_EMAIL: ${req.body.user_email}]`);
+          logger.info(
+            `El correo que ingresó no está registrado [USER_EMAIL: ${req.body.user_email}]`
+          );
           res.json({ registered: false });
         } else {
           logger.info(`Usuario bloqueado [USER_EMAIL: ${req.body.user_email}]`);
