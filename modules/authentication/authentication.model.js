@@ -31,10 +31,10 @@ module.exports = {
         return new Error(error);
       });
   },
-  verifyEmail: (con, params) => {
+  verifyEmail: (con, body) => {
     return con
       .query(
-        `SELECT user_email FROM EC_USER WHERE user_email = '${params.emailUser}'`
+        `SELECT user_email FROM EC_USER WHERE user_email = '${body.user_email}'`
       )
       .catch((error) => {
         return new Error(error);

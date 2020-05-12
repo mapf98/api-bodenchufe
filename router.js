@@ -10,6 +10,7 @@ const providerRouter = require("./modules/provider/provider.router");
 const settingRouter = require("./modules/setting/setting.router");
 const userRouter = require("./modules/user/user.router");
 const authenticationRouter = require("./modules/authentication/authentication.router");
+const languageRouter = require("./modules/language/language.router");
 
 router.use("/category", categoryRouter);
 router.use("/coupon", couponRouter);
@@ -21,5 +22,6 @@ router.use("/provider", providerRouter);
 router.use("/setting", settingRouter);
 router.use("/user", userRouter);
 router.use("/authentication", authenticationRouter);
+router.use("/language", languageRouter);
 
 module.exports = router;
