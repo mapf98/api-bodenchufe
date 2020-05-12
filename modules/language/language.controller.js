@@ -20,7 +20,7 @@ module.exports = {
       next(
         createError(
           500,
-          `Error al obetener la traducción correspondiente para los textos en un idioma [LANGUAGE: ${req.params.language}] (${result.message})`
+          `Error al obetener la traducción correspondiente para los textos en un idioma [LANGUAGE: ${req.params.language}] (${texts.message})`
         )
       );
     } else {
