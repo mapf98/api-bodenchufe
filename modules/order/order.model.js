@@ -81,4 +81,57 @@ module.exports = {
         return new Error(error);
       });
   },
+  createUserOrder: async (req) => {
+    let f = new Date();
+    let year = f.getFullYear();
+    let month = f.getMonth();
+    let day = f.getDate();
+    let fecha_actual = year + "-" + month + "-" + day;
+
+    let order_weight =
+      req.orderDetail.orderSummary.total_volumetric_weight.split(" ")[0] * 1;
+    return req.con
+      .query(
+        `INSERT INTO EC_ORDER (order_date, order_amount_dollars, order_weight,
+         fk_delivery_address_id, fk_status_id, fk_coupon_id) 
+         VALUES ('${fecha_actual}' , ${req.orderDetail.orderSummary.total}, 
+          ${order_weight}, ${req.body.delivery_address_id},
+          (SELECT STATUS_ID FROM EC_STATUS WHERE STATUS_NAME= 'IN PROCESS'), 
+          ${req.body.coupon_id ? req.body.coupon_id : null}) RETURNING ORDER_ID`
+      )
+      .catch((error) => {
+        return new Error(error);
+      });
+  },
+  addOrderIdToProductProviderOrder: async (req, order_id) => {
+    return req.con
+      .query(
+        `UPDATE EC_PRODUCT_PROVIDER_ORDER SET FK_ORDER_ID = ${order_id}
+        WHERE FK_STATUS_ID = (SELECT STATUS_ID FROM EC_STATUS WHERE STATUS_NAME = 'IN PROCESS')`
+      )
+      .catch((error) => {
+        return new Error(error);
+      });
+  },
+  updateStatusOrderProducts: async (con, order_id, status) => {
+    return con
+      .query(
+        `UPDATE EC_PRODUCT_PROVIDER_ORDER SET FK_STATUS_ID = 
+      (SELECT STATUS_ID FROM EC_STATUS WHERE STATUS_NAME = '${status}') 
+      WHERE FK_ORDER_ID = ${order_id}`
+      )
+      .catch((error) => {
+        return new Error(error);
+      });
+  },
+  updateStatusUserOrder: async (con, order_id, status) => {
+    return con
+      .query(
+        `UPDATE EC_ORDER SET FK_STATUS_ID = (SELECT STATUS_ID FROM EC_STATUS WHERE STATUS_NAME = '${status}') 
+      WHERE ORDER_ID = ${order_id}`
+      )
+      .catch((error) => {
+        return new Error(error);
+      });
+  },
 };

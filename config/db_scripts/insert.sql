@@ -9,6 +9,9 @@ INSERT INTO EC_STATUS (status_name) VALUES ('REJECTED');
 INSERT INTO EC_STATUS (status_name) VALUES ('AVAILABLE');
 INSERT INTO EC_STATUS (status_name) VALUES ('UNAVAILABLE');
 
+/*SETTING*/
+INSERT INTO EC_SETTING (setting_payment_processor, setting_service_commission) VALUES('0.25$', '1.75%');
+
 /* ROL */
 INSERT INTO EC_ROL (rol_name) VALUES ('administrator');
 INSERT INTO EC_ROL (rol_name) VALUES ('user');
@@ -125,7 +128,7 @@ fk_product_id, fk_offer_id, fk_status_id) VALUES (null,50.99 , 98 , 5, 10, (SELE
 INSERT INTO EC_USER (user_first_name, user_first_lastname, user_second_name, user_second_lastname, user_birthdate, user_email, user_password, user_photo, fk_language_id, fk_rol_id, fk_status_id) 
 VALUES ('Diego', 'De Quintal', 'Alejandro', 'Nobrega', '1999-07-26', 'diego@ucab.com', 'user1234', 'foto', 1, 1, (SELECT status_id FROM EC_STATUS WHERE status_name = 'ACTIVE'));
 INSERT INTO EC_USER (user_first_name, user_first_lastname, user_second_name, user_second_lastname, user_birthdate, user_email, user_password, user_photo, fk_language_id, fk_rol_id, fk_status_id) 
-VALUES ('Alexander', 'Fernandez',null ,null , '1999-07-07', 'alexader@ucab.com', 'user1234', 'foto', 2, 1,  (SELECT status_id FROM EC_STATUS WHERE status_name = 'INACTIVE'));
+VALUES ('Alexander', 'Fernandez',null ,null , '1999-07-07', 'alexander@ucab.com', 'user1234', 'foto', 2, 1,  (SELECT status_id FROM EC_STATUS WHERE status_name = 'INACTIVE'));
 INSERT INTO EC_USER (user_first_name, user_first_lastname, user_second_name, user_second_lastname, user_birthdate, user_email, user_password, user_photo, fk_language_id, fk_rol_id, fk_status_id) 
 VALUES ('Miguel', 'Peña',null ,null , '1998-04-03', 'miguel@ucab.com', 'user1234', 'foto', 2, 1,  (SELECT status_id FROM EC_STATUS WHERE status_name = 'ACTIVE'));
 INSERT INTO EC_USER (user_first_name, user_first_lastname, user_second_name, user_second_lastname, user_birthdate, user_email, user_password, user_photo, fk_language_id, fk_rol_id, fk_status_id) 
@@ -213,14 +216,14 @@ VALUES ('Welcome coupon', '15%', 100, 300, 9, (SELECT status_id FROM EC_STATUS W
 
 
 /* ORDER */
-INSERT INTO EC_ORDER (order_date, order_amount_dollars, order_weight, order_cryptocurrency_type, order_amount_cryptocurrency, fk_delivery_address_id, fk_status_id, fk_coupon_id) 
-VALUES ('2020-01-31', 3772.97, 40, 'BTC', 0.4, 1, (SELECT status_id FROM EC_STATUS WHERE status_name = 'PAID'), null);
-INSERT INTO EC_ORDER (order_date, order_amount_dollars, order_weight, order_cryptocurrency_type, order_amount_cryptocurrency, fk_delivery_address_id, fk_status_id, fk_coupon_id) 
-VALUES ('2020-03-31', 3399.98, 40, 'ETH', 15 , 1, (SELECT status_id FROM EC_STATUS WHERE status_name = 'PAID'), null);
-INSERT INTO EC_ORDER (order_date, order_amount_dollars, order_weight, order_cryptocurrency_type, order_amount_cryptocurrency, fk_delivery_address_id, fk_status_id, fk_coupon_id) 
-VALUES ('2020-01-31', 32699.97, 40, 'BTC', 2, 1, (SELECT status_id FROM EC_STATUS WHERE status_name = 'PAID'), null);
-INSERT INTO EC_ORDER (order_date, order_amount_dollars, order_weight, order_cryptocurrency_type, order_amount_cryptocurrency, fk_delivery_address_id, fk_status_id, fk_coupon_id) 
-VALUES ('2020-03-31', 33990.98, 40, 'ETH', 150 , 1, (SELECT status_id FROM EC_STATUS WHERE status_name = 'PAID'), null);
+INSERT INTO EC_ORDER (order_date, order_amount_dollars, order_weight, fk_delivery_address_id, fk_status_id, fk_coupon_id) 
+VALUES ('2020-01-31', 3772.97, 40, 1, (SELECT status_id FROM EC_STATUS WHERE status_name = 'PAID'), null);
+INSERT INTO EC_ORDER (order_date, order_amount_dollars, order_weight, fk_delivery_address_id, fk_status_id, fk_coupon_id) 
+VALUES ('2020-03-31', 3399.98, 40, 1, (SELECT status_id FROM EC_STATUS WHERE status_name = 'PAID'), null);
+INSERT INTO EC_ORDER (order_date, order_amount_dollars, order_weight, fk_delivery_address_id, fk_status_id, fk_coupon_id) 
+VALUES ('2020-01-31', 32699.97, 40, 1, (SELECT status_id FROM EC_STATUS WHERE status_name = 'PAID'), null);
+INSERT INTO EC_ORDER (order_date, order_amount_dollars, order_weight, fk_delivery_address_id, fk_status_id, fk_coupon_id) 
+VALUES ('2020-03-31', 33990.98, 40, 1, (SELECT status_id FROM EC_STATUS WHERE status_name = 'PAID'), null);
 
 
 /* PRODUCT_PROVIDER_ORDER */
@@ -250,3 +253,4 @@ INSERT INTO EC_QUALIFICATION (qualification_commentary, qualification_stars, fk_
 VALUES ('Nice', 4, 1, 1);
 INSERT INTO EC_QUALIFICATION (qualification_commentary, qualification_stars, fk_product_provider_id, fk_user_id)
 VALUES ('Fine, ok', 2, 1, 1);
+
