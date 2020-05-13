@@ -14,24 +14,24 @@ module.exports = {
     });
   },
   logIn: async (req, res, next) => {
+    let email = await authenticationModel.verifyEmail(req.con, req.body);
     let result = await authenticationModel.logIn(req.con, req.body);
-
-    if (result instanceof Error) {
+    if (result instanceof Error || email instanceof Error) {
       logger.error(
         "Error en el módulo authentication (POST /authentication/login - logIn())"
       );
+      res.json({ validated: false });
       next(
         createError(
           500,
-          `Error en inicio de sesión [USER EMAIL: ${req.body.user_email} | PASSWORD: ${req.body.user_password}] (${result.message})`
+          `Error en inicio de sesión [USER_EMAIL: ${req.body.user_email} | PASSWORD: ${req.body.user_password}] (${result.message})`
         )
       );
     } else {
       if (result[0] && result[0].status_name == "ACTIVE") {
-        console.log(result[0]);
         let token = auth.createToken(result[0]);
         logger.info(
-          `Inicio de sesión satisfactorio [USER EMAIL: ${req.body.user_email} | PASSWORD: ${req.body.user_password}]`
+          `Inicio de sesión satisfactorio [USER_EMAIL: ${req.body.user_email} | PASSWORD: ${req.body.user_password}]`
         );
         res.json({
           validated: true,
@@ -39,13 +39,18 @@ module.exports = {
           user: result,
         });
       } else {
-        if (result.length == 0) {
+        if (result.length == 0 && email.length != 0) {
           logger.error(
-            `Combinación de correo electrónico y password incorrecta [USER EMAIL: ${req.body.user_email} | PASSWORD: ${req.body.user_password}]`
+            `Combinación de correo electrónico y password incorrecta [USER_EMAIL: ${req.body.user_email} | PASSWORD: ${req.body.user_password}]`
           );
           res.json({ validated: false });
+        } else if (email.length == 0 && result.length == 0) {
+          logger.info(
+            `El correo que ingresó no está registrado [USER_EMAIL: ${req.body.user_email}]`
+          );
+          res.json({ registered: false });
         } else {
-          logger.info(`Usuario bloqueado [USER EMAIL: ${req.body.user_email}]`);
+          logger.info(`Usuario bloqueado [USER_EMAIL: ${req.body.user_email}]`);
           res.json({ validated: false, blocked: true });
         }
       }
@@ -57,24 +62,26 @@ module.exports = {
       logger.error(
         "Error en el módulo authentication (POST /authentication/login - verifyEmail())"
       );
+      res.json({ available: false });
       next(
         createError(
           500,
-          `Error al verificar el correo [USER EMAIL: ${req.params.emailUser}] (${result.message})`
+          `Error al verificar el correo [USER_EMAIL: ${req.params.emailUser}] (${result.message})`
         )
       );
     } else {
       if (result.length >= 1) {
-        logger.info(`Correo registrado [USER EMAIL: ${req.params.emailUser}]`);
+        logger.info(`Correo registrado [USER_EMAIL: ${req.params.emailUser}]`);
         res.json({ available: false });
       } else {
-        logger.info(`Correo disponible [USER EMAIL: ${req.params.emailUser}]`);
+        logger.info(`Correo disponible [USER_EMAIL: ${req.params.emailUser}]`);
         res.json({ available: true });
       }
     }
   },
   signUp: async (req, res, next) => {
     let result = await authenticationModel.signUp(req.con, req.body);
+
     if (result instanceof Error) {
       logger.error(
         "Error en el módulo authentication (POST /authentication/signUp - signUp())"
@@ -83,15 +90,19 @@ module.exports = {
       return next(
         createError(
           500,
-          `Error en el registro de usuario [USER EMAIL: ${req.body.user_email}] (${result.message})`
+          `Error en el registro de usuario [USER_EMAIL: ${req.body.user_email}] (${result.message})`
         )
       );
     }
 
+    let addCouponToUser = await authenticationModel.addWelcomeCoupon(
+      req.con,
+      result[0].user_id
+    );
     new Email(result[0]).sendWelcome();
 
     logger.info(
-      `Usuario registrado satisfactoriamente [USER EMAIL: ${req.body.user_email}]`
+      `Usuario registrado satisfactoriamente [USER_EMAIL: ${req.body.user_email}]`
     );
     res.json({ registered: true });
   },

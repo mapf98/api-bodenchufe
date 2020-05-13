@@ -3,7 +3,7 @@ const router = express.Router();
 const userController = require("./user.controller");
 const auth = require("../../middlewares/auth");
 const deliveryAddressController = require("../delivery_address/delivery_address.controller");
-
+const productController = require("../product/product.controller");
 const orderController = require("../order/order.controller");
 
 router.use(auth.validateToken);
@@ -14,7 +14,13 @@ router.get(
   userController.getAllUsers
 );
 
-router.use(auth.validateToken);
+router.put("/", userController.updateUserPersonalInfo);
+
+router.patch(
+  "/changePassword",
+  userController.validatePasswords,
+  userController.updatePassword
+);
 
 router.patch("/disableMe", userController.disableMyAccount);
 
@@ -40,13 +46,19 @@ router.patch(
   userController.updateProductQuantity
 );
 
+router.post(
+  "/product/:productProviderId/qualification",
+  productController.purchasedProductsOfUser,
+  productController.rateProduct
+);
+
 router.get(
   "/deliveryAddress",
   deliveryAddressController.getAllDeliveryAddresses
 );
 
 router.post(
-  "/deliveryAddress/:userId",
+  "/deliveryAddress",
   auth.validateToken,
   userController.addDeliveryAddress
 );
@@ -56,12 +68,14 @@ router.patch(
   deliveryAddressController.changeAddressStatus
 );
 
-router.get("/orders", orderController.getUserOrders);
-
 router.put(
   "/deliveryAddress/:deliveryAddressId",
   auth.validateToken,
   userController.updateDeliveryAddress
 );
+
+router.get("/orders", orderController.getUserOrders);
+router.get("/coupon", userController.getUserCoupons);
+router.get("/order/coupon/:orderPrice", userController.getUserCouponsForOrders);
 
 module.exports = router;

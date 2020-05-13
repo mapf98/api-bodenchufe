@@ -22,6 +22,7 @@
   "homepage": "https://github.com/mapf98/api-bodenchufe#readme",
   "dependencies": {
     "@sendgrid/mail": "^7.1.0",
+    "axios": "^0.19.2",
     "body-parser": "^1.19.0",
     "chalk": "^4.0.0",
     "compression": "^1.7.4",
@@ -34,7 +35,9 @@
     "jwt-simple": "^0.5.6",
     "lob": "^6.1.0",
     "moment": "^2.25.3",
+    "ngrok": "^3.2.7",
     "pg-promise": "^10.5.3",
+    "request-promise": "^4.2.5",
     "winston": "^3.2.1"
   },
   "devDependencies": {
