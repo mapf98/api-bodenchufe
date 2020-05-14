@@ -12,7 +12,8 @@ module.exports = {
       AND PP.fk_provider_id = PR.provider_id
       AND PPO.fk_status_id in (SELECT status_id FROM EC_STATUS WHERE status_name in ('IN PROCESS'))
       AND PPO.fk_status_id = S.STATUS_ID
-      AND PPO.fk_user_id = ${req.user_id}`
+      AND PPO.fk_user_id = ${req.user_id}
+      AND PPO.FK_ORDER_ID IS NULL`
       )
       .catch((error) => {
         return new Error(error);

@@ -17,6 +17,8 @@ const paymentOrderDetail = async (req) => {
   let discount_coupon_amount = 0;
   let comissions_amount = 0;
 
+  if (detail.length === 0) return { message: "No hay productos a pagar" };
+
   detail.map((el, i) => {
     totalQuantity = totalQuantity + el.product_provider_order_quantity;
     total_volumetric_weight = total_volumetric_weight + el.volumetric_weight;
@@ -70,7 +72,6 @@ const paymentGatewayInfo = async (req) => {
   let line_items = [];
   await ngrok.disconnect();
   await ngrok.kill();
-
   let callback_url =
     (await ngrok.connect(process.env.PORT)) +
     "/bodenchufe/api/payment/paymentWebHook";
@@ -161,9 +162,16 @@ module.exports = {
   },
   createOrder: async (req, res, next) => {
     req.orderDetail = await paymentOrderDetail(req);
+    if (req.orderDetail.message)
+      return next(
+        createError(
+          500,
+          `Error al realizar el pago.(${req.orderDetail.message})`
+        )
+      );
 
     let order = await orderModel.createUserOrder(req);
-
+    console.log(order);
     if (order instanceof Error) {
       logger.error("Error en módulo payment (POST /payOrder - createOrder())");
       res.json({ obtained: false });
@@ -221,6 +229,8 @@ module.exports = {
     } else if (req.body.event_type === "ORDER.PAYMENT.CANCELLED") {
       updateOrderStatus(req, order_id, "REJECTED");
     }
+    await ngrok.disconnect();
+    await ngrok.kill();
     res.json({ success: true });
   },
 };
