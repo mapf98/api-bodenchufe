@@ -12,7 +12,8 @@ module.exports = {
       AND PP.fk_provider_id = PR.provider_id
       AND PPO.fk_status_id in (SELECT status_id FROM EC_STATUS WHERE status_name in ('IN PROCESS'))
       AND PPO.fk_status_id = S.STATUS_ID
-      AND PPO.fk_user_id = ${req.user_id}`
+      AND PPO.fk_user_id = ${req.user_id}
+      AND PPO.FK_ORDER_ID IS NULL`
       )
       .catch((error) => {
         return new Error(error);
@@ -22,5 +23,15 @@ module.exports = {
     return req.con.query(`SELECT * FROM EC_SETTING`).catch((error) => {
       return new Error(error);
     });
+  },
+  getUserIdOfPayment: (con, order_id) => {
+    return con
+      .query(
+        `SELECT FK_USER_ID FROM EC_PRODUCT_PROVIDER_ORDER
+        WHERE FK_ORDER_ID = ${order_id}`
+      )
+      .catch((error) => {
+        return new Error(error);
+      });
   },
 };
