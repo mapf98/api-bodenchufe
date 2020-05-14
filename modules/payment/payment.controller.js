@@ -155,6 +155,8 @@ const updateOrderStatus = async (req, order_id, status) => {
     logger.info(`Pago rechazado de la orden N.[${order_id}]`);
 };
 
+const reinstateInventory = (con, order_id) => {};
+
 module.exports = {
   paymentDetail: async (req, res, next) => {
     let detail = await paymentOrderDetail(req);
@@ -228,6 +230,7 @@ module.exports = {
       updateOrderStatus(req, order_id, "PAID");
     } else if (req.body.event_type === "ORDER.PAYMENT.CANCELLED") {
       updateOrderStatus(req, order_id, "REJECTED");
+      reinstateInventory(con, order_id);
     }
     await ngrok.disconnect();
     await ngrok.kill();
