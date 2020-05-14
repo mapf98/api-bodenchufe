@@ -141,7 +141,22 @@ const updateOrderStatus = async (req, order_id, status) => {
     logger.info(`Pago rechazado de la orden N.[${order_id}]`);
 };
 
-const reinstateInventory = (con, order_id) => {};
+const reinstateInventory = async (con, order_id) => {
+  let productsQuantity = await paymentModel.getProductQuantityOfOrder(
+    con,
+    order_id
+  );
+
+  Promise.all(
+    productsQuantity.map(async (el) => {
+      await paymentModel.reinstateInventory(
+        con,
+        el.fk_product_provider_id,
+        el.quantity
+      );
+    })
+  );
+};
 
 module.exports = {
   paymentDetail: async (req, res, next) => {
@@ -212,14 +227,14 @@ module.exports = {
   },
   paymentWebHook: async (req, res, next) => {
     let order_id = req.body.resource.reference.split("-")[1];
-    let user_id = await paymentModel.getUserIdOfPayment(req.con, 14);
+    let user_id = await paymentModel.getUserIdOfPayment(req.con, order_id);
     req.user_id = user_id[0].fk_user_id;
 
     if (req.body.event_type === "ORDER.PAYMENT.RECEIVED") {
       updateOrderStatus(req, order_id, "PAID");
     } else if (req.body.event_type === "ORDER.PAYMENT.CANCELLED") {
       updateOrderStatus(req, order_id, "REJECTED");
-      reinstateInventory(con, order_id);
+      reinstateInventory(req.con, order_id);
     }
     await ngrok.disconnect();
     await ngrok.kill();
