@@ -3,8 +3,21 @@ const router = express.Router();
 const productController = require("./product.controller");
 const auth = require("../../middlewares/auth");
 
-router.use("/provider/:providerId", productController.getProductsByProvider);
-router.use("/offer/:offerId", productController.getProductsByOffer);
-router.use("/category/:categoryId", productController.getProductsByCategory);
+router.get("/provider/:providerId", productController.getProductsByProvider);
+router.get("/offer/:offerId", productController.getProductsByOffer);
+router.get("/category/:categoryId", productController.getProductsByCategory);
+router.get("/:postId", productController.getProductDetail);
+router.get(
+  "/",
+  auth.validateToken,
+  auth.restrictTo("administrator"),
+  productController.getAllProducts
+);
+router.post(
+  "/",
+  auth.validateToken,
+  auth.restrictTo("administrator"),
+  productController.createPost
+);
 
 module.exports = router;

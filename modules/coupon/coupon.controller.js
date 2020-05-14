@@ -4,64 +4,78 @@ const logger = require("../../config/logLevels");
 
 module.exports = {
   getCoupons: async (req, res, next) => {
-    let result = await couponModel.getCoupons(req.con);
-    if (result instanceof Error) {
-      logger.error("Error en el modulo coupon (getCoupons)");
+    let coupons = await couponModel.getCoupons(req.con);
+    if (coupons instanceof Error) {
+      logger.error("Error en el módulo coupon (GET /coupon - getCoupons())");
+      res.json({ obtained: false });
       next(
-        createError(
-          500,
-          `Error al obtener los cupones disponibles (${result.message})`
-        )
+        createError(500, `Error al obtener los cupones (${coupons.message})`)
       );
     } else {
-      logger.info("Lista de cupones obtenida satisfactoriamente");
+      logger.info("Listado de cupones obtenido satisfactoriamente");
       res.json({
-        data: result,
-        results: result.length,
+        coupons: coupons,
+        results: coupons.length,
+        obtained: true,
       });
     }
   },
   updateCoupon: async (req, res, next) => {
-    let result = await couponModel.updateCoupon(req.con, req.body);
+    let coupon = await couponModel.updateCoupon(req.con, req.body);
 
-    if (result instanceof Error) {
-      logger.error("error en el modulo coupon (updateCoupon)");
+    if (coupon instanceof Error || coupon.rowCount == 0) {
+      logger.error("Error en el módulo coupon (PUT /coupon - updateCoupon())");
+      res.json({ updated: false });
       next(
         createError(
           500,
-          `Error al actualizar el cupon escogido (${result.message})`
+          `Error al actualizar un cupón [COUPON_ID: ${req.body.coupon_id}] (${coupon.message})`
         )
       );
     } else {
-      logger.info("Cupon actualizado de forma satisfactoria");
-      res.json({ status: 200 });
+      logger.info(
+        `Cupón actualizado satisfactoriamente [COUPON_ID: ${req.body.coupon_id}]`
+      );
+      res.json({ updated: true });
     }
   },
   disableCoupon: async (req, res, next) => {
-    let result = await couponModel.disableCoupon(req.con, req.body);
-    if (result instanceof Error) {
-      logger.error("Error en el modulo coupon (disableCoupons)");
+    let coupon = await couponModel.disableCoupon(req.con, req.body);
+
+    if (coupon instanceof Error || coupon.rowCount == 0) {
+      logger.error(
+        "Error en el módulo coupon (PATCH /coupon/status - disableCoupons())"
+      );
+      res.json({ updated: false });
       next(
-        createError(500, `Error al deshabilitar el cupon (${result.message})`)
+        createError(
+          500,
+          `Error al deshabilitar el cupón [COUPON_ID: ${req.body.coupon_id}] (${coupon.message})`
+        )
       );
     } else {
-      logger.info("cupon deshabilitado satisfactoriamente");
-      res.json({ status: 200 });
+      logger.info(
+        `Cupón deshabilitado satisfactoriamente [COUPON_ID: ${req.body.coupon_id}]`
+      );
+      res.json({ updated: true });
     }
   },
   addCoupon: async (req, res, next) => {
     let result = await couponModel.addCoupon(req.con, req.body);
     if (result instanceof Error) {
-      logger.error("Error en el modulo coupon (addCoupon)");
+      logger.error("Error en el módulo coupon (POST /coupon - addCoupon())");
+      res.json({ created: false });
       next(
         createError(
           500,
-          `Error al obtener los cupones disponibles (${result.message})`
+          `Error al agregar un cupón [COUPON_NAME: ${req.body.coupon_name}] (${result.message})`
         )
       );
     } else {
-      logger.info("Cupon agregado correctamente");
-      res.json({ status: 200 });
+      logger.info(
+        `Cupón agregado satisfactoriamente [COUPON_NAME: ${req.body.coupon_name}]`
+      );
+      res.json({ created: true });
     }
   },
 };

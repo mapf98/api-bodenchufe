@@ -59,9 +59,9 @@ CREATE TABLE EC_PRODUCT
     product_name VARCHAR(50) NOT NULL,
     product_photo VARCHAR(200) NOT NULL,
     product_description VARCHAR(200) NOT NULL,
-    product_long INTEGER NOT NULL,
-    product_height INTEGER NOT NULL,
-    product_width INTEGER NOT NULL,
+    product_long FLOAT NOT NULL,
+    product_height FLOAT NOT NULL,
+    product_width FLOAT NOT NULL,
     fk_category_id INTEGER NOT NULL,
     PRIMARY KEY (product_id),
     CONSTRAINT fk_product_category_id FOREIGN KEY (fk_category_id) REFERENCES EC_CATEGORY (category_id)
@@ -116,15 +116,20 @@ CREATE TABLE EC_DELIVERY_ADDRESS
     delivery_address_security_code VARCHAR(30),
     delivery_address_locker_code VARCHAR(30),
     fk_user_id INTEGER NOT NULL,
+    fk_status_id INTEGER NOT NULL,
     PRIMARY KEY (delivery_address_id),
-    CONSTRAINT fk_delivery_address_user_id FOREIGN KEY (fk_user_id) REFERENCES EC_USER (user_id)
+    CONSTRAINT fk_delivery_address_user_id FOREIGN KEY (fk_user_id) REFERENCES EC_USER (user_id),
+    CONSTRAINT fk_delivery_address_status_id FOREIGN KEY (fk_status_id) REFERENCES EC_STATUS (status_id)
+
 );
 
 CREATE TABLE EC_COUPON
 (
     coupon_id SERIAL,
-    coupon_name VARCHAR(50) NOT NULL UNIQUE,
+    coupon_name VARCHAR(50) NOT NULL,
     coupon_discount_rate VARCHAR(10) NOT NULL,
+    coupon_min_use INTEGER NOT NULL,
+    coupon_max_use INTEGER NOT NULL,
     fk_status_id INTEGER NOT NULL,
     fk_user_id INTEGER,
     PRIMARY KEY (coupon_id),
@@ -138,8 +143,6 @@ CREATE TABLE EC_ORDER
     order_date DATE NOT NULL,
     order_amount_dollars FLOAT NOT NULL,
     order_weight FLOAT NOT NULL,
-    order_cryptocurrency_type VARCHAR(10) NOT NULL,
-    order_amount_cryptocurrency FLOAT NOT NULL,
     fk_delivery_address_id INTEGER NOT NULL,
     fk_status_id INTEGER NOT NULL,
 	fk_coupon_id INTEGER,
