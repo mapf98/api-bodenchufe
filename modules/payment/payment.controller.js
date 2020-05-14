@@ -119,7 +119,7 @@ const paymentGatewayInfo = async (req) => {
 
 const updateOrderStatus = async (req, order_id, status) => {
   let orderProducts = await orderModel.updateStatusOrderProducts(
-    req.con,
+    req,
     order_id,
     status
   );
@@ -127,25 +127,11 @@ const updateOrderStatus = async (req, order_id, status) => {
     logger.error(
       "Error en módulo payment (POST /paymentWebHook - updateStatusOrderProducts())"
     );
-    res.json({ approved: "error" });
-    return next(
-      createError(
-        500,
-        `Error al modificar el status de los productos (${orderProducts.message})`
-      )
-    );
   }
   let order = await orderModel.updateStatusUserOrder(req.con, order_id, status);
   if (order instanceof Error) {
     logger.error(
       "Error en módulo payment (POST /paymentWebHook - updateStatusUserOrder())"
-    );
-    res.json({ approved: "error" });
-    return next(
-      createError(
-        500,
-        `Error al modificar el status de la orden(${order.message})`
-      )
     );
   }
   if (status === "PAID")
@@ -216,6 +202,9 @@ module.exports = {
   },
   paymentWebHook: async (req, res, next) => {
     let order_id = req.body.resource.reference.split("-")[1];
+    let user_id = await paymentModel.getUserIdOfPayment(req.con, 14);
+    req.user_id = user_id[0].fk_user_id;
+
     if (req.body.event_type === "ORDER.PAYMENT.RECEIVED") {
       updateOrderStatus(req, order_id, "PAID");
     } else if (req.body.event_type === "ORDER.PAYMENT.CANCELLED") {
