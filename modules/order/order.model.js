@@ -107,18 +107,20 @@ module.exports = {
     return req.con
       .query(
         `UPDATE EC_PRODUCT_PROVIDER_ORDER SET FK_ORDER_ID = ${order_id}
-        WHERE FK_STATUS_ID = (SELECT STATUS_ID FROM EC_STATUS WHERE STATUS_NAME = 'IN PROCESS')`
+        WHERE FK_STATUS_ID = (SELECT STATUS_ID FROM EC_STATUS WHERE STATUS_NAME = 'IN PROCESS')
+        AND FK_ORDER_ID IS NULL`
       )
       .catch((error) => {
         return new Error(error);
       });
   },
-  updateStatusOrderProducts: async (con, order_id, status) => {
-    return con
+  updateStatusOrderProducts: async (req, order_id, status) => {
+    return req.con
       .query(
         `UPDATE EC_PRODUCT_PROVIDER_ORDER SET FK_STATUS_ID = 
       (SELECT STATUS_ID FROM EC_STATUS WHERE STATUS_NAME = '${status}') 
-      WHERE FK_ORDER_ID = ${order_id}`
+      WHERE FK_ORDER_ID ${order_id === null ? "IS" : "="} ${order_id}
+      AND FK_USER_ID = ${req.user_id}`
       )
       .catch((error) => {
         return new Error(error);
