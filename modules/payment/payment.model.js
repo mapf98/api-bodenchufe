@@ -24,4 +24,14 @@ module.exports = {
       return new Error(error);
     });
   },
+  getUserIdOfPayment: (con, order_id) => {
+    return con
+      .query(
+        `SELECT FK_USER_ID FROM EC_PRODUCT_PROVIDER_ORDER
+        WHERE FK_ORDER_ID = ${order_id}`
+      )
+      .catch((error) => {
+        return new Error(error);
+      });
+  },
 };

@@ -1,5 +1,6 @@
 const createError = require("http-errors");
 const userModel = require("./user.model");
+const orderModel = require("../order/order.model");
 const logger = require("../../config/logLevels");
 const Lob = require("lob")(process.env.LOB_KEY);
 
@@ -153,6 +154,13 @@ module.exports = {
         )
       );
     }
+    shoppingCart.map((el) => {
+      if (el.discount != null)
+        el.total =
+          (1 - el.discount.split("%")[0] / 100) *
+          el.product_provider_price *
+          el.product_provider_order_quantity;
+    });
     logger.info("Lista de los productos del carrito de compras entregada");
     res.json({
       results: shoppingCart.length,
@@ -170,6 +178,7 @@ module.exports = {
       product_id = req.body.fk_product_provider_id;
       type = "insert";
     }
+    //console.log(product_id, type);
     let quantity = await userModel.checkProductAvailability(
       req.con,
       product_id,
@@ -382,5 +391,83 @@ module.exports = {
       );
       res.json({ obtained: true, coupons: coupons });
     }
+    logger.info("Cantidad del producto modificada en el carrito del usuario");
+    res.json({
+      status: "success",
+    });
   },
+  orderCheckout: async (req, res, next) => {
+    let products = await userModel.getShoppingCart(req);
+    let availableProducts = [];
+    let unavailableProducts = [];
+
+    await Promise.all(
+      products.map(async (el) => {
+        if (el.status_name === "SELECTED") {
+          const quantity = await checkStock(req.con, el.fk_product_provider_id);
+          if (quantity >= el.product_provider_order_quantity) {
+            availableProducts.push({
+              shoppingCartProductId: el.product_provider_order_id,
+              productProviderId: el.fk_product_provider_id,
+              shoppingCartProductQuantity: el.product_provider_order_quantity,
+              onStock: quantity,
+            });
+          } else {
+            unavailableProducts.push({
+              shoppingCartProductId: el.product_provider_order_id,
+              productProviderId: el.fk_product_provider_id,
+              shoppingCartProductQuantity: el.product_provider_order_quantity,
+              onStock: quantity,
+            });
+          }
+        }
+      })
+    );
+    if (unavailableProducts.length > 0) {
+      res.json({
+        status: "error",
+        message:
+          "Algunos productos no estan disponibles, revisa las cantidades",
+        data: {
+          availableProducts,
+          unavailableProducts,
+        },
+      });
+    } else {
+      updateProvidersStocks(req.con, availableProducts);
+      await orderModel.updateStatusOrderProducts(req, null, "IN PROCESS");
+      res.json({
+        status: "success",
+      });
+    }
+  },
+};
+
+const updateProvidersStocks = async (con, products) => {
+  await Promise.all(
+    products.map(async (product) => {
+      await userModel
+        .updateProviderStock(
+          con,
+          product.productProviderId,
+          product.shoppingCartProductQuantity
+        )
+        .catch((error) => {
+          next(
+            createError(
+              500,
+              `Error al modificar el inventario del proveedor (${product.message})`
+            )
+          );
+        });
+    })
+  );
+  logger.info("Inventario de los proveedores actualizado");
+  return;
+};
+
+const checkStock = async (con, id) => {
+  let quantity = await userModel.checkProductAvailability(con, id, "insert");
+  quantity = quantity[0].product_provider_available_quantity;
+  return quantity;
 };

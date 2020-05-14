@@ -253,4 +253,3 @@ INSERT INTO EC_QUALIFICATION (qualification_commentary, qualification_stars, fk_
 VALUES ('Nice', 4, 1, 1);
 INSERT INTO EC_QUALIFICATION (qualification_commentary, qualification_stars, fk_product_provider_id, fk_user_id)
 VALUES ('Fine, ok', 2, 1, 1);
-

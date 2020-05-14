@@ -32,8 +32,6 @@ module.exports = {
                   ORD.order_date,
                   ORD.order_weight,
                   ORD.order_amount_dollars,
-                  ORD.order_cryptocurrency_type,
-                  ORD.order_amount_cryptocurrency,
                   STA.status_name,
                   DAS.delivery_address_primary_line,
                   (SELECT COUAUX.coupon_discount_rate
@@ -114,12 +112,13 @@ module.exports = {
         return new Error(error);
       });
   },
-  updateStatusOrderProducts: async (con, order_id, status) => {
-    return con
+  updateStatusOrderProducts: async (req, order_id, status) => {
+    return req.con
       .query(
         `UPDATE EC_PRODUCT_PROVIDER_ORDER SET FK_STATUS_ID = 
       (SELECT STATUS_ID FROM EC_STATUS WHERE STATUS_NAME = '${status}') 
-      WHERE FK_ORDER_ID = ${order_id}`
+      WHERE FK_ORDER_ID ${order_id === null ? "IS" : "="} ${order_id}
+      AND FK_USER_ID = ${req.user_id}`
       )
       .catch((error) => {
         return new Error(error);
