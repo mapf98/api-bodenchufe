@@ -32,8 +32,6 @@ module.exports = {
                   ORD.order_date,
                   ORD.order_weight,
                   ORD.order_amount_dollars,
-                  ORD.order_cryptocurrency_type,
-                  ORD.order_amount_cryptocurrency,
                   STA.status_name,
                   DAS.delivery_address_primary_line,
                   (SELECT COUAUX.coupon_discount_rate
