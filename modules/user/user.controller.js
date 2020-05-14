@@ -1,5 +1,6 @@
 const createError = require("http-errors");
 const userModel = require("./user.model");
+const orderModel = require("../order/order.model");
 const logger = require("../../config/logLevels");
 const Lob = require("lob")(process.env.LOB_KEY);
 
@@ -153,6 +154,13 @@ module.exports = {
         )
       );
     }
+    shoppingCart.map((el) => {
+      if (el.discount != null)
+        el.total =
+          (1 - el.discount.split("%")[0] / 100) *
+          el.product_provider_price *
+          el.product_provider_order_quantity;
+    });
     logger.info("Lista de los productos del carrito de compras entregada");
     res.json({
       results: shoppingCart.length,
@@ -170,10 +178,7 @@ module.exports = {
       product_id = req.body.fk_product_provider_id;
       type = "insert";
     }
-<<<<<<< HEAD
     //console.log(product_id, type);
-=======
->>>>>>> 2985cc2abb4c8d3a5c7a5074f7b2b501211ecbdb
     let quantity = await userModel.checkProductAvailability(
       req.con,
       product_id,
@@ -204,8 +209,6 @@ module.exports = {
           `Error al insertar un producto al carrito [SHOPPING_CART_USER_ID: ${req.user_id}] (${product.message})`
         )
       );
-<<<<<<< HEAD
-=======
     } else {
       logger.info(
         `Producto agregado al carrito del usuario satisfactoriamente [SHOPPING_CART_USER_ID: ${req.user_id}]`
@@ -214,7 +217,6 @@ module.exports = {
         product: product,
         added: true,
       });
->>>>>>> 2985cc2abb4c8d3a5c7a5074f7b2b501211ecbdb
     }
   },
   deleteShoppingCartProduct: async (req, res, next) => {
@@ -251,19 +253,13 @@ module.exports = {
       logger.error(
         "Error en módulo user (PATCH /user/shoppingCart/:shoppingCartId/quantity - updateProductQuantity())"
       );
-<<<<<<< HEAD
-      return next(
-=======
       res.json({ updated: false });
       next(
->>>>>>> 2985cc2abb4c8d3a5c7a5074f7b2b501211ecbdb
         createError(
           500,
           `Error al modificar la cantidad del producto del carrito [USER_ID: ${req.product_id} | SHOPPING_CART_ID: ${idCart} | QUANTITY: ${quantity}] (${product.message})`
         )
       );
-<<<<<<< HEAD
-=======
     } else {
       logger.info(
         `Cantidad del producto modificada en el carrito del usuario satisfactoriamente [USER_ID: ${req.product_id} | SHOPPING_CART_ID: ${idCart} | QUANTITY: ${quantity}]`
@@ -394,7 +390,6 @@ module.exports = {
         `Se obtuvo satisfactoriamente el listado de cupones disponibles de acuerto al subtotal de la orden [USER_ID: ${req.user_id} | ORDER_PRICE: ${req.params.orderPrice}]`
       );
       res.json({ obtained: true, coupons: coupons });
->>>>>>> 2985cc2abb4c8d3a5c7a5074f7b2b501211ecbdb
     }
     logger.info("Cantidad del producto modificada en el carrito del usuario");
     res.json({
@@ -406,9 +401,11 @@ module.exports = {
     let availableProducts = [];
     let unavailableProducts = [];
 
+    console.log(products);
+
     await Promise.all(
       products.map(async (el) => {
-        if (el.status_name === "selected") {
+        if (el.status_name === "SELECTED") {
           const quantity = await checkStock(req.con, el.fk_product_provider_id);
           if (quantity >= el.product_provider_order_quantity) {
             availableProducts.push({
@@ -428,16 +425,23 @@ module.exports = {
         }
       })
     );
-
-    updateProvidersStocks(req.con, availableProducts);
-
-    res.json({
-      status: "success",
-      data: {
-        availableProducts,
-        unavailableProducts,
-      },
-    });
+    if (unavailableProducts.length > 0) {
+      res.json({
+        status: "error",
+        message:
+          "Algunos productos no estan disponibles, revisa las cantidades",
+        data: {
+          availableProducts,
+          unavailableProducts,
+        },
+      });
+    } else {
+      updateProvidersStocks(req.con, availableProducts);
+      await orderModel.updateStatusOrderProducts(req, null, "IN PROCESS");
+      res.json({
+        status: "success",
+      });
+    }
   },
 };
 
