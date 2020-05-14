@@ -107,7 +107,8 @@ module.exports = {
     return req.con
       .query(
         `UPDATE EC_PRODUCT_PROVIDER_ORDER SET FK_ORDER_ID = ${order_id}
-        WHERE FK_STATUS_ID = (SELECT STATUS_ID FROM EC_STATUS WHERE STATUS_NAME = 'IN PROCESS')`
+        WHERE FK_STATUS_ID = (SELECT STATUS_ID FROM EC_STATUS WHERE STATUS_NAME = 'IN PROCESS')
+        AND FK_ORDER_ID IS NULL`
       )
       .catch((error) => {
         return new Error(error);
