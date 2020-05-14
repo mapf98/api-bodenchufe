@@ -401,8 +401,6 @@ module.exports = {
     let availableProducts = [];
     let unavailableProducts = [];
 
-    console.log(products);
-
     await Promise.all(
       products.map(async (el) => {
         if (el.status_name === "SELECTED") {
