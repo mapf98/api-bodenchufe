@@ -17,8 +17,8 @@ INSERT INTO EC_ROL (rol_name) VALUES ('administrator');
 INSERT INTO EC_ROL (rol_name) VALUES ('user');
 
 /* LANGUAGE */
-INSERT INTO EC_LANGUAGE (language_name) VALUES ('Spanish');
-INSERT INTO EC_LANGUAGE (language_name) VALUES ('English');
+INSERT INTO EC_LANGUAGE (language_name) VALUES ('es-ve');
+INSERT INTO EC_LANGUAGE (language_name) VALUES ('en-us');
 
 /* OFFER */
 INSERT INTO EC_OFFER (offer_rate) VALUES ('10%');
