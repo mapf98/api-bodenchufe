@@ -34,4 +34,27 @@ module.exports = {
         return new Error(error);
       });
   },
+  getProductQuantityOfOrder: (con, order_id) => {
+    return con
+      .query(
+        `SELECT PRODUCT_PROVIDER_ORDER_QUANTITY AS QUANTITY,FK_PRODUCT_PROVIDER_ID
+         FROM EC_PRODUCT_PROVIDER_ORDER 
+         WHERE FK_ORDER_ID = ${order_id}`
+      )
+      .catch((error) => {
+        return new Error(error);
+      });
+  },
+  reinstateInventory: (con, pp_id, quantity) => {
+    return con
+      .query(
+        `UPDATE EC_PRODUCT_PROVIDER SET product_provider_available_quantity = 
+        ((SELECT P.product_provider_available_quantity FROM EC_PRODUCT_PROVIDER P 
+        WHERE P.product_provider_id = ${pp_id}) + ${quantity}) 
+        WHERE product_provider_id = ${pp_id}`
+      )
+      .catch((error) => {
+        return new Error(error);
+      });
+  },
 };
