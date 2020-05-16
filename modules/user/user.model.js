@@ -94,6 +94,7 @@ module.exports = {
       });
   },
   getShoppingCart: (req) => {
+    console.log(req.user_id);
     return req.con
       .query(
         `SELECT PPO.*, P.product_name , S.STATUS_NAME, PR.provider_name, PP.PRODUCT_PROVIDER_PRICE, 
@@ -104,7 +105,7 @@ module.exports = {
           WHERE PPO.fk_product_provider_id = PP.product_provider_id
           AND PP.fk_product_id = P.product_id
           AND PP.fk_provider_id = PR.provider_id
-          AND PPO.fk_status_id in (SELECT status_id FROM EC_STATUS WHERE status_name in ('SELECTED','UNSELECTED','IN PROCESS'))
+          AND PPO.fk_status_id in (SELECT status_id FROM EC_STATUS WHERE status_name in ('SELECTED','UNSELECTED'))
           AND PPO.fk_status_id = S.STATUS_ID
           AND PPO.fk_user_id = ${req.user_id}`
       )

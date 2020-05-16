@@ -6,6 +6,8 @@ const deliveryAddressController = require("../delivery_address/delivery_address.
 const productController = require("../product/product.controller");
 const orderController = require("../order/order.controller");
 
+router.use(auth.validateToken);
+
 router.get(
   "/all",
   auth.restrictTo("administrator"),
