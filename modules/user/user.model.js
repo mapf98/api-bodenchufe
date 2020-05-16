@@ -37,8 +37,8 @@ module.exports = {
   setUserPhoto: (req) => {
     return req.con
       .result(
-        `UPDATE EC_USER SET user_photo = ${req.body.user_photo},
-          WHERE USER_ID = ${req.user_id}`
+        `UPDATE EC_USER SET user_photo = '${req.body.user_photo}'
+          WHERE USER_ID = ${req.body.user_id}`
       )
       .catch((error) => {
         return new Error(error);
