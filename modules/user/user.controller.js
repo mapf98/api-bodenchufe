@@ -456,7 +456,7 @@ module.exports = {
       logger.info(
         `Se actualizo satisfactoriamente la foto del usuario [USER_ID: ${req.user_id}]`
       );
-      res.json({ obtained: true, coupons: coupons });
+      res.json({ validated: true });
     }
   },
 };
