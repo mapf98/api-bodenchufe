@@ -85,4 +85,5 @@ router.get("/orders", orderController.getUserOrders);
 router.get("/coupon", userController.getUserCoupons);
 router.get("/order/coupon/:orderPrice", userController.getUserCouponsForOrders);
 
+router.put("/photo", userController.setUserPhoto);
 module.exports = router;

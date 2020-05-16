@@ -441,6 +441,9 @@ module.exports = {
       });
     }
   },
+  setUserPhoto: async (req, res, next) => {
+    return userModel.setUserPhoto(req);
+  },
 };
 
 const updateProvidersStocks = async (con, products) => {
