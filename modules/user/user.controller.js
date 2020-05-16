@@ -442,7 +442,22 @@ module.exports = {
     }
   },
   setUserPhoto: async (req, res, next) => {
-    return userModel.setUserPhoto(req);
+    let result = await userModel.setUserPhoto(req);
+    if (result instanceof Error) {
+      logger.error("Error en módulo user (GET /user/photo - setUserPhoto())");
+      res.json({ obtained: false });
+      next(
+        createError(
+          500,
+          `Error al actualizar la foto del usuario [USER_ID: ${req.user_id}]`
+        )
+      );
+    } else {
+      logger.info(
+        `Se actualizo satisfactoriamente la foto del usuario [USER_ID: ${req.user_id}]`
+      );
+      res.json({ obtained: true, coupons: coupons });
+    }
   },
 };
 
