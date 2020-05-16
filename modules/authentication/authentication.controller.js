@@ -104,6 +104,6 @@ module.exports = {
     logger.info(
       `Usuario registrado satisfactoriamente [USER_EMAIL: ${req.body.user_email}]`
     );
-    res.json({ registered: true });
+    res.json({ registered: true, user: result });
   },
 };

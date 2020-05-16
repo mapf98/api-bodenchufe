@@ -6,8 +6,6 @@ const deliveryAddressController = require("../delivery_address/delivery_address.
 const productController = require("../product/product.controller");
 const orderController = require("../order/order.controller");
 
-router.use(auth.validateToken);
-
 router.get(
   "/all",
   auth.restrictTo("administrator"),
@@ -85,4 +83,5 @@ router.get("/orders", orderController.getUserOrders);
 router.get("/coupon", userController.getUserCoupons);
 router.get("/order/coupon/:orderPrice", userController.getUserCouponsForOrders);
 
+router.put("/photo", userController.setUserPhoto);
 module.exports = router;
