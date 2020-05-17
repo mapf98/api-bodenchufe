@@ -270,6 +270,25 @@ module.exports = {
       res.json({ updated: true });
     }
   },
+  changeShoppingCartStatus: async (req, res, next) => {
+    let status = await userModel.updateStatusProduct(req);
+    if (status instanceof Error) {
+      logger.error(
+        "Error en módulo user (PATCH /user/shoppingCart/:shoppingCartId/status - changeShoppingCartStatus())"
+      );
+      res.json({ changed: false });
+      return next(
+        createError(
+          500,
+          `Error al cambiar el status de un producto del carrito [USER_ID: ${req.product_id} | SHOPPING_CART_ID: ${req.params.shoppingCartId}] (${product.message})`
+        )
+      );
+    }
+    logger.info(
+      `Status del producto del carrito modificado [USER_ID: ${req.product_id} | SHOPPING_CART_ID: ${req.params.shoppingCartId} | STATUS: ${req.body.status}]`
+    );
+    res.json({ changed: true });
+  },
   addDeliveryAddress: async (req, res, next) => {
     let respuesta;
     await Lob.usVerifications.verify(

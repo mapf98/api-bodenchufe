@@ -51,6 +51,11 @@ router.patch(
   userController.updateProductQuantity
 );
 
+router.patch(
+  "/shoppingCart/:shoppingCartId/status",
+  userController.changeShoppingCartStatus
+);
+
 router.patch("/shoppingCart/checkout", userController.orderCheckout);
 
 router.post(
