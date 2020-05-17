@@ -6,6 +6,8 @@ const deliveryAddressController = require("../delivery_address/delivery_address.
 const productController = require("../product/product.controller");
 const orderController = require("../order/order.controller");
 
+router.put("/photo", userController.setUserPhoto);
+
 router.use(auth.validateToken);
 
 router.get(
@@ -69,11 +71,7 @@ router.get(
   deliveryAddressController.getAllDeliveryAddresses
 );
 
-router.post(
-  "/deliveryAddress",
-  auth.validateToken,
-  userController.addDeliveryAddress
-);
+router.post("/deliveryAddress", userController.addDeliveryAddress);
 
 router.patch(
   "/deliveryAddress/:deliveryAddressId",
@@ -82,7 +80,6 @@ router.patch(
 
 router.put(
   "/deliveryAddress/:deliveryAddressId",
-  auth.validateToken,
   userController.updateDeliveryAddress
 );
 
@@ -90,5 +87,4 @@ router.get("/orders", orderController.getUserOrders);
 router.get("/coupon", userController.getUserCoupons);
 router.get("/order/coupon/:orderPrice", userController.getUserCouponsForOrders);
 
-router.put("/photo", userController.setUserPhoto);
 module.exports = router;
