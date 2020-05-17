@@ -7,7 +7,11 @@ module.exports = {
          E.fk_language_id, E.fk_rol_id, E.fk_status_id, S.status_name , L.language_name, R.rol_name
          FROM EC_USER E, EC_STATUS S, EC_LANGUAGE L, EC_ROL R
          WHERE E.user_email= '${body.user_email}' 
-         AND E.user_password='${body.user_password}'
+         AND E.user_password ${
+           body.user_password === null
+             ? `IS ${body.user_password}`
+             : `= '${body.user_password}'`
+         }
          AND E.fk_status_id = S.status_id
          AND E.fk_language_id = L.language_id
          AND E.fk_rol_id = R.rol_id`
@@ -21,9 +25,15 @@ module.exports = {
       .query(
         `INSERT INTO EC_USER (user_first_name, user_first_lastname, user_birthdate, user_email, 
         user_password, user_photo, fk_language_id, fk_rol_id, fk_status_id)
-        VALUES ('${body.user_first_name}', '${body.user_first_lastname}', '${body.user_birthdate}',
-        '${body.user_email}', '${body.user_password}', '${body.user_photo}', 
-        (SELECT language_id FROM EC_LANGUAGE WHERE language_name = '${body.language_name}'), 
+        VALUES ('${body.user_first_name}', '${body.user_first_lastname}', '${
+          body.user_birthdate
+        }',
+        '${body.user_email}', ${
+          body.user_password === null ? null : `'${body.user_password}'`
+        }, '${body.user_photo}', 
+        (SELECT language_id FROM EC_LANGUAGE WHERE language_name = '${
+          body.language_name
+        }'), 
         (SELECT rol_id FROM EC_ROL WHERE rol_name = '${body.rol_name}'), 
         (SELECT status_id FROM EC_STATUS WHERE status_name = 'ACTIVE')) RETURNING user_id, user_first_name,user_first_lastname,user_email,user_password`
       )
