@@ -94,7 +94,6 @@ module.exports = {
       });
   },
   getShoppingCart: (req) => {
-    console.log(req.user_id);
     return req.con
       .query(
         `SELECT PPO.*, P.product_name , S.STATUS_NAME, PR.provider_name, PP.PRODUCT_PROVIDER_PRICE, 
@@ -107,7 +106,8 @@ module.exports = {
           AND PP.fk_provider_id = PR.provider_id
           AND PPO.fk_status_id in (SELECT status_id FROM EC_STATUS WHERE status_name in ('SELECTED','UNSELECTED'))
           AND PPO.fk_status_id = S.STATUS_ID
-          AND PPO.fk_user_id = ${req.user_id}`
+          AND PPO.fk_user_id = ${req.user_id}
+          ORDER BY PPO.product_provider_order_id`
       )
       .catch((error) => {
         return new Error(error);

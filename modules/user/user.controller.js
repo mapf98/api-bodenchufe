@@ -160,6 +160,7 @@ module.exports = {
           (1 - el.discount.split("%")[0] / 100) *
           el.product_provider_price *
           el.product_provider_order_quantity;
+      el.total = Math.round(el.total * 100) / 100;
     });
     logger.info("Lista de los productos del carrito de compras entregada");
     res.json({
@@ -169,6 +170,9 @@ module.exports = {
     });
   },
   checkProductAvailability: async (req, res, next) => {
+    if (req.body.product_provider_order_quantity <= 0) {
+      return;
+    }
     let product_id;
     let type;
     if (req.params.shoppingCartId) {
@@ -178,7 +182,6 @@ module.exports = {
       product_id = req.body.fk_product_provider_id;
       type = "insert";
     }
-    //console.log(product_id, type);
     let quantity = await userModel.checkProductAvailability(
       req.con,
       product_id,
@@ -257,7 +260,7 @@ module.exports = {
       next(
         createError(
           500,
-          `Error al modificar la cantidad del producto del carrito [USER_ID: ${req.product_id} | SHOPPING_CART_ID: ${idCart} | QUANTITY: ${quantity}] (${product.message})`
+          `Error al modificar la cantidad del producto del carrito [USER_ID: ${req.user_id} | SHOPPING_CART_ID: ${idCart} | QUANTITY: ${quantity}] (${product.message})`
         )
       );
     } else {
