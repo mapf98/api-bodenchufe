@@ -17,11 +17,31 @@ module.exports = {
         )
       );
     }
-
     logger.info("Listado de usuarios entregado satisfactoriamente");
     res.json({
       results: users.length,
       users: users,
+      obtained: true,
+    });
+  },
+  getUserById: async (req, res, next) => {
+    let user = await userModel.getUserById(req);
+    if (user instanceof Error) {
+      logger.error("Error en módulo user (GET /user - getUserById())");
+      res.json({ obtained: false });
+      return next(
+        createError(
+          500,
+          `Error al obtener todos el usuario  [USER_ID: ${req.user_id}] (${user.message})`
+        )
+      );
+    }
+    logger.info(
+      `Usuario obtenido satisfactoriamente [USER_ID: ${req.user_id}]`
+    );
+    res.json({
+      results: user.length,
+      user: user,
       obtained: true,
     });
   },

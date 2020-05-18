@@ -16,6 +16,8 @@ router.get(
   userController.getAllUsers
 );
 
+router.get("/", userController.getUserById);
+
 router.put("/", userController.updateUserPersonalInfo);
 
 router.patch(

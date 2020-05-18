@@ -12,7 +12,7 @@ module.exports = {
   getUserById: (req) => {
     return req.con
       .query(
-        `SELECT USER_FIRST_NAME, USER_FIRST_LASTNAME, USER_EMAIL FROM EC_USER WHERE USER_ID = ${req.user_id}`
+        `SELECT USER_FIRST_NAME, USER_FIRST_LASTNAME, USER_SECOND_NAME, USER_SECOND_LASTNAME, USER_BIRTHDATE, USER_EMAIL FROM EC_USER WHERE USER_ID = ${req.user_id}`
       )
       .catch((error) => {
         return new Error(error);
