@@ -40,7 +40,7 @@ module.exports = {
       `Usuario obtenido satisfactoriamente [USER_ID: ${req.user_id}]`
     );
     res.json({
-      results: users.length,
+      results: user.length,
       user: user,
       obtained: true,
     });
