@@ -413,10 +413,6 @@ module.exports = {
       );
       res.json({ obtained: true, coupons: coupons });
     }
-    logger.info("Cantidad del producto modificada en el carrito del usuario");
-    res.json({
-      status: "success",
-    });
   },
   orderCheckout: async (req, res, next) => {
     let products = await userModel.getShoppingCart(req);

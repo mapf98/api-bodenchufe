@@ -21,7 +21,7 @@ module.exports = {
       `Direcciones de entrega del usuario presentadas satisfactoriamente [USER_ID: ${req.user_id}]`
     );
     res.json({
-      adresses: adresses,
+      addresses: adresses,
       results: adresses.length,
       obtained: true,
     });
