@@ -67,7 +67,7 @@ module.exports = {
   validatePasswords: async (req, res, next) => {
     let currentPassword = await userModel.getCurrentPassword(req);
     if (currentPassword.rows[0].user_password != req.body.current_password) {
-      res.status(400).json({
+      res.json({
         message: `La contraseña no coincide con tu contraseña actual almacenada`,
       });
       logger.error("Error al validar las contraseñas");
