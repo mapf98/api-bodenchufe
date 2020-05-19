@@ -18,15 +18,28 @@ module.exports = {
         return new Error(error);
       });
   },
+  //${body.user_birthdate === null ? null : `'${body.user_birthdate}'
   updateUserPersonalInfo: (req) => {
     return req.con
       .result(
         `UPDATE EC_USER SET 
           user_first_name = '${req.body.user_first_name}', 
           user_first_lastname = '${req.body.user_first_lastname}',
-          user_second_name = '${req.body.user_second_name}', 
-          user_second_lastname = '${req.body.user_second_lastname}',
-          user_birthdate = '${req.body.user_birthdate}', 
+          user_second_name = '${
+            req.body.user_second_name === null
+              ? null
+              : `${req.body.user_second_name}`
+          }', 
+          user_second_lastname = '${
+            req.body.user_second_lastname === null
+              ? null
+              : `${req.body.user_second_lastname}`
+          }',
+          user_birthdate = '${
+            req.body.user_birthdate === null
+              ? null
+              : `${req.body.user_birthdate}`
+          }' 
           WHERE USER_ID = ${req.user_id}`
       )
       .catch((error) => {
