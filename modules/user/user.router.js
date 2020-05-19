@@ -60,7 +60,7 @@ router.patch(
   userController.changeShoppingCartStatus
 );
 
-router.patch("/shoppingCart/checkout", userController.orderCheckout);
+router.get("/shoppingCart/checkout", userController.orderCheckout);
 
 router.post(
   "/product/:productProviderId/qualification",
