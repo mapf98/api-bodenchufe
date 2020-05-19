@@ -27,7 +27,6 @@ module.exports = {
           user_second_name = '${req.body.user_second_name}', 
           user_second_lastname = '${req.body.user_second_lastname}',
           user_birthdate = '${req.body.user_birthdate}', 
-          fk_language_id = (SELECT LANGUAGE_ID FROM EC_LANGUAGE WHERE LANGUAGE_NAME = '${req.body.language}')
           WHERE USER_ID = ${req.user_id}`
       )
       .catch((error) => {
