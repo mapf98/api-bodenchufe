@@ -68,7 +68,7 @@ module.exports = {
   updatePassword: (req) => {
     return req.con
       .result(
-        `UPDATE EC_USER SET user_password = '${req.body.new_password} '
+        `UPDATE EC_USER SET user_password = '${req.body.new_password}'
          WHERE USER_ID = ${req.user_id}`
       )
       .catch((error) => {
