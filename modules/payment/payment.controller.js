@@ -55,13 +55,13 @@ const paymentOrderDetail = async (req) => {
       total_volumetric_weight: `${
         Math.round(total_volumetric_weight * 1000) / 1000
       } KG`,
-      subtotal,
+      subtotal: Math.round(subtotal * 100) / 100,
       discount_coupon: `${req.body.coupon_rate ? req.body.coupon_rate : "NO"}`,
       discount_coupon_amount,
       service_commission: comissions[0].setting_service_commission,
       payment_processor_commission: comissions[0].setting_payment_processor,
-      comissions_amount,
-      total,
+      comissions_amount: Math.round(comissions_amount * 100) / 100,
+      total: Math.round(total * 100) / 100,
     },
     customerDetails: customerDetails[0],
   });
