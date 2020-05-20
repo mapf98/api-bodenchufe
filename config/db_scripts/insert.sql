@@ -243,8 +243,7 @@ VALUES (2, 3, 2, 3, (SELECT status_id FROM EC_STATUS WHERE status_name = 'PAID')
 INSERT INTO EC_PRODUCT_PROVIDER_ORDER (product_provider_order_quantity, fk_product_provider_id, fk_user_id, fk_order_id, fk_status_id) 
 VALUES (4, 2, 3, 4, (SELECT status_id FROM EC_STATUS WHERE status_name = 'PAID'));
 INSERT INTO EC_PRODUCT_PROVIDER_ORDER (product_provider_order_quantity, fk_product_provider_id, fk_user_id, fk_order_id, fk_status_id) 
-VALUES (5, 3, 3, 4, (SELECT status_id FROM EC_STATUS WHERE status_name = 'PAID'));
-
+VALUES (5, 3, 3, 4, (SELECT status_id FROM EC_STATUS WHERE status_name = 'PAID'));gi
 
 /* QUALIFICATION */
 INSERT INTO EC_QUALIFICATION (qualification_commentary, qualification_stars, fk_product_provider_id, fk_user_id)
