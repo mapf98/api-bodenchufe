@@ -30,7 +30,7 @@ module.exports = {
             AND PP.fk_provider_id = PVD.provider_id
             AND STA.status_id = PP.fk_status_id
             AND CAT.category_id = PRO.fk_category_id
-            AND STA.status_name = 'AVAILABLE'
+            AND STA.status_name = 'ACTIVE'
             AND PVD.provider_id = ${provider_id}
         `
       )
@@ -69,7 +69,7 @@ module.exports = {
             AND PP.fk_provider_id = PVD.provider_id
             AND STA.status_id = PP.fk_status_id
             AND CAT.category_id = PRO.fk_category_id
-            AND STA.status_name = 'AVAILABLE'
+            AND STA.status_name = 'ACTIVE'
             AND PP.fk_offer_id = ${offer_id}`
       )
       .catch((error) => {
@@ -107,7 +107,7 @@ module.exports = {
             AND PP.fk_provider_id = PVD.provider_id
             AND STA.status_id = PP.fk_status_id
             AND CAT.category_id = PRO.fk_category_id
-            AND STA.status_name = 'AVAILABLE'
+            AND STA.status_name = 'ACTIVE'
             AND CAT.category_id = ${category_id}`
       )
       .catch((error) => {
@@ -146,7 +146,7 @@ module.exports = {
             AND PP.fk_provider_id = PVD.provider_id
             AND STA.status_id = PP.fk_status_id
             AND CAT.category_id = PRO.fk_category_id
-            AND STA.status_name = 'AVAILABLE'
+            AND STA.status_name = 'ACTIVE'
             AND PP.product_provider_id = ${postId}`
       )
       .catch((error) => {
