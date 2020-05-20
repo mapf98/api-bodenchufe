@@ -174,7 +174,6 @@ module.exports = {
       );
 
     let order = await orderModel.createUserOrder(req);
-    console.log(order);
     if (order instanceof Error) {
       logger.error("Error en módulo payment (POST /payOrder - createOrder())");
       res.json({ obtained: false });

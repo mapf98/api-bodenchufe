@@ -94,7 +94,7 @@ CREATE TABLE EC_USER
     user_birthdate DATE,
     user_email VARCHAR(50) NOT NULL UNIQUE,
     user_password VARCHAR(50),
-    user_photo VARCHAR(200),
+    user_photo VARCHAR(2000),
     fk_language_id INTEGER NOT NULL,
     fk_rol_id INTEGER NOT NULL,
     fk_status_id INTEGER NOT NULL,

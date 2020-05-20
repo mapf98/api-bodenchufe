@@ -118,7 +118,8 @@ module.exports = {
         `UPDATE EC_PRODUCT_PROVIDER_ORDER SET FK_STATUS_ID = 
       (SELECT STATUS_ID FROM EC_STATUS WHERE STATUS_NAME = '${status}') 
       WHERE FK_ORDER_ID ${order_id === null ? "IS" : "="} ${order_id}
-      AND FK_USER_ID = ${req.user_id}`
+      AND FK_USER_ID = ${req.user_id}
+      AND FK_STATUS_ID = (SELECT STATUS_ID FROM EC_STATUS WHERE STATUS_NAME = 'SELECTED')`
       )
       .catch((error) => {
         return new Error(error);

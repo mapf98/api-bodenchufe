@@ -238,7 +238,8 @@ module.exports = {
   getUserCouponsForOrders: (con, user_id, orderPrice) => {
     return con
       .query(
-        `SELECT COU.coupon_name,
+        `SELECT   COU.coupon_id,
+                  COU.coupon_name,
                   COU.coupon_discount_rate,
                   COU.coupon_min_use,
                   COU.coupon_max_use
