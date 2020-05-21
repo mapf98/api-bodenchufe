@@ -8,6 +8,7 @@ function getCategories(category_id, results) {
     if (category.fk_category_id == category_id) {
       categoryResult.push({
         category_id: category.category_id,
+        fk_category_id: category.fk_category_id,
         category_name: category.category_name,
         category_child: getCategories(category.category_id, results),
       });
@@ -61,6 +62,7 @@ module.exports = {
         if (category.fk_category_id === null) {
           allCategories.push({
             category_id: category.category_id,
+            fk_category_id: category.fk_category_id,
             category_name: category.category_name,
             category_child: getCategories(category.category_id, categories),
           });
