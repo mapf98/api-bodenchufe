@@ -102,7 +102,7 @@ const paymentGatewayInfo = async (req) => {
           },
         },
         return_urls: {
-          return_url: "http://localhost:8080/home",
+          return_url: "http://localhost:8080/success",
           cancel_url: "http://localhost:8080/home",
           callback_url,
         },
