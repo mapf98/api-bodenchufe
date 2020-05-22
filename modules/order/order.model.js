@@ -11,6 +11,18 @@ module.exports = {
         return new Error(error);
       });
   },
+  getOrderById: (req, order_id) => {
+    return req.con
+      .query(
+        `SELECT DISTINCT O.*, S.STATUS_NAME FROM EC_ORDER O, EC_PRODUCT_PROVIDER_ORDER PPO, EC_STATUS S
+        WHERE O.ORDER_ID = ${order_id} 
+        AND PPO.FK_ORDER_ID = O.ORDER_ID
+        AND O.FK_STATUS_ID = S.STATUS_ID`
+      )
+      .catch((error) => {
+        return new Error(error);
+      });
+  },
   productOrderDetail: (con, order_id) => {
     return con
       .query(

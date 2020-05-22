@@ -18,8 +18,6 @@ const nestOrderProducts = async (con, orders) => {
         order_date: orders[i].order_date,
         order_amount_dollars: orders[i].order_amount_dollars,
         order_weight: orders[i].order_weight,
-        order_cryptocurrency_type: orders[i].order_cryptocurrency_type,
-        order_amount_cryptocurrency: orders[i].order_amount_cryptocurrency,
         fk_delivery_address_id: orders[i].fk_delivery_address_id,
         status: orders[i].status_name,
         fk_coupon_id: orders[i].fk_coupon_id,

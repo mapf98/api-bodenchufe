@@ -3,8 +3,10 @@ const createError = require("http-errors");
 const paymentModel = require("./payment.model");
 const userModel = require("../user/user.model");
 const orderModel = require("../order/order.model");
+const couponModel = require("../coupon/coupon.model");
 const logger = require("../../config/logLevels");
 const ngrok = require("ngrok");
+const Email = require("../../utils/Email");
 
 const paymentOrderDetail = async (req) => {
   let detail = await paymentModel.getProductsToPay(req);
@@ -119,6 +121,29 @@ const paymentGatewayInfo = async (req) => {
   return info;
 };
 
+const nestOrderProducts = async (con, orders) => {
+  let results = [];
+
+  await Promise.all(
+    orders.map(async (order, i) => {
+      const orderDet = await orderDetail(con, order.order_id);
+      let obj = new Object();
+      obj = {
+        order_id: orders[i].order_id,
+        order_date: orders[i].order_date,
+        order_amount_dollars: orders[i].order_amount_dollars,
+        order_weight: orders[i].order_weight,
+        fk_delivery_address_id: orders[i].fk_delivery_address_id,
+        status: orders[i].status_name,
+        fk_coupon_id: orders[i].fk_coupon_id,
+        orderDetailProducts: orderDet,
+      };
+      results.push(obj);
+    })
+  );
+  return results;
+};
+
 const updateOrderStatus = async (req, order_id, status) => {
   let orderProducts = await orderModel.updateStatusOrderProducts(
     req,
@@ -173,8 +198,8 @@ module.exports = {
           `Error al realizar el pago.(${req.orderDetail.message})`
         )
       );
-
     let order = await orderModel.createUserOrder(req);
+    await couponModel.disableCoupon(req.con, req.body);
     if (order instanceof Error) {
       logger.error("Error en módulo payment (POST /payOrder - createOrder())");
       res.json({ obtained: false });
@@ -228,9 +253,17 @@ module.exports = {
     let order_id = req.body.resource.reference.split("-")[1];
     let user_id = await paymentModel.getUserIdOfPayment(req.con, order_id);
     req.user_id = user_id[0].fk_user_id;
+    let user_info = await userModel.getUserById(req);
+    let orderDetail = await orderModel.productOrderDetail(req.con, order_id);
+    let amount = req.body.resource.amount;
 
     if (req.body.event_type === "ORDER.PAYMENT.RECEIVED") {
       updateOrderStatus(req, order_id, "PAID");
+      new Email(user_info[0]).sendPaymentConfirmation({
+        orderDetail,
+        amount,
+        order_id,
+      });
     } else if (req.body.event_type === "ORDER.PAYMENT.CANCELLED") {
       updateOrderStatus(req, order_id, "REJECTED");
       reinstateInventory(req.con, order_id);
