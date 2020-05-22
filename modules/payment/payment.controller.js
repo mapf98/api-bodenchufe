@@ -69,6 +69,7 @@ const paymentOrderDetail = async (req) => {
 };
 
 const paymentGatewayInfo = async (req) => {
+  let port = req.body.port;
   let line_items = [];
   await ngrok.disconnect();
   await ngrok.kill();
@@ -102,8 +103,8 @@ const paymentGatewayInfo = async (req) => {
           },
         },
         return_urls: {
-          return_url: "http://localhost:8080/success",
-          cancel_url: "http://localhost:8080/home",
+          return_url: `http://localhost:${port}/success`,
+          cancel_url: `http://localhost:${port}/home`,
           callback_url,
         },
         line_items,
@@ -200,7 +201,6 @@ module.exports = {
   },
   payOrder: async (req, res, next) => {
     let paymentInfo = await paymentGatewayInfo(req);
-    //console.log(paymentInfo.attributes.order.return_urls.callback_url);
 
     const headers = {
       "Content-Type": "application/vnd.api+json",
