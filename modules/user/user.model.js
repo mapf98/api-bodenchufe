@@ -211,22 +211,36 @@ module.exports = {
       });
   },
   updateDeliveryAddress: (con, body, params) => {
-    return con
-      .result(
-        `UPDATE EC_DELIVERY_ADDRESS 
-           SET delivery_address_primary_line = '${body.delivery_address_primary_line}', 
-           delivery_address_secondary_line = '${body.delivery_address_secondary_line}', 
+    return con.result(
+      `UPDATE EC_DELIVERY_ADDRESS 
+           SET delivery_address_primary_line = '${
+             body.delivery_address_primary_line
+           }', 
+           delivery_address_secondary_line ${
+             body.delivery_address_secondary_line === null
+               ? `IS ${body.delivery_address_secondary_line}`
+               : `= '${body.delivery_address_secondary_line}'`
+           }, 
            delivery_address_city = '${body.delivery_address_city}', 
            delivery_address_state ='${body.delivery_address_state}', 
            delivery_address_zip_code = ${body.delivery_address_zip_code}, 
-           delivery_address_aditional_info = '${body.delivery_address_aditional_info}', 
-           delivery_address_security_code = ${body.delivery_address_security_code}, 
-           delivery_address_locker_code = ${body.delivery_address_locker_code}
+           delivery_address_aditional_info ${
+             body.delivery_address_aditional_info === null
+               ? `IS ${body.delivery_address_aditional_info}`
+               : `= '${body.delivery_address_aditional_info}'`
+           }, 
+           delivery_address_security_code ${
+             body.delivery_address_security_code === null
+               ? `IS ${body.delivery_address_security_code}`
+               : `= ${body.delivery_address_security_code}`
+           }, 
+           delivery_address_locker_code ${
+             body.delivery_address_locker_code === null
+               ? `IS ${body.delivery_address_locker_code}`
+               : `= ${body.delivery_address_locker_code}`
+           }
            WHERE delivery_address_id = ${params.deliveryAddressId}`
-      )
-      .catch((error) => {
-        return new Error(error);
-      });
+    );
   },
   getUserCoupons: (req) => {
     return req.con

@@ -9,6 +9,7 @@ const orderController = require("../order/order.controller");
 router.put("/photo", userController.setUserPhoto);
 router.put(
   "/deliveryAddress/:deliveryAddressId",
+  auth.validateToken,
   userController.updateDeliveryAddress
 );
 router.use(auth.validateToken);
