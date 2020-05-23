@@ -108,7 +108,7 @@ module.exports = {
   getShoppingCart: (req) => {
     return req.con
       .query(
-        `SELECT PPO.*, PP.PRODUCT_PROVIDER_AVAILABLE_QUANTITY,P.product_name , S.STATUS_NAME, PR.provider_name, PP.PRODUCT_PROVIDER_PRICE, 
+        `SELECT PPO.*, PP.PRODUCT_PROVIDER_AVAILABLE_QUANTITY,P.product_name, P.product_photo, S.STATUS_NAME, PR.provider_name, PP.PRODUCT_PROVIDER_PRICE, 
           (P.product_long * P.product_height * P.product_width / 5000) AS VOLUMETRIC_WEIGHT,
           (SELECT OFFER_RATE FROM EC_OFFER WHERE OFFER_ID = PP.FK_OFFER_ID ) AS DISCOUNT,
           (PP.PRODUCT_PROVIDER_PRICE * PPO.PRODUCT_PROVIDER_ORDER_QUANTITY) AS TOTAL 
