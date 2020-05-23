@@ -130,6 +130,7 @@ module.exports = {
                 PRO.product_description,
                 CAT.category_name,
                 CAT.fk_category_id,
+                CAT.category_id,
                 PVD.provider_name,
                 PP.product_provider_price,
                 PP.product_provider_available_quantity,
