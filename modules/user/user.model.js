@@ -281,4 +281,10 @@ module.exports = {
         return new Error(error);
       });
   },
+  updateLanguage: (req) => {
+    return req.con.query(
+      `UPDATE EC_USER SET fk_language_id = (SELECT language_id FROM EC_LANGUAGE WHERE language_name = '${req.body.language_name}')
+       WHERE user_id = ${req.user_id}`
+    );
+  },
 };
