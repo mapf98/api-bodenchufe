@@ -4,6 +4,13 @@ module.exports = {
       return new Error(error);
     });
   },
+  getCouponById: (con, id) => {
+    return con
+      .query(`SELECT * FROM EC_COUPON WHERE COUPON_ID = ${id}`)
+      .catch((error) => {
+        return new Error(error);
+      });
+  },
   addCoupon: (con, body) => {
     return con
       .query(

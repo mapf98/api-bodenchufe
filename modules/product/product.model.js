@@ -221,10 +221,6 @@ module.exports = {
       });
   },
   createProductQualification: (req) => {
-    console.log(
-      req.body.qualification_commentary,
-      req.body.qualification_stars
-    );
     return req.con
       .query(
         `INSERT INTO EC_QUALIFICATION 
@@ -234,6 +230,17 @@ module.exports = {
         ${req.body.qualification_stars},
         ${req.params.productProviderId},
         ${req.user_id})`
+      )
+      .catch((error) => {
+        return new Error(error);
+      });
+  },
+  getDiscountOfProduct: (con, product_id) => {
+    return con
+      .query(
+        `SELECT OFFER_RATE FROM EC_OFFER, EC_PRODUCT_PROVIDER 
+        WHERE FK_OFFER_ID = OFFER_ID 
+        AND PRODUCT_PROVIDER_ID = ${product_id}`
       )
       .catch((error) => {
         return new Error(error);

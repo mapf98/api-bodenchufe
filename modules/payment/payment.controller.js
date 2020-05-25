@@ -21,7 +21,9 @@ const paymentOrderDetail = async (req) => {
 
   detail.map((el, i) => {
     totalQuantity = totalQuantity + el.product_provider_order_quantity;
-    total_volumetric_weight = total_volumetric_weight + el.volumetric_weight;
+    total_volumetric_weight =
+      total_volumetric_weight +
+      el.volumetric_weight * el.product_provider_order_quantity;
     el.product_provider_price =
       el.discount === null
         ? el.product_provider_price
@@ -32,12 +34,18 @@ const paymentOrderDetail = async (req) => {
       (el.discount === null
         ? el.total
         : el.total * (1 - (el.discount.split("%")[0] * 1) / 100));
-    el.total = el.product_provider_price * el.product_provider_order_quantity;
+    el.total =
+      Math.round(
+        el.product_provider_price * el.product_provider_order_quantity * 100
+      ) / 100;
   });
 
   comissions_amount =
     subtotal * (comissions[0].setting_service_commission.split("%")[0] / 100) +
     comissions[0].setting_payment_processor.split("$")[0] * 1;
+
+  console.log(comissions[0].setting_service_commission);
+  console.log(comissions[0].setting_payment_processor);
 
   total = subtotal + comissions_amount;
 
@@ -81,7 +89,7 @@ const paymentGatewayInfo = async (req) => {
     const product = {
       sku: `${el.fk_product_provider_id}`,
       name: el.product_name,
-      price: `${el.product_provider_price}`,
+      price: `${Math.round(el.product_provider_price * 100) / 100}`,
       currency: "USD",
       quantity: el.product_provider_order_quantity,
     };

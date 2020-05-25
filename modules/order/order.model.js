@@ -2,10 +2,12 @@ module.exports = {
   getOrdersOfUser: (req) => {
     return req.con
       .query(
-        `SELECT DISTINCT O.*, S.STATUS_NAME FROM EC_ORDER O, EC_PRODUCT_PROVIDER_ORDER PPO, EC_STATUS S
+        `SELECT DISTINCT O.*, S.STATUS_NAME FROM EC_ORDER O, 
+        EC_PRODUCT_PROVIDER_ORDER PPO, EC_STATUS S, EC_COUPON C
         WHERE PPO.FK_USER_ID = ${req.user_id} 
         AND PPO.FK_ORDER_ID = O.ORDER_ID
-        AND O.FK_STATUS_ID = S.STATUS_ID`
+        AND O.FK_STATUS_ID = S.STATUS_ID
+        ORDER BY O.ORDER_ID`
       )
       .catch((error) => {
         return new Error(error);
@@ -14,11 +16,13 @@ module.exports = {
   productOrderDetail: (con, order_id) => {
     return con
       .query(
-        `SELECT P.*, PPO.PRODUCT_PROVIDER_ORDER_QUANTITY, PP.PRODUCT_PROVIDER_ID
+        `SELECT P.*, PR.PROVIDER_NAME, PP.PRODUCT_PROVIDER_PRICE ,PPO.PRODUCT_PROVIDER_ORDER_QUANTITY,
+        PP.PRODUCT_PROVIDER_ID
         FROM EC_PRODUCT P, EC_PRODUCT_PROVIDER PP, 
-        EC_PRODUCT_PROVIDER_ORDER PPO
+        EC_PRODUCT_PROVIDER_ORDER PPO, EC_PROVIDER PR
         WHERE P.PRODUCT_ID = PP.FK_PRODUCT_ID
         AND PP.PRODUCT_PROVIDER_ID = PPO.FK_PRODUCT_PROVIDER_ID
+        AND PR.PROVIDER_ID = PP.FK_PROVIDER_ID
         AND PPO.FK_ORDER_ID = ${order_id}`
       )
       .catch((error) => {
@@ -92,7 +96,7 @@ module.exports = {
       .query(
         `INSERT INTO EC_ORDER (order_date, order_amount_dollars, order_weight,
          fk_delivery_address_id, fk_status_id, fk_coupon_id) 
-         VALUES ('${fecha_actual}' , ${req.orderDetail.orderSummary.total}, 
+         VALUES ('2019-10-10' , ${req.orderDetail.orderSummary.total}, 
           ${order_weight}, ${req.body.delivery_address_id},
           (SELECT STATUS_ID FROM EC_STATUS WHERE STATUS_NAME= 'IN PROCESS'), 
           ${req.body.coupon_id ? req.body.coupon_id : null}) RETURNING ORDER_ID`

@@ -52,6 +52,6 @@ module.exports = {
   },
   addWelcomeCoupon: (con, userId) => {
     return con.query(`INSERT INTO EC_COUPON (coupon_name, coupon_discount_rate, coupon_min_use, coupon_max_use, fk_status_id, fk_user_id)
-                      VALUES ('WelcomeCoupon', '15%', 100, 300, (SELECT status_id FROM EC_STATUS WHERE status_name = 'ACTIVE'), ${userId})`);
+                      VALUES ('WelcomeCoupon', '50%', 1, 20000, (SELECT status_id FROM EC_STATUS WHERE status_name = 'AVAILABLE'), ${userId})`);
   },
 };
