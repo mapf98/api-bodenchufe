@@ -132,6 +132,7 @@ module.exports = {
                 CAT.fk_category_id,
                 CAT.category_id,
                 PVD.provider_name,
+                PVD.provider_id,
                 PP.product_provider_price,
                 PP.product_provider_available_quantity,
                 (SELECT AVG(QUAUX.qualification_stars) 
@@ -141,7 +142,12 @@ module.exports = {
                 FROM EC_OFFER AS OFRAUX,
                   EC_PRODUCT_PROVIDER AS PPAUX
                 WHERE OFRAUX.offer_id = PPAUX.fk_offer_id
-                  AND PPAUX.product_provider_id = PP.product_provider_id) AS offer_rate
+                  AND PPAUX.product_provider_id = PP.product_provider_id) AS offer_rate,
+                (SELECT OFRAUX.offer_id
+                  FROM EC_OFFER AS OFRAUX,
+                    EC_PRODUCT_PROVIDER AS PPAUX
+                  WHERE OFRAUX.offer_id = PPAUX.fk_offer_id
+                    AND PPAUX.product_provider_id = PP.product_provider_id) AS offer_id
           FROM EC_PRODUCT_PROVIDER AS PP,
             EC_PRODUCT AS PRO,
             EC_PROVIDER AS PVD,
