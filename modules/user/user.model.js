@@ -12,13 +12,13 @@ module.exports = {
   getUserById: (req) => {
     return req.con
       .query(
-        `SELECT USER_ID, USER_FIRST_NAME, USER_FIRST_LASTNAME, USER_SECOND_NAME, USER_SECOND_LASTNAME, USER_BIRTHDATE, USER_EMAIL FROM EC_USER WHERE USER_ID = ${req.user_id}`
+        `SELECT USER_ID, USER_FIRST_NAME, USER_FIRST_LASTNAME, USER_SECOND_NAME, 
+        USER_SECOND_LASTNAME, USER_BIRTHDATE, USER_EMAIL FROM EC_USER WHERE USER_ID = ${req.user_id}`
       )
       .catch((error) => {
         return new Error(error);
       });
   },
-  //${body.user_birthdate === null ? null : `'${body.user_birthdate}'
   updateUserPersonalInfo: (req) => {
     return req.con
       .result(
@@ -260,7 +260,7 @@ module.exports = {
             FROM EC_COUPON AS COU,
                   EC_USER AS USR
             WHERE COU.fk_user_id = USR.user_id
-                  AND COU.fk_status_id = (SELECT status_id FROM EC_STATUS WHERE status_name = 'AVAILABLE')
+                  AND COU.fk_status_id = (SELECT status_id FROM EC_STATUS WHERE status_name = 'ACTIVE')
                     AND COU.fk_user_id = ${user_id}
                     AND COU.coupon_min_use < ${orderPrice}
                     AND COU.coupon_max_use > ${orderPrice}

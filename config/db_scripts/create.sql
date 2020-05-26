@@ -107,12 +107,12 @@ CREATE TABLE EC_USER
 CREATE TABLE EC_DELIVERY_ADDRESS
 (
     delivery_address_id SERIAL,
-    delivery_address_primary_line VARCHAR(100) NOT NULL,
-    delivery_address_secondary_line VARCHAR(100),
-    delivery_address_city VARCHAR (30) NOT NULL,
-    delivery_address_state VARCHAR(30) NOT NULL,
+    delivery_address_primary_line VARCHAR(300) NOT NULL,
+    delivery_address_secondary_line VARCHAR(300),
+    delivery_address_city VARCHAR (300) NOT NULL,
+    delivery_address_state VARCHAR(300) NOT NULL,
     delivery_address_zip_code INTEGER NOT NULL,
-    delivery_address_aditional_info VARCHAR(100),
+    delivery_address_aditional_info VARCHAR(300),
     delivery_address_security_code VARCHAR(30),
     delivery_address_locker_code VARCHAR(30),
     fk_user_id INTEGER NOT NULL,

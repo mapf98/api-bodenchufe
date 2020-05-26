@@ -32,7 +32,7 @@ module.exports = {
         `UPDATE EC_COUPON 
           SET fk_status_id = (SELECT status_id 
                               FROM EC_STATUS 
-                              WHERE status_name = 'INACTIVE') 
+                              WHERE status_name = 'UNAVAILABLE') 
           WHERE coupon_id = ${body.coupon_id}`
       )
       .catch((error) => {
