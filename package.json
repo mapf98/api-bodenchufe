@@ -34,7 +34,7 @@
     "humps": "^2.0.1",
     "jwt-simple": "^0.5.6",
     "lob": "^6.1.0",
-    "moment": "^2.25.3",
+    "moment": "^2.26.0",
     "ngrok": "^3.2.7",
     "pg-promise": "^10.5.6",
     "request-promise": "^4.2.5",

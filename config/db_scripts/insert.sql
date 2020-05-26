@@ -67,26 +67,26 @@ INSERT INTO EC_CATEGORY (category_name, fk_category_id) VALUES ('Fridge', (SELEC
 INSERT INTO EC_CATEGORY (category_name, fk_category_id) VALUES ('Microwave', (SELECT category_id FROM EC_CATEGORY WHERE category_name = 'Kitchen'));
 
 /* PRODUCT */
-INSERT INTO EC_PRODUCT (product_name, product_photo,product_description, product_long,
-product_height, product_width, fk_category_id) VALUES ('P30', 'foto', 'This is a cellphone', '10', '20', '10', (SELECT category_id FROM EC_CATEGORY WHERE category_name = 'Huawei'));
-INSERT INTO EC_PRODUCT (product_name, product_photo,product_description, product_long,
-product_height, product_width, fk_category_id) VALUES ('Xiomi Readme Note 8', 'foto', 'This is a cellphone', '10', '20', '10', (SELECT category_id FROM EC_CATEGORY WHERE category_name = 'Xiomi'));
-INSERT INTO EC_PRODUCT (product_name, product_photo,product_description, product_long,
-product_height, product_width, fk_category_id) VALUES ('Mac', 'foto', 'This is a computer by Apple', '10', '20', '10', (SELECT category_id FROM EC_CATEGORY WHERE category_name = 'Apple'));
-INSERT INTO EC_PRODUCT (product_name, product_photo,product_description, product_long,
-product_height, product_width, fk_category_id) VALUES ('Samsung Smart TV', 'foto', 'This is a 60" TV', '70', '100', '220', (SELECT category_id FROM EC_CATEGORY WHERE category_name = 'TV'));
-INSERT INTO EC_PRODUCT (product_name, product_photo,product_description, product_long,
-product_height, product_width, fk_category_id) VALUES ('Asus Mass', 'foto', 'This is a 60" TV', '70', '100', '220', (SELECT category_id FROM EC_CATEGORY WHERE category_name = 'Asus'));
-INSERT INTO EC_PRODUCT (product_name, product_photo,product_description, product_long,
-product_height, product_width, fk_category_id) VALUES ('Adidas A30', 'foto', 'Soccer shoes', '10', '10', '30', (SELECT category_id FROM EC_CATEGORY WHERE category_name = 'Adidas'));
-INSERT INTO EC_PRODUCT (product_name, product_photo,product_description, product_long,
-product_height, product_width, fk_category_id) VALUES ('Nike mercurial', 'foto', 'Soccer shoes pro', '10', '15', '10', (SELECT category_id FROM EC_CATEGORY WHERE category_name = 'Nike'));
-INSERT INTO EC_PRODUCT (product_name, product_photo,product_description, product_long,
-product_height, product_width, fk_category_id) VALUES ('LG 350LPP', 'foto', 'Fridge K3 hyper', '50', '90', '70', (SELECT category_id FROM EC_CATEGORY WHERE category_name = 'Fridge'));
-INSERT INTO EC_PRODUCT (product_name, product_photo,product_description, product_long,
-product_height, product_width, fk_category_id) VALUES ('Garden keys', 'foto', 'Garden full top', '70', '100', '220', (SELECT category_id FROM EC_CATEGORY WHERE category_name = 'Garden'));
-INSERT INTO EC_PRODUCT (product_name, product_photo,product_description, product_long,
-product_height, product_width, fk_category_id) VALUES ('Supreme Shirt', 'foto', 'Rich shirt', '10', '10', '5', (SELECT category_id FROM EC_CATEGORY WHERE category_name = 'Supreme'));
+INSERT INTO EC_PRODUCT (product_id, product_name, product_photo,product_description, product_long,
+product_height, product_width, fk_category_id) VALUES (1, 'P30', 'https://firebasestorage.googleapis.com/v0/b/bodenchufe-client.appspot.com/o/images%2Fproducts%2F1%2Fp30_1.jpg?alt=media&token=5b2b5aa2-30dd-4f4a-a2e9-8f109beccc1c', 'This is a cellphone by Hawuei', '10', '20', '10', (SELECT category_id FROM EC_CATEGORY WHERE category_name = 'Huawei'));
+INSERT INTO EC_PRODUCT (product_id, product_name, product_photo,product_description, product_long,
+product_height, product_width, fk_category_id) VALUES (2, 'Xiomi Readme Note 8', 'https://firebasestorage.googleapis.com/v0/b/bodenchufe-client.appspot.com/o/images%2Fproducts%2F2%2Frmn8_2.jpg?alt=media&token=50c910d4-9448-49dd-8518-628e58a68180', 'This is a cellphone by Xiomi', '10', '20', '10', (SELECT category_id FROM EC_CATEGORY WHERE category_name = 'Xiomi'));
+INSERT INTO EC_PRODUCT (product_id, product_name, product_photo,product_description, product_long,
+product_height, product_width, fk_category_id) VALUES (3, 'Macbook pro 2019', 'https://firebasestorage.googleapis.com/v0/b/bodenchufe-client.appspot.com/o/images%2Fproducts%2F3%2Fmac3.jpg?alt=media&token=3dcaa878-8bbc-406b-9a7e-bec5d2ddbd32', 'This is a computer by Apple', '10', '20', '10', (SELECT category_id FROM EC_CATEGORY WHERE category_name = 'Apple'));
+INSERT INTO EC_PRODUCT (product_id, product_name, product_photo,product_description, product_long,
+product_height, product_width, fk_category_id) VALUES (4, '43" J5290 Full HD Smart TV 2019', 'https://firebasestorage.googleapis.com/v0/b/bodenchufe-client.appspot.com/o/images%2Fproducts%2F4%2Ftv1.jpg?alt=media&token=ddc9ba94-779c-411a-9210-5a22c30f365f', 'This is a 43" TV', '70', '100', '220', (SELECT category_id FROM EC_CATEGORY WHERE category_name = 'TV'));
+INSERT INTO EC_PRODUCT (product_id, product_name, product_photo,product_description, product_long,
+product_height, product_width, fk_category_id) VALUES (5, 'Asus Vivobook S15', 'https://firebasestorage.googleapis.com/v0/b/bodenchufe-client.appspot.com/o/images%2Fproducts%2F5%2Fasus3.jpg?alt=media&token=ee7b0012-9577-4f4b-9a60-aadb337e0cbd', 'This is huge laptop by Asus', '70', '100', '220', (SELECT category_id FROM EC_CATEGORY WHERE category_name = 'Asus'));
+INSERT INTO EC_PRODUCT (product_id, product_name, product_photo,product_description, product_long,
+product_height, product_width, fk_category_id) VALUES (6, 'Adidas x17', 'https://firebasestorage.googleapis.com/v0/b/bodenchufe-client.appspot.com/o/images%2Fproducts%2F6%2Fx171.jpg?alt=media&token=3f851e3d-13a6-446f-986b-061950aa6c53', 'Soccer shoes', '10', '10', '30', (SELECT category_id FROM EC_CATEGORY WHERE category_name = 'Adidas'));
+INSERT INTO EC_PRODUCT (product_id, product_name, product_photo,product_description, product_long,
+product_height, product_width, fk_category_id) VALUES (7, 'Nike Hypervenom', 'https://firebasestorage.googleapis.com/v0/b/bodenchufe-client.appspot.com/o/images%2Fproducts%2F7%2Fnike1.jpg?alt=media&token=8e2ca9e4-29c8-4b61-b32b-384a6d4d87fe', 'Soccer shoes pro', '10', '15', '10', (SELECT category_id FROM EC_CATEGORY WHERE category_name = 'Nike'));
+INSERT INTO EC_PRODUCT (product_id, product_name, product_photo,product_description, product_long,
+product_height, product_width, fk_category_id) VALUES (8, 'LM89SXD LG', 'https://firebasestorage.googleapis.com/v0/b/bodenchufe-client.appspot.com/o/images%2Fproducts%2F8%2Ffridge1.jpg?alt=media&token=fab35d65-35af-4789-8e90-8fb8a759b1ae', 'Hyper fridge', '50', '90', '70', (SELECT category_id FROM EC_CATEGORY WHERE category_name = 'Fridge'));
+INSERT INTO EC_PRODUCT (product_id, product_name, product_photo,product_description, product_long,
+product_height, product_width, fk_category_id) VALUES (9, 'Pala de jardinería', 'https://firebasestorage.googleapis.com/v0/b/bodenchufe-client.appspot.com/o/images%2Fproducts%2F9%2Fpala3.jpg?alt=media&token=0b574a6f-0c19-44c1-a5d1-4150136b1d7c', 'Execelente pala para jardinería', '70', '100', '220', (SELECT category_id FROM EC_CATEGORY WHERE category_name = 'Garden'));
+INSERT INTO EC_PRODUCT (product_id, product_name, product_photo,product_description, product_long,
+product_height, product_width, fk_category_id) VALUES (10, 'Supreme Shirt', 'https://firebasestorage.googleapis.com/v0/b/bodenchufe-client.appspot.com/o/images%2Fproducts%2F10%2Fsupreme1.jpg?alt=media&token=83166cb7-5c8e-4543-bff7-a3e8847cce27', 'Rich shirt', '10', '10', '5', (SELECT category_id FROM EC_CATEGORY WHERE category_name = 'Supreme'));
 
 
 
@@ -243,7 +243,7 @@ VALUES (2, 3, 2, 3, (SELECT status_id FROM EC_STATUS WHERE status_name = 'PAID')
 INSERT INTO EC_PRODUCT_PROVIDER_ORDER (product_provider_order_quantity, fk_product_provider_id, fk_user_id, fk_order_id, fk_status_id) 
 VALUES (4, 2, 3, 4, (SELECT status_id FROM EC_STATUS WHERE status_name = 'PAID'));
 INSERT INTO EC_PRODUCT_PROVIDER_ORDER (product_provider_order_quantity, fk_product_provider_id, fk_user_id, fk_order_id, fk_status_id) 
-VALUES (5, 3, 3, 4, (SELECT status_id FROM EC_STATUS WHERE status_name = 'PAID'));gi
+VALUES (5, 3, 3, 4, (SELECT status_id FROM EC_STATUS WHERE status_name = 'PAID'));
 
 /* QUALIFICATION */
 INSERT INTO EC_QUALIFICATION (qualification_commentary, qualification_stars, fk_product_provider_id, fk_user_id)

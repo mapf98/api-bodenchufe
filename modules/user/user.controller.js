@@ -499,6 +499,27 @@ module.exports = {
       res.json({ validated: true });
     }
   },
+  updateLanguage: async (req, res, next) => {
+    let result = await userModel.updateLanguage(req);
+
+    if (result instanceof Error) {
+      logger.error(
+        "Error en módulo user (PUT /user/language - updateLanguage())"
+      );
+      res.json({ updated: false });
+      next(
+        createError(
+          500,
+          `Error al actualizar el lenguage de preferencia del usuario [USER_ID: ${req.user_id}]`
+        )
+      );
+    } else {
+      logger.info(
+        `Se actualizo satisfactoriamente el lenguage de preferencia del usuario [USER_ID: ${req.user_id}]`
+      );
+      res.json({ updated: true, language: req.body.language_name });
+    }
+  },
 };
 
 const updateProvidersStocks = async (con, products) => {

@@ -178,7 +178,7 @@ module.exports = {
   purchasedProductsOfUser: async (req, res, next) => {
     let product = await productModel.getPurchasedProducts(req);
     if (product.length === 0) {
-      res.status(404).json({
+      res.json({
         message:
           "Operacion invalida, no se pueden calificar productos no comprados",
       });
