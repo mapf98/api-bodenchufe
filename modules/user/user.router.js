@@ -24,6 +24,8 @@ router.get("/", userController.getUserById);
 
 router.put("/", userController.updateUserPersonalInfo);
 
+router.put("/language", userController.updateLanguage);
+
 router.patch(
   "/changePassword",
   userController.validatePasswords,
