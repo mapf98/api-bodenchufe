@@ -217,7 +217,6 @@ module.exports = {
     }
   },
   updateProductPhoto: async (req, res, next) => {
-    console.log(req.body);
     let product = await productModel.updateProductPhoto(
       req.con,
       req.body.product_id,

@@ -46,9 +46,6 @@ const paymentOrderDetail = async (req) => {
     subtotal * (comissions[0].setting_service_commission.split("%")[0] / 100) +
     comissions[0].setting_payment_processor.split("$")[0] * 1;
 
-  console.log(comissions[0].setting_service_commission);
-  console.log(comissions[0].setting_payment_processor);
-
   total = subtotal + comissions_amount;
 
   if (req.body.coupon_rate) {
