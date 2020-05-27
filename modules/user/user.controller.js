@@ -320,7 +320,6 @@ module.exports = {
       },
       (err, response) => {
         respuesta = response;
-        console.log(respuesta);
         console.log(err);
       }
     );
@@ -359,7 +358,6 @@ module.exports = {
       },
       (err, response) => {
         respuesta = response;
-        console.log(respuesta);
         console.log(err);
       }
     );

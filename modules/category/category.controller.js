@@ -76,6 +76,30 @@ module.exports = {
       });
     }
   },
+  getAllCategoriesSF: async (req, res, next) => {
+    let categories = await categoryModel.getAllCategories(req.con);
+    if (categories instanceof Error) {
+      logger.error(
+        "Error en módulo category (GET /category - getAllCategoriesSF())"
+      );
+      res.json({ obtained: false });
+      next(
+        createError(
+          500,
+          `Error al obtener las categorías sin filtro (${categories.message})`
+        )
+      );
+    } else {
+      logger.info(
+        "Listado de categorías sin filtro entregado satisfactoriamente"
+      );
+      res.json({
+        categories: categories,
+        results: categories.length,
+        obtained: false,
+      });
+    }
+  },
   createCategory: async (req, res, next) => {
     let result = await categoryModel.createCategory(req.con, req.body);
     if (result instanceof Error) {
