@@ -13,6 +13,12 @@ router.get(
   auth.restrictTo("administrator"),
   productController.getAllProducts
 );
+router.put(
+  "/photo",
+  auth.validateToken,
+  auth.restrictTo("administrator"),
+  productController.updateProductPhoto
+);
 router.post(
   "/",
   auth.validateToken,

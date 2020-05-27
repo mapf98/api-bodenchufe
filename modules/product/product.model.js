@@ -135,6 +135,7 @@ module.exports = {
                 PVD.provider_id,
                 PP.product_provider_price,
                 PP.product_provider_available_quantity,
+                PP.product_provider_description,
                 (SELECT AVG(QUAUX.qualification_stars) 
                 FROM EC_QUALIFICATION AS QUAUX
                 WHERE QUAUX.fk_product_provider_id = PP.product_provider_id) AS avg_qualification_stars,
@@ -207,7 +208,7 @@ module.exports = {
                         ? `(SELECT offer_id FROM EC_OFFER WHERE offer_rate = '${post.offer_rate}')`
                         : null
                     }, 
-                    (SELECT status_id FROM EC_STATUS WHERE status_name = 'AVAILABLE')) RETURNING product_provider_id
+                    (SELECT status_id FROM EC_STATUS WHERE status_name = 'ACTIVE')) RETURNING product_provider_id
         `
       )
       .catch((error) => {
@@ -247,6 +248,16 @@ module.exports = {
         `SELECT OFFER_RATE FROM EC_OFFER, EC_PRODUCT_PROVIDER 
         WHERE FK_OFFER_ID = OFFER_ID 
         AND PRODUCT_PROVIDER_ID = ${product_id}`
+      )
+      .catch((error) => {
+        return new Error(error);
+      });
+  },
+  updateProductPhoto: (con, productId, photo) => {
+    return con
+      .result(
+        `UPDATE EC_PRODUCT SET product_photo = '${photo}'
+          WHERE product_id = ${productId}`
       )
       .catch((error) => {
         return new Error(error);

@@ -137,6 +137,7 @@ module.exports = {
   createPost: async (req, res, next) => {
     let product;
     let post;
+    let product_id;
     if (req.body.new_product == true) {
       product = await productModel.createProduct(req.con, req.body.product);
 
@@ -146,8 +147,10 @@ module.exports = {
           req.body,
           product[0].product_id
         );
+        product_id = product[0].product_id;
       }
     } else {
+      product_id = req.body.product;
       post = await productModel.createPost(req.con, req.body, req.body.product);
     }
 
@@ -172,7 +175,7 @@ module.exports = {
       logger.info(
         `Se creo una publicación satisfactoriamente [PRODUCT_PROVIDER_ID: ${post[0].product_provider_id}]`
       );
-      res.json({ created: true });
+      res.json({ created: true, product_id: product_id });
     }
   },
   purchasedProductsOfUser: async (req, res, next) => {
@@ -210,6 +213,33 @@ module.exports = {
       );
       res.json({
         rated: true,
+      });
+    }
+  },
+  updateProductPhoto: async (req, res, next) => {
+    console.log(req.body);
+    let product = await productModel.updateProductPhoto(
+      req.con,
+      req.body.product_id,
+      req.body.photo
+    );
+    if (product instanceof Error) {
+      logger.error(
+        "Error en módulo product (PUT /product/photo - updateProductPhoto())"
+      );
+      res.json({ updated: false });
+      return next(
+        createError(
+          500,
+          `Error al actualizar la foto del producto [PRODUCT_ID: ${req.body.product_id}] (${product.message})`
+        )
+      );
+    } else {
+      logger.info(
+        `Foto de producto actualizada satisfactoriamente [PRODUCT_ID: ${req.body.product_id}]`
+      );
+      res.json({
+        updated: true,
       });
     }
   },
