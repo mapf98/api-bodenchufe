@@ -76,13 +76,6 @@ module.exports = {
       );
     }
 
-    /*   orders.map(async (el) => {
-      if (el.fk_coupon_id != null) {
-        let coupon = await couponModel.getCouponById(el.fk_coupon_id);
-  
-      }
-    });*/
-
     orders = await nestOrderProducts(req.con, orders);
 
     logger.info(
