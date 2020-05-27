@@ -244,7 +244,12 @@ module.exports = {
   },
   getUserCoupons: (req) => {
     return req.con
-      .query(`SELECT * FROM EC_COUPON WHERE fk_user_id = ${req.user_id}`)
+      .query(
+        `SELECT coupon_discount_rate, coupon_id, coupon_max_use, coupon_min_use, coupon_name, fk_status_id, fk_user_id, status_name 
+         FROM EC_COUPON, EC_STATUS
+         WHERE fk_user_id = ${req.user_id}
+         AND fk_status_id = status_id`
+      )
       .catch((error) => {
         return new Error(error);
       });
