@@ -285,4 +285,18 @@ module.exports = {
         return new Error(error);
       });
   },
+  getCategoriesByKeyword: (con, keyword) => {
+    return con
+      .query(
+        `
+        SELECT CAT.category_name,
+                CAT.category_id
+        FROM EC_CATEGORY AS CAT
+        WHERE CAT.category_name LIKE '%${keyword}%'
+        `
+      )
+      .catch((error) => {
+        return new Error(error);
+      });
+  },
 };
