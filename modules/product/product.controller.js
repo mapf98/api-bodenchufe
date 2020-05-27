@@ -242,4 +242,30 @@ module.exports = {
       });
     }
   },
+  getProductsByKeyword: async (req, res, next) => {
+    let products = await productModel.getProductsByKeyword(
+      req.con,
+      req.params.keyword
+    );
+    if (products instanceof Error) {
+      logger.error(
+        "Error en módulo product (GET /product/search/ - getProductsByKeyword())"
+      );
+      res.json({ obtained: false });
+      return next(
+        createError(
+          500,
+          `Error al buscar productos por el keyword [KEYWORD: ${req.params.keyword}] (${products.message})`
+        )
+      );
+    } else {
+      logger.info(
+        `Productos entregados satisfactoriamente por el [KEYWORD: ${req.params.keyword}]`
+      );
+      res.json({
+        obtained: true,
+        products: products,
+      });
+    }
+  },
 };
