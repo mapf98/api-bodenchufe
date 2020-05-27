@@ -182,13 +182,12 @@ module.exports = {
     let product = await productModel.getPurchasedProducts(req);
     if (product.length === 0) {
       res.json({
-        message:
-          "Operacion invalida, no se pueden calificar productos no comprados",
+        rated: false,
       });
       return next(
         createError(
-          404,
-          `Operacion invalida, no se puede calificar el producto (PRODUC_ID:${req.params.productProviderId}), (ID:${req.params.productProviderId}), [USER_ID: ${req.user_id}]`
+          400,
+          `Operacion invalida, no se puede calificar el producto ya que no ha sido comprado (PRODUC_ID:${req.params.productProviderId}), (ID:${req.params.productProviderId}), [USER_ID: ${req.user_id}]`
         )
       );
     }
