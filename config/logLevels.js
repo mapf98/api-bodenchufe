@@ -12,7 +12,7 @@ module.exports = createLogger({
           return info;
         })(),
         format.timestamp({
-          format: "YY-MM-DD HH:MM:SS",
+          format: "YY-MM-DD hh:mm:ss",
         }),
         format.ms(),
         format.printf((level) => {

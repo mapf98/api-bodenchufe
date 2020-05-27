@@ -263,4 +263,40 @@ module.exports = {
         return new Error(error);
       });
   },
+  getProductsByKeyword: (con, keyword) => {
+    return con
+      .query(
+        `
+        SELECT PPV.product_provider_id,
+                PRO.product_name,
+                PPV.product_provider_price
+        FROM EC_PRODUCT AS PRO,
+              EC_PROVIDER AS PRV,
+              EC_PRODUCT_PROVIDER AS PPV,
+              EC_STATUS AS STA
+        WHERE PPV.fk_product_id = PRO.product_id
+                AND PPV.fk_status_id = STA.status_id
+                AND PPV.fk_provider_id = PRV.provider_id
+                AND STA.status_name = 'ACTIVE'
+                AND (product_name LIKE '%${keyword}%')
+        `
+      )
+      .catch((error) => {
+        return new Error(error);
+      });
+  },
+  getCategoriesByKeyword: (con, keyword) => {
+    return con
+      .query(
+        `
+        SELECT CAT.category_name,
+                CAT.category_id
+        FROM EC_CATEGORY AS CAT
+        WHERE CAT.category_name LIKE '%${keyword}%'
+        `
+      )
+      .catch((error) => {
+        return new Error(error);
+      });
+  },
 };

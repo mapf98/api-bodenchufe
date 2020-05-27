@@ -241,4 +241,41 @@ module.exports = {
       });
     }
   },
+  getProductsByKeyword: async (req, res, next) => {
+    let products = await productModel.getProductsByKeyword(
+      req.con,
+      req.params.keyword
+    );
+    let categories = await productModel.getCategoriesByKeyword(
+      req.con,
+      req.params.keyword
+    );
+    if (products instanceof Error || categories instanceof Error) {
+      logger.error(
+        "Error en módulo product (GET /product/search/ - getProductsByKeyword() | getCategoriesByKeyword())"
+      );
+      res.json({ obtained: false });
+      return next(
+        createError(
+          500,
+          `Error al buscar productos y categorías por el keyword [KEYWORD: ${
+            req.params.keyword
+          }] (${
+            products.message instanceof Error
+              ? products.message
+              : categories.message
+          })`
+        )
+      );
+    } else {
+      logger.info(
+        `Productos y categorías entregados satisfactoriamente [KEYWORD: ${req.params.keyword}]`
+      );
+      res.json({
+        obtained: true,
+        products: products,
+        categories: categories,
+      });
+    }
+  },
 };
