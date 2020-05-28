@@ -278,4 +278,34 @@ module.exports = {
       });
     }
   },
+  checkPostId: async (req, res, next) => {
+    let products = await productModel.checkPostId(req.con, req.params.postId);
+    let exists = true;
+
+    console.log(products);
+
+    if (products.length == 0) {
+      exists = false;
+    }
+
+    if (products instanceof Error) {
+      logger.error(
+        "Error en módulo product (GET /product/check/ - checkPostId())"
+      );
+      res.json({ exists: false });
+      return next(
+        createError(
+          500,
+          `Error al verificar la existencia de un post [POST_ID: ${req.params.postId}] (${products.message})`
+        )
+      );
+    } else {
+      logger.info(
+        `Verificación de post realizada satisfactoriamente [POST_ID: ${req.params.postId}]`
+      );
+      res.json({
+        exists: exists,
+      });
+    }
+  },
 };

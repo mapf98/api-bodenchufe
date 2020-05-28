@@ -8,6 +8,7 @@ router.get("/offer/:offerId", productController.getProductsByOffer);
 router.get("/category/:categoryId", productController.getProductsByCategory);
 router.get("/:postId", productController.getProductDetail);
 router.get("/search/:keyword", productController.getProductsByKeyword);
+router.get("/check/:postId", productController.checkPostId);
 router.get(
   "/",
   auth.validateToken,

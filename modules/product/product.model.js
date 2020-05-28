@@ -299,4 +299,17 @@ module.exports = {
         return new Error(error);
       });
   },
+  checkPostId: (con, postId) => {
+    return con
+      .query(
+        `
+        SELECT *
+        FROM EC_PRODUCT_PROVIDER 
+        WHERE product_provider_id = ${postId}
+        `
+      )
+      .catch((error) => {
+        return new Error(error);
+      });
+  },
 };
