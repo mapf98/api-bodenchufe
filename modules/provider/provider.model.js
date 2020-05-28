@@ -1,8 +1,18 @@
 module.exports = {
   getMainProviders: (con) => {
-    return con.query("SELECT * FROM EC_PROVIDER").catch((error) => {
-      return new Error(error);
-    });
+    return con
+      .query(
+        `
+        SELECT * 
+        FROM EC_PROVIDER AS PV,
+            EC_STATUS AS STA
+        WHERE PV.fk_status_id = STA.status_id
+                AND STA.status_name = 'ACTIVE'
+        `
+      )
+      .catch((error) => {
+        return new Error(error);
+      });
   },
   getAllProviders: (con) => {
     return con
@@ -64,6 +74,26 @@ module.exports = {
         `UPDATE EC_PROVIDER
           SET fk_status_id = (SELECT status_id FROM EC_STATUS AS STA WHERE STA.status_name = '${provider.status_name}') 
           WHERE provider_id = ${provider.provider_id}`
+      )
+      .catch((error) => {
+        return new Error(error);
+      });
+  },
+  getProductsProviderToUpdate: (con, provider) => {
+    return con
+      .result(
+        `
+        SELECT PPV.product_provider_id
+        FROM EC_PROVIDER AS PV,
+              EC_PRODUCT_PROVIDER AS PPV,
+              EC_PRODUCT AS PRO,
+              EC_STATUS AS STA
+        WHERE PPV.fk_product_id = PRO.product_id
+                AND PPV.fk_provider_id = PV.provider_id
+                AND PPV.fk_status_id = STA.status_id
+                AND STA.status_name = 'ACTIVE'
+                AND PV.provider_id = ${provider.provider_id}
+        `
       )
       .catch((error) => {
         return new Error(error);
