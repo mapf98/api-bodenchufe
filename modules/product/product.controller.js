@@ -282,8 +282,6 @@ module.exports = {
     let products = await productModel.checkPostId(req.con, req.params.postId);
     let exists = true;
 
-    console.log(products);
-
     if (products.length == 0) {
       exists = false;
     }
