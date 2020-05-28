@@ -3,7 +3,6 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 module.exports = class Email {
   constructor(user) {
-    //this.to = user.user_email;
     this.to = user.user_email;
     this.user_name = user.user_first_name;
     this.user_last_name = user.user_first_lastname;
@@ -12,7 +11,7 @@ module.exports = class Email {
 
   sendEmail(template_id, data) {
     const msg = {
-      to: "diegoadq@gmail.com",
+      to: this.to,
       from: this.from,
       dynamic_template_data: {
         user_name: this.user_name,

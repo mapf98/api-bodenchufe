@@ -28,7 +28,8 @@ module.exports = {
                     AND PRVAUX.provider_id = PRV.provider_id) AS provider_posts
           FROM EC_PROVIDER AS PRV,
           EC_STATUS AS STA
-          WHERE PRV.fk_status_id = STA.status_id`
+          WHERE PRV.fk_status_id = STA.status_id
+          ORDER BY PRV.provider_id`
       )
       .catch((error) => {
         return new Error(error);
@@ -39,20 +40,31 @@ module.exports = {
       .query(
         `SELECT PRO.product_photo,
                   PRO.product_name,
+                  PPV.product_provider_id,
                   PPV.product_provider_available_quantity,
                   PPV.product_provider_price,
                   PPV.product_provider_description,
+                  (SELECT SS.status_name
+                   FROM EC_STATUS SS
+                   WHERE PPV.fk_status_id = SS.status_id
+                    ) as product_status,
                   (SELECT OFRAUX.offer_rate
                   FROM EC_OFFER AS OFRAUX,
                       EC_PRODUCT_PROVIDER AS PPVAUX
                   WHERE OFRAUX.offer_id = PPVAUX.fk_offer_id
-                      AND PPVAUX.product_provider_id = PPV.product_provider_id) AS product_discount_rate
+                      AND PPVAUX.product_provider_id = PPV.product_provider_id) AS product_discount_rate,
+                   (SELECT OFRAUX.offer_id
+                  FROM EC_OFFER AS OFRAUX,
+                      EC_PRODUCT_PROVIDER AS PPVAUX
+                  WHERE OFRAUX.offer_id = PPVAUX.fk_offer_id
+                      AND PPVAUX.product_provider_id = PPV.product_provider_id) AS product_discount_id
           FROM EC_PRODUCT_PROVIDER AS PPV,
               EC_PRODUCT AS PRO,
               EC_PROVIDER AS PVD
           WHERE PPV.fk_product_id = PRO.product_id
               AND PPV.fk_provider_id = PVD.provider_id
-              AND PVD.provider_id = ${providerId}`
+              AND PVD.provider_id = ${providerId}
+          ORDER BY PPV.product_provider_id`
       )
       .catch((error) => {
         return new Error(error);
@@ -126,10 +138,14 @@ module.exports = {
     return con
       .result(
         `UPDATE EC_PRODUCT_PROVIDER
-          SET product_provider_description = '${post.description}',
+          SET product_provider_description = ${
+            post.description != null ? `'${post.description}'` : null
+          },
             product_provider_price = ${post.price},
             product_provider_available_quantity = ${post.available_quantity},	
-            fk_offer_id = (SELECT offer_id FROM EC_OFFER AS OFR WHERE OFR.offer_rate = '${post.offer_rate}') 
+            fk_offer_id = (SELECT offer_id FROM EC_OFFER AS OFR WHERE OFR.offer_rate = '${
+              post.offer_rate
+            }') 
           WHERE product_provider_id = ${post.post_id}`
       )
       .catch((error) => {
