@@ -2,6 +2,7 @@ const createError = require("http-errors");
 const categoryModel = require("./category.model");
 const logger = require("../../config/logLevels");
 
+//Busca por Id de categoria las hijas recursivamente
 function getCategories(category_id, results) {
   let categoryResult = [];
   results.forEach((category) => {
@@ -43,6 +44,7 @@ module.exports = {
       });
     }
   },
+  //Trae las categorias padre y sus hijas de forma recursiva
   getAllCategories: async (req, res, next) => {
     let categories = await categoryModel.getAllCategories(req.con);
     let allCategories = [];

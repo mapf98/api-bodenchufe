@@ -13,6 +13,7 @@ module.exports = {
       user_id: user_id_test,
     });
   },
+  //Se valida si el usuario esta bloqueado, no registrado, o si la combinacion de correo y contraseña es incorrecta
   logIn: async (req, res, next) => {
     let email = await authenticationModel.verifyEmail(req.con, req.body);
     let result = await authenticationModel.logIn(req.con, req.body);
@@ -56,6 +57,7 @@ module.exports = {
       }
     }
   },
+  //Valida si un correo ya está siendo utilizado en la aplicación
   verifyEmail: async (req, res, next) => {
     let result = await authenticationModel.verifyEmail(req.con, req.params);
     if (result instanceof Error) {
