@@ -78,6 +78,19 @@ module.exports = {
   },
   updateStatusProvider: async (req, res, next) => {
     let provider = await providerModel.updateStatusProvider(req.con, req.body);
+    let products = await providerModel.getProductsProviderToUpdate(
+      req.con,
+      req.body
+    );
+
+    if (req.body.status_name == "INACTIVE") {
+      products.rows.forEach(async (product) => {
+        await providerModel.updateStatusProductProvider(req.con, {
+          post_id: product.product_provider_id,
+          status_name: "INACTIVE",
+        });
+      });
+    }
 
     if (provider instanceof Error || provider.rowCount == 0) {
       logger.error(
