@@ -68,6 +68,11 @@ router.patch(
 
 router.get("/shoppingCart/checkout", userController.orderCheckout);
 
+router.get(
+  "/product/:productProviderId/checkQualification",
+  productController.checkProductAlreadyRated
+);
+
 router.post(
   "/product/:productProviderId/qualification",
   productController.purchasedProductsOfUser,

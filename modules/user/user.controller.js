@@ -168,7 +168,7 @@ module.exports = {
     );
 
     if (productsInCheckoutWithoutPay.length > 0) {
-      Promise.all(
+      await Promise.all(
         productsInCheckoutWithoutPay.map(async (el) => {
           await paymentModel.reinstateInventory(
             req.con,
