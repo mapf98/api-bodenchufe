@@ -57,7 +57,7 @@ module.exports = {
       }
     }
   },
-  //Valida si un correo ya está siendo utilizado en la aplicación
+  //Valida si un correo ya está siendo utilizado en la aplicación por otro usuario
   verifyEmail: async (req, res, next) => {
     let result = await authenticationModel.verifyEmail(req.con, req.params);
     if (result instanceof Error) {
@@ -97,10 +97,7 @@ module.exports = {
       );
     }
 
-    let addCouponToUser = await authenticationModel.addWelcomeCoupon(
-      req.con,
-      result[0].user_id
-    );
+    await authenticationModel.addWelcomeCoupon(req.con, result[0].user_id);
     new Email(result[0]).sendWelcome();
 
     logger.info(

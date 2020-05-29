@@ -21,7 +21,6 @@ module.exports = {
       res.json({ settings: result, obtained: true });
     }
   },
-
   updateSettings: async (req, res, next) => {
     let result = await settingModel.updateSettings(req.con, req.body);
     if (result instanceof Error || result.rowCount == 0) {

@@ -3,6 +3,7 @@ const logger = require("../../config/logLevels");
 const POEditor = require("../../utils/POEditor");
 
 module.exports = {
+  // En este método se obtienen todas las traducciones dado un lenguaje
   getTextsByLanguage: async (req, res, next) => {
     let texts = await POEditor.getTranslateTexts(req.params.language);
     let terms = [];

@@ -66,6 +66,8 @@ module.exports = {
     );
     res.json({ updated: true });
   },
+  //Este es un middleware que valida la contraseña almacenada en la bd con la contraseña
+  //ingresada por el usuario, si son iguales se le permite al usuario modificar su contraseña
   validatePasswords: async (req, res, next) => {
     let currentPassword = await userModel.getCurrentPassword(req);
     if (currentPassword.rows[0].user_password != req.body.current_password) {
@@ -104,6 +106,7 @@ module.exports = {
     );
     res.json({ updated: true });
   },
+  // Le permite al usuario desactivar su cuenta
   disableMyAccount: async (req, res, next) => {
     let user = await userModel.updateStatusAccount(req);
     if (user instanceof Error || user.rowCount == 0) {
@@ -167,6 +170,8 @@ module.exports = {
       req
     );
 
+    // Se verifica si hay productos que se quedaron en el proceso de checkout sin ser pagados
+    // de ser cierto, se vuelven a agregar dichos productos al carrito de compras y se reintegra el inventario
     if (productsInCheckoutWithoutPay.length > 0) {
       await Promise.all(
         productsInCheckoutWithoutPay.map(async (el) => {
@@ -196,6 +201,7 @@ module.exports = {
         )
       );
     }
+    // Verifica si hay productos en el carrito con descuento incluido, de ser correcto se calculan los precios
     shoppingCart.map((el) => {
       if (el.discount != null)
         el.total =
@@ -211,6 +217,7 @@ module.exports = {
       obtained: true,
     });
   },
+  // Verifica que haya cantidad disponible en el inventario antes de agregar un producto al carrito.
   checkProductAvailability: async (req, res, next) => {
     if (req.body.product_provider_order_quantity <= 0) {
       return;
@@ -241,6 +248,7 @@ module.exports = {
     }
     next();
   },
+  // Agrega productos al carrito de compras del usuario
   addNewProduct: async (req, res, next) => {
     let product = await userModel.insertProductShoppingCart(req);
     if (product instanceof Error) {
@@ -286,6 +294,7 @@ module.exports = {
     );
     res.json({ deleted: true });
   },
+  // Actualiza la cantidad de productos de un carrito de compras.
   updateProductQuantity: async (req, res, next) => {
     const idCart = req.params.shoppingCartId;
     const quantity = req.body.product_provider_order_quantity;
@@ -312,6 +321,8 @@ module.exports = {
       res.json({ updated: true });
     }
   },
+  // Esto permite que en el carrito se seleccionen los productos que se desean llevar al proceso de compra
+  // los otros productos no seleccionados se quedan guardados en el carrito.
   changeShoppingCartStatus: async (req, res, next) => {
     let status = await userModel.updateStatusProduct(req);
     if (status instanceof Error) {
@@ -379,7 +390,6 @@ module.exports = {
       },
       (err, response) => {
         respuesta = response;
-        console.log(err);
       }
     );
     if (respuesta.deliverability == "deliverable") {
@@ -429,6 +439,8 @@ module.exports = {
       res.json({ obtained: true, coupons: coupons });
     }
   },
+  //Esta función valida el precio de la orden y te muestra los cupones disponibles para el ´
+  // rango de precios en esa orden
   getUserCouponsForOrders: async (req, res, next) => {
     let coupons = await userModel.getUserCouponsForOrders(
       req.con,
@@ -453,11 +465,13 @@ module.exports = {
       res.json({ obtained: true, coupons: coupons });
     }
   },
+  // Este método se ejecuta cuando el usuario decide realizar la compra
   orderCheckout: async (req, res, next) => {
     let products = await userModel.getShoppingCart(req);
     let availableProducts = [];
     let unavailableProducts = [];
 
+    //Se buscan los productos del carrito que esten seleccionados y se verifica que haya stock disponible
     await Promise.all(
       products.map(async (el) => {
         if (el.status_name === "SELECTED") {
@@ -492,6 +506,7 @@ module.exports = {
       });
     } else {
       updateProvidersStocks(req.con, availableProducts);
+      //Selecciona los productos del carrito a comprar y le cambia el status a en proceso
       await orderModel.updateStatusOrderProducts(req, null, "IN PROCESS");
       res.json({
         status: "success",

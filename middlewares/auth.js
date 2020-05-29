@@ -54,6 +54,7 @@ function validateToken(req, res, next) {
   next();
 }
 
+// Este middleware permite restringir los endpoints dependiendo de los roles del usuario
 function restrictTo(...roles) {
   return (req, res, next) => {
     if (!roles.includes(req.user_role)) {

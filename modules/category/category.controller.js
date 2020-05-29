@@ -19,6 +19,7 @@ function getCategories(category_id, results) {
 }
 
 module.exports = {
+  // Este método obtiene todas las categorias principales sin sus hijos
   getMainCategories: async (req, res, next) => {
     let categories = await categoryModel.getMainCategories(req.con);
 
@@ -78,6 +79,7 @@ module.exports = {
       });
     }
   },
+  // Obtiene todas las categorias sin la relación de padres e hijos
   getAllCategoriesSF: async (req, res, next) => {
     let categories = await categoryModel.getAllCategories(req.con);
     if (categories instanceof Error) {

@@ -12,6 +12,8 @@ router.put(
   auth.validateToken,
   userController.updateDeliveryAddress
 );
+
+// Al realizar este router.use se indica que todas las rutas por debajo de ella usaran validación de token
 router.use(auth.validateToken);
 
 router.get(
