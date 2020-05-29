@@ -167,8 +167,6 @@ module.exports = {
       req
     );
 
-    console.log("Productos no pagados", productsInCheckoutWithoutPay);
-
     if (productsInCheckoutWithoutPay.length > 0) {
       Promise.all(
         productsInCheckoutWithoutPay.map(async (el) => {
