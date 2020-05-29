@@ -316,8 +316,11 @@ module.exports = {
       .query(
         `
         SELECT *
-        FROM EC_PRODUCT_PROVIDER 
-        WHERE product_provider_id = ${postId}
+        FROM EC_PRODUCT_PROVIDER AS PPV,
+              EC_STATUS AS STA
+        WHERE PPV.fk_status_id = STA.status_id
+              AND STA.status_name 'ACTIVE'
+              AND PPV.product_provider_id = ${postId}
         `
       )
       .catch((error) => {
