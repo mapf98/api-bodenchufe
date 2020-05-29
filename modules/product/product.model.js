@@ -264,6 +264,9 @@ module.exports = {
       });
   },
   getProductsByKeyword: (con, keyword) => {
+    const keywordCapitalized =
+      keyword.toLowerCase().charAt(0).toUpperCase() +
+      keyword.toLowerCase().slice(1);
     return con
       .query(
         `
@@ -278,7 +281,10 @@ module.exports = {
                 AND PPV.fk_status_id = STA.status_id
                 AND PPV.fk_provider_id = PRV.provider_id
                 AND STA.status_name = 'ACTIVE'
-                AND (product_name LIKE '%${keyword}%')
+                AND (product_name LIKE '%${keyword}%' 
+                      OR product_name LIKE '%${keyword.toLowerCase()}%' 
+                      OR product_name LIKE '%${keyword.toUpperCase()}%'
+                      OR product_name LIKE '%${keywordCapitalized}%')
         `
       )
       .catch((error) => {
@@ -286,13 +292,19 @@ module.exports = {
       });
   },
   getCategoriesByKeyword: (con, keyword) => {
+    const keywordCapitalized =
+      keyword.toLowerCase().charAt(0).toUpperCase() +
+      keyword.toLowerCase().slice(1);
     return con
       .query(
         `
-        SELECT CAT.category_name,
-                CAT.category_id
-        FROM EC_CATEGORY AS CAT
-        WHERE CAT.category_name LIKE '%${keyword}%'
+        SELECT category_name,
+                category_id
+        FROM EC_CATEGORY
+        WHERE category_name LIKE '%${keyword}%'
+                OR category_name LIKE '%${keyword.toLowerCase()}%' 
+                OR category_name LIKE '%${keyword.toUpperCase()}%'
+                OR category_name LIKE '%${keywordCapitalized}%'
         `
       )
       .catch((error) => {
