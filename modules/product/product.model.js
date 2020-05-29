@@ -227,6 +227,17 @@ module.exports = {
         return new Error(error);
       });
   },
+  checkProductRated: (req) => {
+    return req.con
+      .query(
+        `SELECT * FROM EC_QUALIFICATION 
+      WHERE FK_PRODUCT_PROVIDER_ID = ${req.params.productProviderId}
+      AND FK_USER_ID = ${req.user_id}`
+      )
+      .catch((error) => {
+        return new Error(error);
+      });
+  },
   createProductQualification: (req) => {
     return req.con
       .query(

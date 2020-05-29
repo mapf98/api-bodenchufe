@@ -193,6 +193,28 @@ module.exports = {
     }
     next();
   },
+  checkProductAlreadyRated: async (req, res, next) => {
+    let ratedProduct = await productModel.checkProductRated(req);
+    if (ratedProduct instanceof Error) {
+      logger.error(
+        "Error en módulo product (GET /user/product/checkQualification - checkProductRated())"
+      );
+      res.json({ checked: "error" });
+      return next(
+        createError(
+          500,
+          `Error al verificar la calificación del producto [PRODUCT_ID: ${req.params.productProviderId}] (${ratedProduct.message})`
+        )
+      );
+    } else {
+      let alreadyRated;
+      if (ratedProduct.length === 0) alreadyRated = false;
+      else alreadyRated = true;
+      res.json({
+        alreadyRated,
+      });
+    }
+  },
   rateProduct: async (req, res, next) => {
     let qualification = await productModel.createProductQualification(req);
     if (qualification instanceof Error) {
