@@ -330,7 +330,7 @@ module.exports = {
         FROM EC_PRODUCT_PROVIDER AS PPV,
               EC_STATUS AS STA
         WHERE PPV.fk_status_id = STA.status_id
-              AND STA.status_name 'ACTIVE'
+              AND STA.status_name = 'ACTIVE'
               AND PPV.product_provider_id = ${postId}
         `
       )
