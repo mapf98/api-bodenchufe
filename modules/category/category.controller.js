@@ -2,6 +2,7 @@ const createError = require("http-errors");
 const categoryModel = require("./category.model");
 const logger = require("../../config/logLevels");
 
+//Busca por Id de categoria las hijas recursivamente
 function getCategories(category_id, results) {
   let categoryResult = [];
   results.forEach((category) => {
@@ -18,6 +19,7 @@ function getCategories(category_id, results) {
 }
 
 module.exports = {
+  // Este método obtiene todas las categorias principales sin sus hijos
   getMainCategories: async (req, res, next) => {
     let categories = await categoryModel.getMainCategories(req.con);
 
@@ -43,6 +45,7 @@ module.exports = {
       });
     }
   },
+  //Trae las categorias padre y sus hijas de forma recursiva
   getAllCategories: async (req, res, next) => {
     let categories = await categoryModel.getAllCategories(req.con);
     let allCategories = [];
@@ -76,6 +79,7 @@ module.exports = {
       });
     }
   },
+  // Obtiene todas las categorias sin la relación de padres e hijos
   getAllCategoriesSF: async (req, res, next) => {
     let categories = await categoryModel.getAllCategories(req.con);
     if (categories instanceof Error) {

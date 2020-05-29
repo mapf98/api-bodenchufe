@@ -3,6 +3,7 @@ const providerModel = require("./provider.model");
 const logger = require("../../config/logLevels");
 
 module.exports = {
+  //Este método obtiene unicamente los proveedores
   getMainProviders: async (req, res, next) => {
     let providers = await providerModel.getMainProviders(req.con);
 
@@ -22,6 +23,7 @@ module.exports = {
       res.json({ providers: providers, obtained: true });
     }
   },
+  // Este método obtiene los proveedores junto a todos sus productos
   getAllProviders: async (req, res, next) => {
     let providersResume = [];
     let providers = await providerModel.getAllProviders(req.con);

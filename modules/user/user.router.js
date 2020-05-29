@@ -12,6 +12,8 @@ router.put(
   auth.validateToken,
   userController.updateDeliveryAddress
 );
+
+// Al realizar este router.use se indica que todas las rutas por debajo de ella usaran validación de token
 router.use(auth.validateToken);
 
 router.get(
@@ -39,6 +41,7 @@ router.patch(
   auth.restrictTo("administrator"),
   userController.activateAccount
 );
+
 router.patch(
   "/blockAccount/:userId",
   auth.restrictTo("administrator"),
@@ -67,6 +70,11 @@ router.patch(
 );
 
 router.get("/shoppingCart/checkout", userController.orderCheckout);
+
+router.get(
+  "/product/:productProviderId/checkQualification",
+  productController.checkProductAlreadyRated
+);
 
 router.post(
   "/product/:productProviderId/qualification",

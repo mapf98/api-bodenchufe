@@ -227,6 +227,17 @@ module.exports = {
         return new Error(error);
       });
   },
+  checkProductRated: (req) => {
+    return req.con
+      .query(
+        `SELECT * FROM EC_QUALIFICATION 
+      WHERE FK_PRODUCT_PROVIDER_ID = ${req.params.productProviderId}
+      AND FK_USER_ID = ${req.user_id}`
+      )
+      .catch((error) => {
+        return new Error(error);
+      });
+  },
   createProductQualification: (req) => {
     return req.con
       .query(
@@ -316,8 +327,11 @@ module.exports = {
       .query(
         `
         SELECT *
-        FROM EC_PRODUCT_PROVIDER 
-        WHERE product_provider_id = ${postId}
+        FROM EC_PRODUCT_PROVIDER AS PPV,
+              EC_STATUS AS STA
+        WHERE PPV.fk_status_id = STA.status_id
+              AND STA.status_name = 'ACTIVE'
+              AND PPV.product_provider_id = ${postId}
         `
       )
       .catch((error) => {

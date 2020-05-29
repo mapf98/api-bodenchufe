@@ -178,6 +178,8 @@ module.exports = {
       res.json({ created: true, product_id: product_id });
     }
   },
+  // Este método obtiene los productos que ha comprado el usuario. De esta forma se valida si el usuario
+  // puede calificar el producto. Solo puede calificarlo si ha sido comprado.
   purchasedProductsOfUser: async (req, res, next) => {
     let product = await productModel.getPurchasedProducts(req);
     if (product.length === 0) {
@@ -192,6 +194,30 @@ module.exports = {
       );
     }
     next();
+  },
+  // Este método valida si el producto ha sido calificado anteriormente por el usuario.
+  // solo permite calificar el producto 1 vez
+  checkProductAlreadyRated: async (req, res, next) => {
+    let ratedProduct = await productModel.checkProductRated(req);
+    if (ratedProduct instanceof Error) {
+      logger.error(
+        "Error en módulo product (GET /user/product/checkQualification - checkProductRated())"
+      );
+      res.json({ checked: "error" });
+      return next(
+        createError(
+          500,
+          `Error al verificar la calificación del producto [PRODUCT_ID: ${req.params.productProviderId}] (${ratedProduct.message})`
+        )
+      );
+    } else {
+      let alreadyRated;
+      if (ratedProduct.length === 0) alreadyRated = false;
+      else alreadyRated = true;
+      res.json({
+        alreadyRated,
+      });
+    }
   },
   rateProduct: async (req, res, next) => {
     let qualification = await productModel.createProductQualification(req);
@@ -278,6 +304,7 @@ module.exports = {
       });
     }
   },
+  // Este método verifica si una publicación esta con estatus activo para asi ser mostrada en el frontend
   checkPostId: async (req, res, next) => {
     let products = await productModel.checkPostId(req.con, req.params.postId);
     let exists = true;

@@ -4,6 +4,7 @@ const couponModel = require("../coupon/coupon.model");
 const productModel = require("../product/product.model");
 const logger = require("../../config/logLevels");
 
+// Esta función obtiene todos los productos asociados a una orden.
 const orderDetail = async (con, orderId) => {
   let result = [];
   const products = await orderModel.productOrderDetail(con, orderId);
@@ -30,6 +31,7 @@ const orderDetail = async (con, orderId) => {
   return result;
 };
 
+// Esta función permite anidar cada orden del usuario con los productos incluidos en la orden
 const nestOrderProducts = async (con, orders) => {
   let results = [];
 

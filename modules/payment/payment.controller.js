@@ -21,6 +21,7 @@ const paymentOrderDetail = async (req) => {
 
   if (detail.length === 0) return { message: "No hay productos a pagar" };
 
+  // Por cada producto a pagar se calculan los totales, peso, descuentos, dependiendo de la cantidad.
   detail.map((el, i) => {
     totalQuantity = totalQuantity + el.product_provider_order_quantity;
     total_volumetric_weight =
@@ -75,6 +76,7 @@ const paymentOrderDetail = async (req) => {
   return paymentDetail;
 };
 
+// En esta función se crea el json con la informacion del pago que sera enviado a la pasarela de pagos
 const paymentGatewayInfo = async (req) => {
   let port = req.body.port;
   let line_items = [];
@@ -126,6 +128,8 @@ const paymentGatewayInfo = async (req) => {
   return info;
 };
 
+// Este método se ejecuta despues de que la compra haya sido confirmada, actualiza el status a
+// pagado o rechazado dependiendo de la confirmación del pago
 const updateOrderStatus = async (req, order_id, status) => {
   let orderProducts = await orderModel.updateStatusOrderProducts(
     req,
@@ -149,6 +153,7 @@ const updateOrderStatus = async (req, order_id, status) => {
     logger.info(`Pago rechazado de la orden N.[${order_id}]`);
 };
 
+// Este método se ejecuta en caso de que el pago haya sido rechazado, de ser cierto se reintegra el inventario al proveedor
 const reinstateInventory = async (con, order_id) => {
   let productsQuantity = await paymentModel.getProductQuantityOfOrder(
     con,
@@ -231,6 +236,8 @@ module.exports = {
       paymentUrl,
     });
   },
+  // Este webhook permite recibir una petición desde la pasarela de pagos para saber si el pago ha
+  // sido confirmado o rechazado.
   paymentWebHook: async (req, res, next) => {
     let order_id = req.body.resource.reference.split("-")[1];
     let user_id = await paymentModel.getUserIdOfPayment(req.con, order_id);
