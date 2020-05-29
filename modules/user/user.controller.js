@@ -1,5 +1,8 @@
 const createError = require("http-errors");
 const userModel = require("./user.model");
+const orderModel = require("../order/order.model");
+const paymentModel = require("../payment/payment.model");
+
 const logger = require("../../config/logLevels");
 const Lob = require("lob")(process.env.LOB_KEY);
 
@@ -16,13 +19,90 @@ module.exports = {
         )
       );
     }
-
     logger.info("Listado de usuarios entregado satisfactoriamente");
     res.json({
       results: users.length,
       users: users,
       obtained: true,
     });
+  },
+  getUserById: async (req, res, next) => {
+    let user = await userModel.getUserById(req);
+    if (user instanceof Error) {
+      logger.error("Error en módulo user (GET /user - getUserById())");
+      res.json({ obtained: false });
+      return next(
+        createError(
+          500,
+          `Error al obtener todos el usuario  [USER_ID: ${req.user_id}] (${user.message})`
+        )
+      );
+    }
+    logger.info(
+      `Usuario obtenido satisfactoriamente [USER_ID: ${req.user_id}]`
+    );
+    res.json({
+      results: user.length,
+      user: user,
+      obtained: true,
+    });
+  },
+  updateUserPersonalInfo: async (req, res, next) => {
+    let user = await userModel.updateUserPersonalInfo(req);
+    if (user instanceof Error || user.rowCount == 0) {
+      logger.error(
+        "Error en módulo user (PATCH /user - updateUserPersonalInfo())"
+      );
+      res.json({ updated: false });
+      return next(
+        createError(
+          500,
+          `Error al modificar los datos de la cuenta del usuario [USER_ID: ${req.user_id}] (${user.message})`
+        )
+      );
+    }
+    logger.info(
+      `Datos de la cuenta del usuario modificados satisfactoriamente [USER_ID: ${req.user_id}]`
+    );
+    res.json({ updated: true });
+  },
+  validatePasswords: async (req, res, next) => {
+    let currentPassword = await userModel.getCurrentPassword(req);
+    if (currentPassword.rows[0].user_password != req.body.current_password) {
+      res.json({
+        message: `La contraseña no coincide con tu contraseña actual almacenada`,
+      });
+      logger.error("Error al validar las contraseñas");
+      return next(
+        createError(
+          400,
+          `La contraseña ingresada no coincide con la contraseña actual almacenada [USER_ID: ${req.user_id}]`
+        )
+      );
+    }
+    logger.info(
+      `Contraseñas validadas correctamente [USER_ID: ${req.user_id}]`
+    );
+    next();
+  },
+  updatePassword: async (req, res, next) => {
+    let user = await userModel.updatePassword(req);
+    if (user instanceof Error || user.rowCount == 0) {
+      logger.error(
+        "Error en módulo user (PATCH /changePassword - updatePassword())"
+      );
+      res.json({ updated: false });
+      return next(
+        createError(
+          500,
+          `Error al modificar la contraseña de la cuenta del usuario [USER_ID: ${req.user_id}] (${user.message})`
+        )
+      );
+    }
+    logger.info(
+      `Contraseña de la cuenta del usuario modificada satisfactoriamente [USER_ID: ${req.user_id}]`
+    );
+    res.json({ updated: true });
   },
   disableMyAccount: async (req, res, next) => {
     let user = await userModel.updateStatusAccount(req);
@@ -83,6 +163,26 @@ module.exports = {
     res.json({ blocked: true });
   },
   getShoppingCart: async (req, res, next) => {
+    let productsInCheckoutWithoutPay = await userModel.getProductsInCheckoutWhitouPay(
+      req
+    );
+
+    if (productsInCheckoutWithoutPay.length > 0) {
+      Promise.all(
+        productsInCheckoutWithoutPay.map(async (el) => {
+          await paymentModel.reinstateInventory(
+            req.con,
+            el.fk_product_provider_id,
+            el.product_provider_order_quantity
+          );
+          await userModel.reinsertProductsInShoppingCart(
+            req.con,
+            el.product_provider_order_id
+          );
+        })
+      );
+    }
+
     let shoppingCart = await userModel.getShoppingCart(req);
     if (shoppingCart instanceof Error) {
       logger.error(
@@ -96,6 +196,14 @@ module.exports = {
         )
       );
     }
+    shoppingCart.map((el) => {
+      if (el.discount != null)
+        el.total =
+          (1 - el.discount.split("%")[0] / 100) *
+          el.product_provider_price *
+          el.product_provider_order_quantity;
+      el.total = Math.round(el.total * 100) / 100;
+    });
     logger.info("Lista de los productos del carrito de compras entregada");
     res.json({
       results: shoppingCart.length,
@@ -104,6 +212,9 @@ module.exports = {
     });
   },
   checkProductAvailability: async (req, res, next) => {
+    if (req.body.product_provider_order_quantity <= 0) {
+      return;
+    }
     let product_id;
     let type;
     if (req.params.shoppingCartId) {
@@ -113,7 +224,6 @@ module.exports = {
       product_id = req.body.fk_product_provider_id;
       type = "insert";
     }
-    console.log(product_id, type);
     let quantity = await userModel.checkProductAvailability(
       req.con,
       product_id,
@@ -192,7 +302,7 @@ module.exports = {
       next(
         createError(
           500,
-          `Error al modificar la cantidad del producto del carrito [USER_ID: ${req.product_id} | SHOPPING_CART_ID: ${idCart} | QUANTITY: ${quantity}] (${product.message})`
+          `Error al modificar la cantidad del producto del carrito [USER_ID: ${req.user_id} | SHOPPING_CART_ID: ${idCart} | QUANTITY: ${quantity}] (${product.message})`
         )
       );
     } else {
@@ -201,6 +311,25 @@ module.exports = {
       );
       res.json({ updated: true });
     }
+  },
+  changeShoppingCartStatus: async (req, res, next) => {
+    let status = await userModel.updateStatusProduct(req);
+    if (status instanceof Error) {
+      logger.error(
+        "Error en módulo user (PATCH /user/shoppingCart/:shoppingCartId/status - changeShoppingCartStatus())"
+      );
+      res.json({ changed: false });
+      return next(
+        createError(
+          500,
+          `Error al cambiar el status de un producto del carrito [USER_ID: ${req.product_id} | SHOPPING_CART_ID: ${req.params.shoppingCartId}] (${product.message})`
+        )
+      );
+    }
+    logger.info(
+      `Status del producto del carrito modificado [USER_ID: ${req.product_id} | SHOPPING_CART_ID: ${req.params.shoppingCartId} | STATUS: ${req.body.status}]`
+    );
+    res.json({ changed: true });
   },
   addDeliveryAddress: async (req, res, next) => {
     let respuesta;
@@ -213,7 +342,6 @@ module.exports = {
       },
       (err, response) => {
         respuesta = response;
-        console.log(respuesta);
         console.log(err);
       }
     );
@@ -252,7 +380,6 @@ module.exports = {
       },
       (err, response) => {
         respuesta = response;
-        console.log(respuesta);
         console.log(err);
       }
     );
@@ -283,4 +410,163 @@ module.exports = {
       res.json({ verified: false });
     }
   },
+  getUserCoupons: async (req, res, next) => {
+    let coupons = await userModel.getUserCoupons(req);
+    if (coupons instanceof Error) {
+      logger.error(
+        "Error en módulo user (GET /user/coupon - getUserCoupons())"
+      );
+      res.json({ obtained: false });
+      next(
+        createError(
+          500,
+          `Error al obtener los cupones de un usuario [USER_ID: ${req.user_id}] (${result.message})`
+        )
+      );
+    } else {
+      logger.info(
+        `Cupones obtenidos satisfactoriamente [USER_ID: ${req.user_id}]`
+      );
+      res.json({ obtained: true, coupons: coupons });
+    }
+  },
+  getUserCouponsForOrders: async (req, res, next) => {
+    let coupons = await userModel.getUserCouponsForOrders(
+      req.con,
+      req.user_id,
+      req.params.orderPrice
+    );
+    if (coupons instanceof Error) {
+      logger.error(
+        "Error en módulo user (GET /user/order/coupon - getUserCouponsForOrders())"
+      );
+      res.json({ obtained: false });
+      next(
+        createError(
+          500,
+          `Error al obtener lo cupones disponibles de acuerdo al subtotal de la orden [USER_ID: ${req.user_id} | ORDER_PRICE: ${req.params.orderPrice}] (${result.message})`
+        )
+      );
+    } else {
+      logger.info(
+        `Se obtuvo satisfactoriamente el listado de cupones disponibles de acuerto al subtotal de la orden [USER_ID: ${req.user_id} | ORDER_PRICE: ${req.params.orderPrice}]`
+      );
+      res.json({ obtained: true, coupons: coupons });
+    }
+  },
+  orderCheckout: async (req, res, next) => {
+    let products = await userModel.getShoppingCart(req);
+    let availableProducts = [];
+    let unavailableProducts = [];
+
+    await Promise.all(
+      products.map(async (el) => {
+        if (el.status_name === "SELECTED") {
+          const quantity = await checkStock(req.con, el.fk_product_provider_id);
+          if (quantity >= el.product_provider_order_quantity) {
+            availableProducts.push({
+              shoppingCartProductId: el.product_provider_order_id,
+              productProviderId: el.fk_product_provider_id,
+              shoppingCartProductQuantity: el.product_provider_order_quantity,
+              onStock: quantity,
+            });
+          } else {
+            unavailableProducts.push({
+              shoppingCartProductId: el.product_provider_order_id,
+              productProviderId: el.fk_product_provider_id,
+              shoppingCartProductQuantity: el.product_provider_order_quantity,
+              onStock: quantity,
+            });
+          }
+        }
+      })
+    );
+    if (unavailableProducts.length > 0) {
+      res.json({
+        status: "error",
+        message:
+          "Algunos productos no estan disponibles, revisa las cantidades",
+        data: {
+          availableProducts,
+          unavailableProducts,
+        },
+      });
+    } else {
+      updateProvidersStocks(req.con, availableProducts);
+      await orderModel.updateStatusOrderProducts(req, null, "IN PROCESS");
+      res.json({
+        status: "success",
+      });
+    }
+  },
+  setUserPhoto: async (req, res, next) => {
+    let result = await userModel.setUserPhoto(req);
+    if (result instanceof Error) {
+      logger.error(
+        "Error en módulo user (UPDATE /user/photo - setUserPhoto())"
+      );
+      res.json({ obtained: false });
+      next(
+        createError(
+          500,
+          `Error al actualizar la foto del usuario [USER_ID: ${req.body.user_id}]`
+        )
+      );
+    } else {
+      logger.info(
+        `Se actualizo satisfactoriamente la foto del usuario [USER_ID: ${req.body.user_id}]`
+      );
+      res.json({ validated: true });
+    }
+  },
+  updateLanguage: async (req, res, next) => {
+    let result = await userModel.updateLanguage(req);
+
+    if (result instanceof Error) {
+      logger.error(
+        "Error en módulo user (PUT /user/language - updateLanguage())"
+      );
+      res.json({ updated: false });
+      next(
+        createError(
+          500,
+          `Error al actualizar el lenguage de preferencia del usuario [USER_ID: ${req.user_id}]`
+        )
+      );
+    } else {
+      logger.info(
+        `Se actualizo satisfactoriamente el lenguage de preferencia del usuario [USER_ID: ${req.user_id}]`
+      );
+      res.json({ updated: true, language: req.body.language_name });
+    }
+  },
+};
+
+const updateProvidersStocks = async (con, products) => {
+  await Promise.all(
+    products.map(async (product) => {
+      await userModel
+        .updateProviderStock(
+          con,
+          product.productProviderId,
+          product.shoppingCartProductQuantity
+        )
+        .catch((error) => {
+          next(
+            createError(
+              500,
+              `Error al modificar el inventario del proveedor (${product.message})`
+            )
+          );
+        });
+    })
+  );
+  logger.info("Inventario de los proveedores actualizado");
+  return;
+};
+
+const checkStock = async (con, id) => {
+  let quantity = await userModel.checkProductAvailability(con, id, "insert");
+  quantity = quantity[0].product_provider_available_quantity;
+  return quantity;
 };

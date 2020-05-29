@@ -10,7 +10,8 @@ module.exports = {
       return req.con
         .query(
           `SELECT * FROM EC_DELIVERY_ADDRESS WHERE fk_user_id = ${req.user_id}
-           AND fk_status_id = (SELECT status_id FROM EC_STATUS WHERE status_name = 'ACTIVE')`
+           AND fk_status_id = (SELECT status_id FROM EC_STATUS WHERE status_name = 'ACTIVE')
+           ORDER BY delivery_address_id`
         )
         .catch((error) => {
           return new Error(error);

@@ -8,6 +8,7 @@ function getCategories(category_id, results) {
     if (category.fk_category_id == category_id) {
       categoryResult.push({
         category_id: category.category_id,
+        fk_category_id: category.fk_category_id,
         category_name: category.category_name,
         category_child: getCategories(category.category_id, results),
       });
@@ -61,6 +62,7 @@ module.exports = {
         if (category.fk_category_id === null) {
           allCategories.push({
             category_id: category.category_id,
+            fk_category_id: category.fk_category_id,
             category_name: category.category_name,
             category_child: getCategories(category.category_id, categories),
           });
@@ -69,6 +71,30 @@ module.exports = {
       logger.info("Listado de categorías entregado satisfactoriamente");
       res.json({
         categories: allCategories,
+        results: categories.length,
+        obtained: false,
+      });
+    }
+  },
+  getAllCategoriesSF: async (req, res, next) => {
+    let categories = await categoryModel.getAllCategories(req.con);
+    if (categories instanceof Error) {
+      logger.error(
+        "Error en módulo category (GET /category - getAllCategoriesSF())"
+      );
+      res.json({ obtained: false });
+      next(
+        createError(
+          500,
+          `Error al obtener las categorías sin filtro (${categories.message})`
+        )
+      );
+    } else {
+      logger.info(
+        "Listado de categorías sin filtro entregado satisfactoriamente"
+      );
+      res.json({
+        categories: categories,
         results: categories.length,
         obtained: false,
       });

@@ -1,9 +1,33 @@
 const createError = require("http-errors");
 const orderModel = require("./order.model");
+const couponModel = require("../coupon/coupon.model");
+const productModel = require("../product/product.model");
 const logger = require("../../config/logLevels");
 
 const orderDetail = async (con, orderId) => {
-  return await orderModel.productOrderDetail(con, orderId);
+  let result = [];
+  const products = await orderModel.productOrderDetail(con, orderId);
+
+  await Promise.all(
+    products.map(async (product) => {
+      const discount = await productModel.getDiscountOfProduct(
+        con,
+        product.product_provider_id
+      );
+      let obj = {
+        product_name: product.product_name,
+        product_photo: product.product_photo,
+        provider_name: product.provider_name,
+        product_provider_price: product.product_provider_price,
+        product_provider_order_quantity:
+          product.product_provider_order_quantity,
+        product_provider_id: product.product_provider_id,
+        discount: discount.length > 0 ? discount[0].offer_rate : null,
+      };
+      result.push(obj);
+    })
+  );
+  return result;
 };
 
 const nestOrderProducts = async (con, orders) => {
@@ -11,18 +35,22 @@ const nestOrderProducts = async (con, orders) => {
 
   await Promise.all(
     orders.map(async (order, i) => {
+      let couponRate = null;
+      if (order.fk_coupon_id != null) {
+        couponRate = await couponModel.getCouponById(con, order.fk_coupon_id);
+        couponRate = couponRate[0].coupon_discount_rate;
+      }
       const orderDet = await orderDetail(con, order.order_id);
       let obj = new Object();
       obj = {
-        order_id: orders[i].order_id,
-        order_date: orders[i].order_date,
-        order_amount_dollars: orders[i].order_amount_dollars,
-        order_weight: orders[i].order_weight,
-        order_cryptocurrency_type: orders[i].order_cryptocurrency_type,
-        order_amount_cryptocurrency: orders[i].order_amount_cryptocurrency,
-        fk_delivery_address_id: orders[i].fk_delivery_address_id,
-        status: orders[i].status_name,
-        fk_coupon_id: orders[i].fk_coupon_id,
+        order_id: order.order_id,
+        order_date: order.order_date,
+        order_amount_dollars: order.order_amount_dollars,
+        order_weight: order.order_weight,
+        fk_delivery_address_id: order.fk_delivery_address_id,
+        status: order.status_name,
+        fk_coupon_id: order.fk_coupon_id,
+        coupon_rate: couponRate,
         orderDetailProducts: orderDet,
       };
       results.push(obj);

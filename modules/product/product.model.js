@@ -10,6 +10,7 @@ module.exports = {
                 PRO.product_height,
                 PRO.product_width,
                 CAT.category_name,
+                CAT.fk_category_id,
                 PVD.provider_name,
                 PP.product_provider_price,
                 PP.product_provider_available_quantity,
@@ -30,7 +31,7 @@ module.exports = {
             AND PP.fk_provider_id = PVD.provider_id
             AND STA.status_id = PP.fk_status_id
             AND CAT.category_id = PRO.fk_category_id
-            AND STA.status_name = 'AVAILABLE'
+            AND STA.status_name = 'ACTIVE'
             AND PVD.provider_id = ${provider_id}
         `
       )
@@ -49,6 +50,7 @@ module.exports = {
                 PRO.product_height,
                 PRO.product_width,
                 CAT.category_name,
+                CAT.fk_category_id,
                 PVD.provider_name,
                 PP.product_provider_price,
                 PP.product_provider_available_quantity,
@@ -69,7 +71,7 @@ module.exports = {
             AND PP.fk_provider_id = PVD.provider_id
             AND STA.status_id = PP.fk_status_id
             AND CAT.category_id = PRO.fk_category_id
-            AND STA.status_name = 'AVAILABLE'
+            AND STA.status_name = 'ACTIVE'
             AND PP.fk_offer_id = ${offer_id}`
       )
       .catch((error) => {
@@ -87,6 +89,7 @@ module.exports = {
                 PRO.product_height,
                 PRO.product_width,
                 CAT.category_name,
+                CAT.fk_category_id,
                 PVD.provider_name,
                 PP.product_provider_price,
                 PP.product_provider_available_quantity,
@@ -107,7 +110,7 @@ module.exports = {
             AND PP.fk_provider_id = PVD.provider_id
             AND STA.status_id = PP.fk_status_id
             AND CAT.category_id = PRO.fk_category_id
-            AND STA.status_name = 'AVAILABLE'
+            AND STA.status_name = 'ACTIVE'
             AND CAT.category_id = ${category_id}`
       )
       .catch((error) => {
@@ -126,9 +129,13 @@ module.exports = {
                 PRO.product_width,
                 PRO.product_description,
                 CAT.category_name,
+                CAT.fk_category_id,
+                CAT.category_id,
                 PVD.provider_name,
+                PVD.provider_id,
                 PP.product_provider_price,
                 PP.product_provider_available_quantity,
+                PP.product_provider_description,
                 (SELECT AVG(QUAUX.qualification_stars) 
                 FROM EC_QUALIFICATION AS QUAUX
                 WHERE QUAUX.fk_product_provider_id = PP.product_provider_id) AS avg_qualification_stars,
@@ -136,7 +143,12 @@ module.exports = {
                 FROM EC_OFFER AS OFRAUX,
                   EC_PRODUCT_PROVIDER AS PPAUX
                 WHERE OFRAUX.offer_id = PPAUX.fk_offer_id
-                  AND PPAUX.product_provider_id = PP.product_provider_id) AS offer_rate
+                  AND PPAUX.product_provider_id = PP.product_provider_id) AS offer_rate,
+                (SELECT OFRAUX.offer_id
+                  FROM EC_OFFER AS OFRAUX,
+                    EC_PRODUCT_PROVIDER AS PPAUX
+                  WHERE OFRAUX.offer_id = PPAUX.fk_offer_id
+                    AND PPAUX.product_provider_id = PP.product_provider_id) AS offer_id
           FROM EC_PRODUCT_PROVIDER AS PP,
             EC_PRODUCT AS PRO,
             EC_PROVIDER AS PVD,
@@ -146,7 +158,7 @@ module.exports = {
             AND PP.fk_provider_id = PVD.provider_id
             AND STA.status_id = PP.fk_status_id
             AND CAT.category_id = PRO.fk_category_id
-            AND STA.status_name = 'AVAILABLE'
+            AND STA.status_name = 'ACTIVE'
             AND PP.product_provider_id = ${postId}`
       )
       .catch((error) => {
@@ -196,7 +208,116 @@ module.exports = {
                         ? `(SELECT offer_id FROM EC_OFFER WHERE offer_rate = '${post.offer_rate}')`
                         : null
                     }, 
-                    (SELECT status_id FROM EC_STATUS WHERE status_name = 'AVAILABLE')) RETURNING product_provider_id
+                    (SELECT status_id FROM EC_STATUS WHERE status_name = 'ACTIVE')) RETURNING product_provider_id
+        `
+      )
+      .catch((error) => {
+        return new Error(error);
+      });
+  },
+  getPurchasedProducts: (req) => {
+    return req.con
+      .query(
+        `SELECT FK_PRODUCT_PROVIDER_ID FROM EC_PRODUCT_PROVIDER_ORDER 
+        WHERE FK_STATUS_ID = (SELECT STATUS_ID FROM EC_STATUS WHERE STATUS_NAME = 'PAID')
+        AND FK_PRODUCT_PROVIDER_ID = ${req.params.productProviderId * 1}
+        AND FK_USER_ID = ${req.user_id}`
+      )
+      .catch((error) => {
+        return new Error(error);
+      });
+  },
+  createProductQualification: (req) => {
+    return req.con
+      .query(
+        `INSERT INTO EC_QUALIFICATION 
+        (qualification_commentary, qualification_stars, fk_product_provider_id,fk_user_id) 
+        VALUES (
+        '${req.body.qualification_commentary}', 
+        ${req.body.qualification_stars},
+        ${req.params.productProviderId},
+        ${req.user_id})`
+      )
+      .catch((error) => {
+        return new Error(error);
+      });
+  },
+  getDiscountOfProduct: (con, product_id) => {
+    return con
+      .query(
+        `SELECT OFFER_RATE FROM EC_OFFER, EC_PRODUCT_PROVIDER 
+        WHERE FK_OFFER_ID = OFFER_ID 
+        AND PRODUCT_PROVIDER_ID = ${product_id}`
+      )
+      .catch((error) => {
+        return new Error(error);
+      });
+  },
+  updateProductPhoto: (con, productId, photo) => {
+    return con
+      .result(
+        `UPDATE EC_PRODUCT SET product_photo = '${photo}'
+          WHERE product_id = ${productId}`
+      )
+      .catch((error) => {
+        return new Error(error);
+      });
+  },
+  getProductsByKeyword: (con, keyword) => {
+    const keywordCapitalized =
+      keyword.toLowerCase().charAt(0).toUpperCase() +
+      keyword.toLowerCase().slice(1);
+    return con
+      .query(
+        `
+        SELECT PPV.product_provider_id,
+                PRO.product_name,
+                PPV.product_provider_price
+        FROM EC_PRODUCT AS PRO,
+              EC_PROVIDER AS PRV,
+              EC_PRODUCT_PROVIDER AS PPV,
+              EC_STATUS AS STA
+        WHERE PPV.fk_product_id = PRO.product_id
+                AND PPV.fk_status_id = STA.status_id
+                AND PPV.fk_provider_id = PRV.provider_id
+                AND STA.status_name = 'ACTIVE'
+                AND (product_name LIKE '%${keyword}%' 
+                      OR product_name LIKE '%${keyword.toLowerCase()}%' 
+                      OR product_name LIKE '%${keyword.toUpperCase()}%'
+                      OR product_name LIKE '%${keywordCapitalized}%')
+        `
+      )
+      .catch((error) => {
+        return new Error(error);
+      });
+  },
+  getCategoriesByKeyword: (con, keyword) => {
+    const keywordCapitalized =
+      keyword.toLowerCase().charAt(0).toUpperCase() +
+      keyword.toLowerCase().slice(1);
+    return con
+      .query(
+        `
+        SELECT category_name,
+                category_id
+        FROM EC_CATEGORY
+        WHERE category_name LIKE '%${keyword}%'
+                OR category_name LIKE '%${keyword.toLowerCase()}%' 
+                OR category_name LIKE '%${keyword.toUpperCase()}%'
+                OR category_name LIKE '%${keywordCapitalized}%'
+        `
+      )
+      .catch((error) => {
+        return new Error(error);
+      });
+  },
+  checkPostId: (con, postId) => {
+    return con
+      .query(
+        `
+        SELECT *
+        FROM EC_PRODUCT_PROVIDER 
+        WHERE product_provider_id = ${postId}
         `
       )
       .catch((error) => {

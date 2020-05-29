@@ -137,6 +137,7 @@ module.exports = {
   createPost: async (req, res, next) => {
     let product;
     let post;
+    let product_id;
     if (req.body.new_product == true) {
       product = await productModel.createProduct(req.con, req.body.product);
 
@@ -146,8 +147,10 @@ module.exports = {
           req.body,
           product[0].product_id
         );
+        product_id = product[0].product_id;
       }
     } else {
+      product_id = req.body.product;
       post = await productModel.createPost(req.con, req.body, req.body.product);
     }
 
@@ -172,7 +175,135 @@ module.exports = {
       logger.info(
         `Se creo una publicación satisfactoriamente [PRODUCT_PROVIDER_ID: ${post[0].product_provider_id}]`
       );
-      res.json({ created: true });
+      res.json({ created: true, product_id: product_id });
+    }
+  },
+  purchasedProductsOfUser: async (req, res, next) => {
+    let product = await productModel.getPurchasedProducts(req);
+    if (product.length === 0) {
+      res.json({
+        rated: false,
+      });
+      return next(
+        createError(
+          400,
+          `Operacion invalida, no se puede calificar el producto ya que no ha sido comprado (PRODUC_ID:${req.params.productProviderId}), (ID:${req.params.productProviderId}), [USER_ID: ${req.user_id}]`
+        )
+      );
+    }
+    next();
+  },
+  rateProduct: async (req, res, next) => {
+    let qualification = await productModel.createProductQualification(req);
+    if (qualification instanceof Error) {
+      logger.error(
+        "Error en módulo product (POST /user/product/:productProviderId/qualification - rateProduct())"
+      );
+      res.json({ rated: false });
+      return next(
+        createError(
+          500,
+          `Error al crear la calificación del producto [PRODUCT_ID: ${req.params.productProviderId}] (${qualification.message})`
+        )
+      );
+    } else {
+      logger.info(
+        `Producto calificado satisfactoriamente [PRODUCT_ID: ${req.params.productProviderId}]`
+      );
+      res.json({
+        rated: true,
+      });
+    }
+  },
+  updateProductPhoto: async (req, res, next) => {
+    let product = await productModel.updateProductPhoto(
+      req.con,
+      req.body.product_id,
+      req.body.photo
+    );
+    if (product instanceof Error) {
+      logger.error(
+        "Error en módulo product (PUT /product/photo - updateProductPhoto())"
+      );
+      res.json({ updated: false });
+      return next(
+        createError(
+          500,
+          `Error al actualizar la foto del producto [PRODUCT_ID: ${req.body.product_id}] (${product.message})`
+        )
+      );
+    } else {
+      logger.info(
+        `Foto de producto actualizada satisfactoriamente [PRODUCT_ID: ${req.body.product_id}]`
+      );
+      res.json({
+        updated: true,
+      });
+    }
+  },
+  getProductsByKeyword: async (req, res, next) => {
+    let products = await productModel.getProductsByKeyword(
+      req.con,
+      req.params.keyword
+    );
+    let categories = await productModel.getCategoriesByKeyword(
+      req.con,
+      req.params.keyword
+    );
+    if (products instanceof Error || categories instanceof Error) {
+      logger.error(
+        "Error en módulo product (GET /product/search/ - getProductsByKeyword() | getCategoriesByKeyword())"
+      );
+      res.json({ obtained: false });
+      return next(
+        createError(
+          500,
+          `Error al buscar productos y categorías por el keyword [KEYWORD: ${
+            req.params.keyword
+          }] (${
+            products.message instanceof Error
+              ? products.message
+              : categories.message
+          })`
+        )
+      );
+    } else {
+      logger.info(
+        `Productos y categorías entregados satisfactoriamente [KEYWORD: ${req.params.keyword}]`
+      );
+      res.json({
+        obtained: true,
+        products: products,
+        categories: categories,
+      });
+    }
+  },
+  checkPostId: async (req, res, next) => {
+    let products = await productModel.checkPostId(req.con, req.params.postId);
+    let exists = true;
+
+    if (products.length == 0) {
+      exists = false;
+    }
+
+    if (products instanceof Error) {
+      logger.error(
+        "Error en módulo product (GET /product/check/ - checkPostId())"
+      );
+      res.json({ exists: false });
+      return next(
+        createError(
+          500,
+          `Error al verificar la existencia de un post [POST_ID: ${req.params.postId}] (${products.message})`
+        )
+      );
+    } else {
+      logger.info(
+        `Verificación de post realizada satisfactoriamente [POST_ID: ${req.params.postId}]`
+      );
+      res.json({
+        exists: exists,
+      });
     }
   },
 };
