@@ -26,6 +26,7 @@ module.exports = {
       obtained: true,
     });
   },
+  //Se usa cuando el usuario elimina una dirección de entrega asociada
   changeAddressStatus: async (req, res, next) => {
     let adresses = await deliveryAddressModel.updateAddressStatus(req);
     if (adresses instanceof Error || adresses.rowCount == 0) {

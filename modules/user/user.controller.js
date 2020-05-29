@@ -342,7 +342,6 @@ module.exports = {
       },
       (err, response) => {
         respuesta = response;
-        console.log(err);
       }
     );
 
