@@ -1,4 +1,5 @@
 module.exports = {
+  //Se obtienen los parametros de configuracion como la comisión del procesador de pago y la comisión por servicios
   getAllSettings: (con) => {
     return con.query("SELECT * FROM EC_SETTING").catch((error) => {
       return new Error(error);

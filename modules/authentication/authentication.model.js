@@ -1,4 +1,5 @@
 module.exports = {
+  //Al iniciar sesión valida si el password es NULL debido a que el inicio de sesión cuando es federado no lo requiere.
   logIn: (con, body) => {
     return con
       .query(
@@ -20,6 +21,8 @@ module.exports = {
         return new Error(error);
       });
   },
+  //Al momento del registro, la fecha puede ser null
+  //Cuando se inicia sesión de forma federada, se guardan los datos del usuario ya sea por google o facebook, estos no tienen contraseña y se valida en tal caso si es NULL
   signUp: (con, body) => {
     return con
       .query(
