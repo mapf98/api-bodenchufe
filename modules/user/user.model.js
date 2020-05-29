@@ -105,6 +105,30 @@ module.exports = {
         return new Error(error);
       });
   },
+  getProductsInCheckoutWhitouPay: (req) => {
+    return req.con
+      .query(
+        `SELECT PRODUCT_PROVIDER_ORDER_ID, FK_PRODUCT_PROVIDER_ID, PRODUCT_PROVIDER_ORDER_QUANTITY
+      FROM EC_PRODUCT_PROVIDER_ORDER 
+      WHERE FK_STATUS_ID = (SELECT STATUS_ID FROM EC_STATUS WHERE STATUS_NAME = 'IN PROCESS')
+      AND FK_ORDER_ID IS NULL
+      AND FK_USER_ID = ${req.user_id}`
+      )
+      .catch((error) => {
+        return new Error(error);
+      });
+  },
+  reinsertProductsInShoppingCart: (con, id) => {
+    return con
+      .query(
+        `UPDATE EC_PRODUCT_PROVIDER_ORDER SET FK_STATUS_ID = 
+      (SELECT STATUS_ID FROM EC_STATUS WHERE STATUS_NAME = 'SELECTED') 
+      WHERE PRODUCT_PROVIDER_ORDER_ID = ${id}`
+      )
+      .catch((error) => {
+        return new Error(error);
+      });
+  },
   getShoppingCart: (req) => {
     return req.con
       .query(

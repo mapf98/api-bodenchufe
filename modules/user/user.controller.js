@@ -1,6 +1,8 @@
 const createError = require("http-errors");
 const userModel = require("./user.model");
 const orderModel = require("../order/order.model");
+const paymentModel = require("../payment/payment.model");
+
 const logger = require("../../config/logLevels");
 const Lob = require("lob")(process.env.LOB_KEY);
 
@@ -161,6 +163,28 @@ module.exports = {
     res.json({ blocked: true });
   },
   getShoppingCart: async (req, res, next) => {
+    let productsInCheckoutWithoutPay = await userModel.getProductsInCheckoutWhitouPay(
+      req
+    );
+
+    console.log("Productos no pagados", productsInCheckoutWithoutPay);
+
+    if (productsInCheckoutWithoutPay.length > 0) {
+      Promise.all(
+        productsInCheckoutWithoutPay.map(async (el) => {
+          await paymentModel.reinstateInventory(
+            req.con,
+            el.fk_product_provider_id,
+            el.product_provider_order_quantity
+          );
+          await userModel.reinsertProductsInShoppingCart(
+            req.con,
+            el.product_provider_order_id
+          );
+        })
+      );
+    }
+
     let shoppingCart = await userModel.getShoppingCart(req);
     if (shoppingCart instanceof Error) {
       logger.error(

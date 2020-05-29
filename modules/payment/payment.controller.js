@@ -126,29 +126,6 @@ const paymentGatewayInfo = async (req) => {
   return info;
 };
 
-const nestOrderProducts = async (con, orders) => {
-  let results = [];
-
-  await Promise.all(
-    orders.map(async (order, i) => {
-      const orderDet = await orderDetail(con, order.order_id);
-      let obj = new Object();
-      obj = {
-        order_id: orders[i].order_id,
-        order_date: orders[i].order_date,
-        order_amount_dollars: orders[i].order_amount_dollars,
-        order_weight: orders[i].order_weight,
-        fk_delivery_address_id: orders[i].fk_delivery_address_id,
-        status: orders[i].status_name,
-        fk_coupon_id: orders[i].fk_coupon_id,
-        orderDetailProducts: orderDet,
-      };
-      results.push(obj);
-    })
-  );
-  return results;
-};
-
 const updateOrderStatus = async (req, order_id, status) => {
   let orderProducts = await orderModel.updateStatusOrderProducts(
     req,

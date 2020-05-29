@@ -100,7 +100,7 @@ module.exports = {
     let year = f.getFullYear();
     let month = f.getMonth();
     let day = f.getDate();
-    let fecha_actual = year + "-" + month + "-" + day;
+    let fecha_actual = year + "-" + (month + 1) + "-" + day;
 
     let order_weight =
       req.orderDetail.orderSummary.total_volumetric_weight.split(" ")[0] * 1;
@@ -108,7 +108,7 @@ module.exports = {
       .query(
         `INSERT INTO EC_ORDER (order_date, order_amount_dollars, order_weight,
          fk_delivery_address_id, fk_status_id, fk_coupon_id) 
-         VALUES ('2019-10-10' , ${req.orderDetail.orderSummary.total}, 
+         VALUES ('${fecha_actual}' , ${req.orderDetail.orderSummary.total}, 
           ${order_weight}, ${req.body.delivery_address_id},
           (SELECT STATUS_ID FROM EC_STATUS WHERE STATUS_NAME= 'IN PROCESS'), 
           ${req.body.coupon_id ? req.body.coupon_id : null}) RETURNING ORDER_ID`
@@ -135,7 +135,8 @@ module.exports = {
       (SELECT STATUS_ID FROM EC_STATUS WHERE STATUS_NAME = '${status}') 
       WHERE FK_ORDER_ID ${order_id === null ? "IS" : "="} ${order_id}
       AND FK_USER_ID = ${req.user_id}
-      AND FK_STATUS_ID = (SELECT STATUS_ID FROM EC_STATUS WHERE STATUS_NAME = 'SELECTED')`
+      AND FK_STATUS_ID = (SELECT STATUS_ID FROM EC_STATUS WHERE STATUS_NAME = 
+        '${order_id === null ? "SELECTED" : "IN PROCESS"}')`
       )
       .catch((error) => {
         return new Error(error);
