@@ -41,6 +41,7 @@ router.patch(
   auth.restrictTo("administrator"),
   userController.activateAccount
 );
+
 router.patch(
   "/blockAccount/:userId",
   auth.restrictTo("administrator"),

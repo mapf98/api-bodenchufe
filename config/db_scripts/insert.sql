@@ -38,6 +38,7 @@ INSERT INTO EC_PROVIDER (provider_name, provider_description, fk_status_id) VALU
 INSERT INTO EC_PROVIDER (provider_name, provider_description, fk_status_id) VALUES ('Corp Tum','We are a thing', (SELECT status_id FROM EC_STATUS WHERE status_name = 'ACTIVE'));
 
 
+
 /* CATEGORY */
 INSERT INTO EC_CATEGORY (category_name) VALUES ('Technology');
 INSERT INTO EC_CATEGORY (category_name, fk_category_id) VALUES ('Cellphone', (SELECT category_id FROM EC_CATEGORY WHERE category_name = 'Technology'));
@@ -87,6 +88,7 @@ INSERT INTO EC_PRODUCT (product_name, product_photo,product_description, product
 product_height, product_width, fk_category_id) VALUES ('Pala de jardinería', 'https://firebasestorage.googleapis.com/v0/b/bodenchufe-client.appspot.com/o/images%2Fproducts%2F9%2Fpala3.jpg?alt=media&token=0b574a6f-0c19-44c1-a5d1-4150136b1d7c', 'Execelente pala para jardinería, ideal para trabajos de jardin', '7', '100', '50', (SELECT category_id FROM EC_CATEGORY WHERE category_name = 'Garden'));
 INSERT INTO EC_PRODUCT (product_name, product_photo,product_description, product_long,
 product_height, product_width, fk_category_id) VALUES ('Supreme Shirt', 'https://firebasestorage.googleapis.com/v0/b/bodenchufe-client.appspot.com/o/images%2Fproducts%2F10%2Fsupreme1.jpg?alt=media&token=83166cb7-5c8e-4543-bff7-a3e8847cce27', 'Rich shirt', '5', '65', '98', (SELECT category_id FROM EC_CATEGORY WHERE category_name = 'Supreme'));
+
 
 
 /* PRODUCT_PROVIDER */
