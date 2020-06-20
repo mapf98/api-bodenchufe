@@ -1,0 +1,23 @@
+version: "3"
+services:
+  client:
+    image: client-bodenchufe
+    ports: 
+      - 8080:8080  
+  db:
+    image: postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=MIGuel33&&
+      - POSTGRES_DB=bodenchufe
+    ports: 
+      - 5432:5432
+    volumes:
+      - ./config/db_scripts/create.sql:/docker-entrypoint-initdb.d/create.sql
+      - ./config/db_scripts/insert.sql:/docker-entrypoint-initdb.d/insert.sql
+  api_bk:
+    image: api-bodenchufe
+    ports: 
+      - 3000:3000
+    depends_on:
+      - db  
